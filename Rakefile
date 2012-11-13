@@ -5,20 +5,31 @@ require 'bundler'
 Bundler.require
 
 Motion::Project::App.setup do |app|
-  app.name = 'FacebookApp'
+  app.name = 'LAN Live!'
+  app.identifier = 'com.myfrequencyinc.LANLive!'
+  app.sdk_version = '6.0'
+  app.deployment_target = '5.0'
 
-  app.frameworks    = ["UIKit", "Foundation", 'AdSupport', 'Accounts', 'Social']
-  app.weak_frameworks += %w{ AdSupport Accounts Social }
+  # app.vendor_project('vendor/zxing-2.1/iphone/ZXingWidget', :xcode, :target => 'ZXingWidget', :headers_dir => 'Classes')
+
+  app.frameworks += %w{ UIKit Foundation AdSupport Accounts Social CoreLocation MapKit CoreData AudioToolbox CoreVideo CoreMedia AddressBook AddressBookUI SDWebImage QuartzCore GMGridView}
+  app.weak_frameworks += %w{ AdSupport Accounts Social AVFoundation}
+  app.libs += ['/usr/lib/libiconv.dylib']
 
   app.pods do
     pod 'Facebook-iOS-SDK', '~> 3.1.1'
+    pod 'SDWebImage', '~> 2.7'
+    pod 'SMGridView', '~> 1.0.1'
   end
 
   app.device_family          = :iphone
   app.interface_orientations = [:portrait]
 
-  raise "Please add your app ID in the two lines below" # <= remove this once you've added your app ID
-  # Required for Facebook SDK
-  app.info_plist['FacebookAppID'] = '<your app ID here>'
-  app.info_plist['URL types'] = { 'URL Schemes' => 'fb<your app ID here>'}
+  app.info_plist['UIStatusBarHidden'] = true
+  app.info_plist['FacebookAppID'] = '544689192211877'
+  app.info_plist['CFBundleURLTypes'] = [{'CFBundleURLSchemes' => ['fb544689192211877']}]
+
+  app.testflight.sdk = 'vendor/TestFlight'
+  app.testflight.api_token = '927f0d7d14ae638e4858645c94bb94af_NjYxMTEyMjAxMi0xMC0wNCAxNDo0Nzo0Ni4xODk3MzY'
+  app.testflight.team_token = '5fccb0060699782e665b6ea51526f4ae_MTUwNDc4MjAxMi0xMS0wMSAxOToyNjoyMC41NTUxMTU'
 end
