@@ -1,5 +1,7 @@
 class AppDelegate
 
+  attr_accessor :user_photos_list, :friends
+
   ::FBSessionStateChangedNotification = "#{App.identifier}:FBSessionStateChangedNotification"
 
   # The extra permissions we're requesting from Facebook
@@ -16,6 +18,10 @@ class AppDelegate
 
   def friendsViewController
     @friendsViewController ||= FriendsViewController.alloc.initWithTabBar
+  end
+
+  def friendsGridController
+    @friendsGridController ||= FriendsGridController.alloc.init
   end
 
   def mapController
@@ -61,34 +67,22 @@ class AppDelegate
   end
 
   def frequency_app_uri
-    # 'http://10.0.1.17:3000'
-  'http://www.lan-live.com'
+    'http://10.0.1.17:3000'
+    # 'http://www.lan-live.com'
   end
 
-  def load_friends_list_data
-    return false unless App::Persistence['user_auth_token']
-    data = {auth_token: App::Persistence['user_auth_token']}
-    BW::HTTP.get("#{frequency_app_uri}/my-friends.json", {payload: data}) do |response|
-      if response.ok?
-        json_string = response.body.to_str
-        File.open("#{App.documents_path}/friends.json", "w") {|f| f.write(json_string)}
-      else
-        # TODO: handle failure
-      end
-    end
+  def load_user_photos_list
+    @user_photos_list ||= Frequency::FanPhotoList.new
+    @user_photos_list.refresh if logged_in?
   end
 
-  def load_fan_photos_data
-    return false unless App::Persistence['user_auth_token']
-    data = {auth_token: App::Persistence['user_auth_token']}
-    BW::HTTP.get("#{frequency_app_uri}/api/mobile/fan_photos", {payload: data}) do |response|
-      if response.ok?
-        json_string = response.body.to_str
-        File.open("#{App.documents_path}/fan_photos.json", "w") {|f| f.write(json_string)}
-      else
-        # TODO: handle failure
-      end
-    end
+  def load_friends_list
+    @friends ||= Frequency::FriendList.new
+    @friends.refresh if logged_in?
+  end
+
+  def logged_in?
+    App::Persistence['user_auth_token'] ? true : false
   end
 
   # =============
@@ -96,10 +90,15 @@ class AppDelegate
   # =============
 
   def application(application, didFinishLaunchingWithOptions:launchOptions)
-    window.rootViewController = gridController
-    # window.rootViewController = App::Persistence['user_auth_token'] ? tabController : loginController
+    load_user_photos_list
+    load_friends_list
+    window.rootViewController = gridNavController
+    # window.rootViewController = logged_in? ? gridNavController : loginController
     window.rootViewController.wantsFullScreenLayout = true
     window.makeKeyAndVisible
+
+    App.run_after(0.5) {window.rootViewController.presentModalViewController(loginController, animated:true )} unless logged_in?
+
     true
   end
 

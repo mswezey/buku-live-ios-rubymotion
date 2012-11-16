@@ -1,7 +1,7 @@
 PODS_ROOT = ${SRCROOT}/Pods
 PODS_HEADERS_SEARCH_PATHS = ${PODS_PUBLIC_HEADERS_SEARCH_PATHS}
 ALWAYS_SEARCH_USER_PATHS = YES
-OTHER_LDFLAGS = -ObjC -lsqlite3.0 -framework CoreGraphics -framework CoreLocation -framework Foundation -framework ImageIO -framework QuartzCore -framework UIKit -weak_framework Accounts -weak_framework AdSupport -weak_framework Social
+OTHER_LDFLAGS = -ObjC -lsqlite3.0 -lstdc++ -framework CoreLocation -framework ImageIO -framework QuartzCore -weak_framework Accounts -weak_framework AdSupport -weak_framework Social
 HEADER_SEARCH_PATHS = ${PODS_HEADERS_SEARCH_PATHS}
-PODS_BUILD_HEADERS_SEARCH_PATHS = "${PODS_ROOT}/BuildHeaders" "${PODS_ROOT}/BuildHeaders/Facebook-iOS-SDK" "${PODS_ROOT}/BuildHeaders/Facebook-iOS-SDK/FacebookSDK" "${PODS_ROOT}/BuildHeaders/SDWebImage" "${PODS_ROOT}/BuildHeaders/SMGridView"
-PODS_PUBLIC_HEADERS_SEARCH_PATHS = "${PODS_ROOT}/Headers" "${PODS_ROOT}/Headers/Facebook-iOS-SDK" "${PODS_ROOT}/Headers/Facebook-iOS-SDK/FacebookSDK" "${PODS_ROOT}/Headers/SDWebImage" "${PODS_ROOT}/Headers/SMGridView"
+PODS_BUILD_HEADERS_SEARCH_PATHS = "${PODS_ROOT}/BuildHeaders" "${PODS_ROOT}/BuildHeaders/Facebook-iOS-SDK" "${PODS_ROOT}/BuildHeaders/Facebook-iOS-SDK/FacebookSDK" "${PODS_ROOT}/BuildHeaders/JBKenBurnsView" "${PODS_ROOT}/BuildHeaders/KKGridView" "${PODS_ROOT}/BuildHeaders/SDWebImage"
+PODS_PUBLIC_HEADERS_SEARCH_PATHS = "${PODS_ROOT}/Headers" "${PODS_ROOT}/Headers/Facebook-iOS-SDK" "${PODS_ROOT}/Headers/Facebook-iOS-SDK/FacebookSDK" "${PODS_ROOT}/Headers/JBKenBurnsView" "${PODS_ROOT}/Headers/KKGridView" "${PODS_ROOT}/Headers/SDWebImage"

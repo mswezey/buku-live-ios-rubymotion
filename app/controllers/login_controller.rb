@@ -101,20 +101,34 @@ class LoginController < UIViewController
     textLabel.text      = DEFAULT_TEXT
   end
 
+  def dismissDialog
+    self.dismissModalViewControllerAnimated(true)
+  end
+
   def authenticateWithServer
-    data = {access_token: FBSession.activeSession.accessToken}
-    BW::HTTP.post("#{App.delegate.frequency_app_uri}/api/mobile/authentication/facebook", {payload: data}) do |response|
+    puts "requesting user auth token from facebook access token"
+    access_token = FBSession.activeSession.accessToken
+    puts "init"
+    authentication = Frequency::Authentication.new(access_token)
+    puts "authenticate"
+    BW::HTTP.post(authentication.url, {payload: authentication.payload}) do |response|
       if response.ok?
+        puts "response ok"
         json = BW::JSON.parse(response.body.to_str)
-        App::Persistence['user_auth_token'] = json['authentication_token']
-        appDelegate.tabController.selectedIndex = 0
-        appDelegate.window.rootViewController = appDelegate.tabController
-        App.delegate.load_friends_list_data
-        App.delegate.load_fan_photos_data
-      elsif response.status_code.to_s =~ /40\d/
-        App.alert("Login failed")
+        if json['status'] && json['status'] == 'success'# && json['authentication_token']
+          App::Persistence['user_auth_token'] = json['authentication_token']
+          puts "user auth token saved"
+          App.delegate.friends.refresh
+          App.delegate.user_photos_list.refresh
+          # App.delegate.window.rootViewController = App.delegate.gridNavController
+          dismissDialog
+        else
+          puts "user auth not saved"
+          App.alert("Login Failed")
+        end
       else
-        App.alert(response.error_message)
+        puts "response not ok"
+        App.alert("Login Failed due to server error. Please Try Again.")
       end
     end
   end

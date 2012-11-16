@@ -17,16 +17,21 @@ class PhotosController < UITableViewController
 
   def viewDidLoad
     super
-    photos_string = File.read("#{App.documents_path}/fan_photos.json")
-    @photos = BW::JSON.parse(photos_string)
+    # photos_string = File.read("#{App.documents_path}/fan_photos.json")
+    # @photos = BW::JSON.parse(photos_string)
+
 
     rightButton = UIBarButtonItem.alloc.initWithTitle("Take Photo", style: UIBarButtonItemStyleBordered, target:self, action:'takePhoto')
     self.navigationItem.rightBarButtonItem = rightButton
   end
 
+  def viewWillAppear(animated)
+    self.navigationController.setNavigationBarHidden(false)
+  end
+
   def viewDidAppear(animated)
     self.view.alpha = 1.0
-    loadFanPhotos
+    load_photos
   end
 
   def viewDidUnload
@@ -58,7 +63,7 @@ class PhotosController < UITableViewController
     end
     photo = @photos[indexPath.row]
 
-    string = photo['fan_photo']['image']['my_picture']['url']
+    string = photo['fan_photo']['image']['mobile_small']['url']
     urlString = NSURL.URLWithString(string)
 
     # cell.imageView.setImageWithURL(urlString, placeholderImage: UIImage.imageNamed("photo-placeholder.png"))
@@ -114,7 +119,7 @@ class PhotosController < UITableViewController
     detailViewController.view = UIScrollView.alloc.initWithFrame(self.view.bounds)
 
     photo = @photos[indexPath.row]
-    url = NSURL.URLWithString(photo['fan_photo']['image']['medium']['url'])
+    url = NSURL.URLWithString(photo['fan_photo']['image']['mobile_medium']['url'])
     data = NSData.dataWithContentsOfURL(url)
     image = UIImage.imageWithData(data)
     image_view = UIImageView.alloc.initWithImage(image)
@@ -150,7 +155,7 @@ class PhotosController < UITableViewController
   end
 
   def takePhoto
-    BW::Device.camera.rear.picture(media_types: [:movie, :image]) do |result|
+    BW::Device.camera.rear.picture(media_types: [:movie, :image], allows_editing: true) do |result|
       image = result[:original_image]
       # small_image = UIImage.imageWithCGImage(image.CGImage, scale:0.5, orientation:image.imageOrientation)
       # image_view = UIImageView.alloc.initWithImage(image)
@@ -176,7 +181,7 @@ class PhotosController < UITableViewController
       BW::HTTP.post("#{App.delegate.frequency_app_uri}/api/mobile/fan_photos", {payload: data, files: {:picture => image_jpeg} }) do |response|
         if response.ok?
           self.view.alpha = 1.0
-          loadFanPhotos
+          App.delegate.load_fan_photos_data
         else
           # TODO: handle failure
         end
@@ -184,18 +189,9 @@ class PhotosController < UITableViewController
     end
   end
 
-  def loadFanPhotos
-    data = {auth_token: App::Persistence['user_auth_token']}
-    BW::HTTP.get("#{App.delegate.frequency_app_uri}/api/mobile/fan_photos", {payload: data}) do |response|
-      if response.ok?
-        json_string = response.body.to_str
-        @photos = BW::JSON.parse(json_string).reverse
-        # self.view.reloadData
-        File.open("#{App.documents_path}/fan_photos.json", "w") {|f| f.write(json_string)}
-      else
-        # TODO: handle failure
-      end
-    end
+  def load_photos
+    @photos = App.delegate.user_photos_list.all
+    self.view.reloadData
   end
 
 end

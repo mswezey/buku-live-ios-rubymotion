@@ -20,7 +20,8 @@ class UserController < UIViewController
     logoutButton = view.viewWithTag(10)
     @welcomeLabel = view.viewWithTag(2)
     @profileLabel = view.viewWithTag(3)
-    refreshButton.addTarget(self, action:'refreshProfile', forControlEvents:UIControlEventTouchUpInside)
+    # refreshButton.addTarget(self, action:'refreshProfile', forControlEvents:UIControlEventTouchUpInside)
+    refreshButton.addTarget(self, action:'backToNewDesign', forControlEvents:UIControlEventTouchUpInside)
     logoutButton.addTarget(self, action:'logout', forControlEvents:UIControlEventTouchUpInside)
   end
 
@@ -30,6 +31,10 @@ class UserController < UIViewController
 
   def logout
     appDelegate.closeSession
+  end
+
+  def backToNewDesign
+    App.delegate.window.rootViewController = App.delegate.gridNavController
   end
 
   def refreshProfile
