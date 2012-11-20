@@ -131,7 +131,7 @@ class LoginController < UIViewController
 
           unless App::Persistence['asked_user_for_publish_permissions']
 
-              puts "never asked"
+            App.run_after(3) {
               FBSession.activeSession.reauthorizeWithPublishPermissions(["publish_checkins", "publish_stream"],
                                       defaultAudience:FBSessionDefaultAudienceFriends,
                                       completionHandler: lambda do |session, error|
@@ -139,8 +139,10 @@ class LoginController < UIViewController
                                         puts "finished asking"
                                         puts "session: #{session.permissions}"
                                       end)
-              puts "after asking"
-            end
+            }
+
+
+          end
         else
           puts "user auth not saved"
           App.alert("Login Failed")

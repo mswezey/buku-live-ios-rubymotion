@@ -115,8 +115,9 @@ class AppDelegate
   end
 
   def showMenu
-    window.rootViewController.presentModalViewController(loginController, animated:true )
-    closeSession
+    App.alert("Show Menu")
+    # window.rootViewController.presentModalViewController(loginController, animated:true )
+    # closeSession
   end
 
   def navToolbar
