@@ -8,6 +8,7 @@ class LoginController < UIViewController
   # end
 
   def viewDidLoad
+    puts "LoginController view did load"
     self.view.backgroundColor = UIColor.whiteColor
     view.addSubview(textLabel)
     view.addSubview(authButton)
@@ -127,6 +128,19 @@ class LoginController < UIViewController
           App.delegate.user_photos_list.refresh {App.delegate.gridController.refresh_slideshow}
           # App.delegate.window.rootViewController = App.delegate.gridNavController
           dismissDialog
+
+          unless App::Persistence['asked_user_for_publish_permissions']
+
+              puts "never asked"
+              FBSession.activeSession.reauthorizeWithPublishPermissions(["publish_checkins", "publish_stream"],
+                                      defaultAudience:FBSessionDefaultAudienceFriends,
+                                      completionHandler: lambda do |session, error|
+                                        App::Persistence['asked_user_for_publish_permissions'] = true
+                                        puts "finished asking"
+                                        puts "session: #{session.permissions}"
+                                      end)
+              puts "after asking"
+            end
         else
           puts "user auth not saved"
           App.alert("Login Failed")
@@ -141,6 +155,8 @@ class LoginController < UIViewController
   # Called when the FBSessionStateChangedNotification is pushed out
   # Changed the text on the authButton and updates the textLabel
   def sessionStateChanged(notification)
+    puts "session state changed called.  Session open? #{FBSession.activeSession.open?}"
+    puts "permision to post? #{FBSession.activeSession.permissions.include?("publish_stream") && FBSession.activeSession.permissions.include?("publish_checkins")}"
     if FBSession.activeSession.open?
       showUserInfo
       authenticateWithServer

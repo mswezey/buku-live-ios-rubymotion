@@ -258,6 +258,7 @@ module FUI
     def animate(num)
       # image = UIImage.imageWithData(data)
       imageView = @imageViewsArray[num]
+      return unless imageView
       image = imageView.image
 
       frameWidth    = self.frame.size.width

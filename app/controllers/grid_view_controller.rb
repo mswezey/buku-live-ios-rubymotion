@@ -268,8 +268,8 @@ class GridViewController < UIViewController
 
   def load_photos_slideshow
     unless @kbv
+      @kbv = FUI::KenBurnsView.alloc.initWithFrame(@photos_view.bounds)
       Dispatch::Queue.concurrent.async {
-        @kbv = FUI::KenBurnsView.alloc.initWithFrame(@photos_view.bounds)
         load_photos_list
         @photos = load_photos
         Dispatch::Queue.main.sync {

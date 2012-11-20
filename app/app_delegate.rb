@@ -6,7 +6,7 @@ class AppDelegate
 
   # The extra permissions we're requesting from Facebook
   # By default, the basics are already provided https://developers.facebook.com/docs/reference/login/basic-info/
-  FBPermissions = %w{ user_birthday user_hometown user_location email}
+  FBPermissions = %w{ user_birthday user_hometown user_location email user_likes user_interests user_photos}
 
   # ==============
   # = Properties =
@@ -116,6 +116,7 @@ class AppDelegate
 
   def showMenu
     window.rootViewController.presentModalViewController(loginController, animated:true )
+    closeSession
   end
 
   def navToolbar
@@ -299,9 +300,9 @@ class AppDelegate
     FBSession.activeSession.closeAndClearTokenInformation
     App::Persistence['user_auth_token'] = nil
     App::Persistence['user_profile_image_url'] = nil
+    App::Persistence['asked_user_for_publish_permissions'] = nil
     File.open("#{App.documents_path}/friends.json", "w") {|f| f.write("[]")}
     File.open("#{App.documents_path}/fan_photos.json", "w") {|f| f.write("[]")}
-    show_login_modal
   end
 
 end
