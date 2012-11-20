@@ -1,7 +1,6 @@
 
 PODS:
 - Facebook-iOS-SDK (3.1.1)
-- JBKenBurnsView (0.1)
 - KKGridView (0.6.8.2)
 - SDWebImage (2.7):
   - SDWebImage/Main (= 2.7)
@@ -9,13 +8,11 @@ PODS:
 
 DEPENDENCIES:
 - Facebook-iOS-SDK (~> 3.1.1)
-- JBKenBurnsView (~> 0.1)
 - KKGridView (~> 0.6.8.2)
 - SDWebImage (~> 2.7)
 
 SPEC CHECKSUMS:
   Facebook-iOS-SDK: 5fc068ebfd8c8c9b0fad476bc36dbbf1fffeebc8
-  JBKenBurnsView: 4d026f2a41cc9e22b95be7064b2c8180d4bbe272
   KKGridView: ca91fc93e91ddbeab8b46d07af1efda289f324e7
   SDWebImage: 6be78ee398d329bdd22c85a0e11ee41bd1f52066
   SDWebImage/Main: 6be78ee398d329bdd22c85a0e11ee41bd1f52066

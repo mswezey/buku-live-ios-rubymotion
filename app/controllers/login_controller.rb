@@ -116,10 +116,15 @@ class LoginController < UIViewController
         puts "response ok"
         json = BW::JSON.parse(response.body.to_str)
         if json['status'] && json['status'] == 'success'# && json['authentication_token']
+
           App::Persistence['user_auth_token'] = json['authentication_token']
+          App::Persistence['user_profile_image_url'] = json['profile_image_url']
           puts "user auth token saved"
+
+          url_string = NSURL.URLWithString(App.delegate.profile_image_url)
+          App.delegate.profile_image_view.setImageWithURL(url_string, placeholderImage: UIImage.imageNamed("friends.png"))
           App.delegate.friends.refresh
-          App.delegate.user_photos_list.refresh
+          App.delegate.user_photos_list.refresh {App.delegate.gridController.refresh_slideshow}
           # App.delegate.window.rootViewController = App.delegate.gridNavController
           dismissDialog
         else

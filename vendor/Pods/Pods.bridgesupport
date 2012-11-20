@@ -1,47 +1,47 @@
 <?xml version='1.0'?>
 <signatures version='1.0'>
-<constant name='FBErrorHTTPStatusCodeKey' declared_type='NSString*' const='true' type='@'/>
-<constant name='FBErrorInnerErrorKey' declared_type='NSString*' const='true' type='@'/>
-<constant name='FBErrorLoginFailedOriginalErrorCode' declared_type='NSString*' const='true' type='@'/>
-<constant name='FBErrorLoginFailedReason' declared_type='NSString*' const='true' type='@'/>
-<constant name='FBErrorLoginFailedReasonInlineCancelledValue' declared_type='NSString*' const='true' type='@'/>
-<constant name='FBErrorLoginFailedReasonInlineNotCancelledValue' declared_type='NSString*' const='true' type='@'/>
-<constant name='FBErrorLoginFailedReasonUnitTestResponseUnrecognized' declared_type='NSString*' const='true' type='@'/>
-<constant name='FBErrorNativeDialogCantBeDisplayed' declared_type='NSString*' const='true' type='@'/>
-<constant name='FBErrorNativeDialogInvalidForSession' declared_type='NSString*' const='true' type='@'/>
-<constant name='FBErrorNativeDialogNotSupported' declared_type='NSString*' const='true' type='@'/>
-<constant name='FBErrorNativeDialogReasonKey' declared_type='NSString*' const='true' type='@'/>
-<constant name='FBErrorParsedJSONResponseKey' declared_type='NSString*' const='true' type='@'/>
-<constant name='FBErrorReauthorizeFailedReasonSessionClosed' declared_type='NSString*' const='true' type='@'/>
-<constant name='FBErrorReauthorizeFailedReasonUserCancelled' declared_type='NSString*' const='true' type='@'/>
-<constant name='FBErrorReauthorizeFailedReasonWrongUser' declared_type='NSString*' const='true' type='@'/>
-<constant name='FBFriendPickerCacheIdentity' declared_type='NSString*' const='true' type='@'/>
-<constant name='FBGraphBasePath' declared_type='NSString*' const='true' type='@'/>
-<constant name='FBInvalidOperationException' declared_type='NSString*' const='true' type='@'/>
-<constant name='FBLoggingBehaviorAccessTokens' declared_type='NSString*' const='true' type='@'/>
-<constant name='FBLoggingBehaviorFBRequests' declared_type='NSString*' const='true' type='@'/>
-<constant name='FBLoggingBehaviorFBURLConnections' declared_type='NSString*' const='true' type='@'/>
-<constant name='FBLoggingBehaviorPerformanceCharacteristics' declared_type='NSString*' const='true' type='@'/>
-<constant name='FBLoggingBehaviorSessionStateTransitions' declared_type='NSString*' const='true' type='@'/>
-<constant name='FBNonJSONResponseProperty' declared_type='NSString*' const='true' type='@'/>
-<constant name='FBPlacePickerCacheIdentity' declared_type='NSString*' const='true' type='@'/>
+<constant name='FBErrorHTTPStatusCodeKey' declared_type='NSString*' type='@' const='true'/>
+<constant name='FBErrorInnerErrorKey' declared_type='NSString*' type='@' const='true'/>
+<constant name='FBErrorLoginFailedOriginalErrorCode' declared_type='NSString*' type='@' const='true'/>
+<constant name='FBErrorLoginFailedReason' declared_type='NSString*' type='@' const='true'/>
+<constant name='FBErrorLoginFailedReasonInlineCancelledValue' declared_type='NSString*' type='@' const='true'/>
+<constant name='FBErrorLoginFailedReasonInlineNotCancelledValue' declared_type='NSString*' type='@' const='true'/>
+<constant name='FBErrorLoginFailedReasonUnitTestResponseUnrecognized' declared_type='NSString*' type='@' const='true'/>
+<constant name='FBErrorNativeDialogCantBeDisplayed' declared_type='NSString*' type='@' const='true'/>
+<constant name='FBErrorNativeDialogInvalidForSession' declared_type='NSString*' type='@' const='true'/>
+<constant name='FBErrorNativeDialogNotSupported' declared_type='NSString*' type='@' const='true'/>
+<constant name='FBErrorNativeDialogReasonKey' declared_type='NSString*' type='@' const='true'/>
+<constant name='FBErrorParsedJSONResponseKey' declared_type='NSString*' type='@' const='true'/>
+<constant name='FBErrorReauthorizeFailedReasonSessionClosed' declared_type='NSString*' type='@' const='true'/>
+<constant name='FBErrorReauthorizeFailedReasonUserCancelled' declared_type='NSString*' type='@' const='true'/>
+<constant name='FBErrorReauthorizeFailedReasonWrongUser' declared_type='NSString*' type='@' const='true'/>
+<constant name='FBFriendPickerCacheIdentity' declared_type='NSString*' type='@' const='true'/>
+<constant name='FBGraphBasePath' declared_type='NSString*' type='@' const='true'/>
+<constant name='FBInvalidOperationException' declared_type='NSString*' type='@' const='true'/>
+<constant name='FBLoggingBehaviorAccessTokens' declared_type='NSString*' type='@' const='true'/>
+<constant name='FBLoggingBehaviorFBRequests' declared_type='NSString*' type='@' const='true'/>
+<constant name='FBLoggingBehaviorFBURLConnections' declared_type='NSString*' type='@' const='true'/>
+<constant name='FBLoggingBehaviorPerformanceCharacteristics' declared_type='NSString*' type='@' const='true'/>
+<constant name='FBLoggingBehaviorSessionStateTransitions' declared_type='NSString*' type='@' const='true'/>
+<constant name='FBNonJSONResponseProperty' declared_type='NSString*' type='@' const='true'/>
+<constant name='FBPlacePickerCacheIdentity' declared_type='NSString*' type='@' const='true'/>
 <constant name='FBSBJSONErrorDomain' declared_type='NSString*' type='@'/>
-<constant name='FBSessionDidBecomeClosedActiveSessionNotification' declared_type='NSString*' const='true' type='@'/>
-<constant name='FBSessionDidBecomeOpenActiveSessionNotification' declared_type='NSString*' const='true' type='@'/>
-<constant name='FBSessionDidSetActiveSessionNotification' declared_type='NSString*' const='true' type='@'/>
-<constant name='FBSessionDidUnsetActiveSessionNotification' declared_type='NSString*' const='true' type='@'/>
-<constant name='FBTokenInformationExpirationDateKey' declared_type='NSString*' const='true' type='@'/>
-<constant name='FBTokenInformationIsFacebookLoginKey' declared_type='NSString*' const='true' type='@'/>
-<constant name='FBTokenInformationLoginTypeLoginKey' declared_type='NSString*' const='true' type='@'/>
-<constant name='FBTokenInformationPermissionsKey' declared_type='NSString*' const='true' type='@'/>
-<constant name='FBTokenInformationRefreshDateKey' declared_type='NSString*' const='true' type='@'/>
-<constant name='FBTokenInformationTokenKey' declared_type='NSString*' const='true' type='@'/>
-<constant name='FBTokenInformationUserFBIDKey' declared_type='NSString*' const='true' type='@'/>
-<constant name='FacebookSDKDomain' declared_type='NSString*' const='true' type='@'/>
-<constant name='SDWebImageDownloadStartNotification' declared_type='NSString*' const='true' type='@'/>
-<constant name='SDWebImageDownloadStopNotification' declared_type='NSString*' const='true' type='@'/>
-<constant name='defaultRadius' declared_type='NSInteger' const='true' type='i'/>
-<constant name='defaultResultsLimit' declared_type='NSInteger' const='true' type='i'/>
+<constant name='FBSessionDidBecomeClosedActiveSessionNotification' declared_type='NSString*' type='@' const='true'/>
+<constant name='FBSessionDidBecomeOpenActiveSessionNotification' declared_type='NSString*' type='@' const='true'/>
+<constant name='FBSessionDidSetActiveSessionNotification' declared_type='NSString*' type='@' const='true'/>
+<constant name='FBSessionDidUnsetActiveSessionNotification' declared_type='NSString*' type='@' const='true'/>
+<constant name='FBTokenInformationExpirationDateKey' declared_type='NSString*' type='@' const='true'/>
+<constant name='FBTokenInformationIsFacebookLoginKey' declared_type='NSString*' type='@' const='true'/>
+<constant name='FBTokenInformationLoginTypeLoginKey' declared_type='NSString*' type='@' const='true'/>
+<constant name='FBTokenInformationPermissionsKey' declared_type='NSString*' type='@' const='true'/>
+<constant name='FBTokenInformationRefreshDateKey' declared_type='NSString*' type='@' const='true'/>
+<constant name='FBTokenInformationTokenKey' declared_type='NSString*' type='@' const='true'/>
+<constant name='FBTokenInformationUserFBIDKey' declared_type='NSString*' type='@' const='true'/>
+<constant name='FacebookSDKDomain' declared_type='NSString*' type='@' const='true'/>
+<constant name='SDWebImageDownloadStartNotification' declared_type='NSString*' type='@' const='true'/>
+<constant name='SDWebImageDownloadStopNotification' declared_type='NSString*' type='@' const='true'/>
+<constant name='defaultRadius' declared_type='NSInteger' type='i' const='true'/>
+<constant name='defaultResultsLimit' declared_type='NSInteger' type='i' const='true'/>
 <constant name='kSecondTestUserTag' declared_type='NSString*' type='@'/>
 <constant name='kThirdTestUserTag' declared_type='NSString*' type='@'/>
 <string_constant name='FB_BASE_URL' nsstring='true' value='facebook.com'/>
@@ -907,7 +907,7 @@
 <arg name='initialText' declared_type='NSString*' type='@' index='1'/>
 <arg name='image' declared_type='UIImage*' type='@' index='2'/>
 <arg name='url' declared_type='NSURL*' type='@' index='3'/>
-<arg name='handler' declared_type='FBShareDialogHandler' function_pointer='true' type='@?' index='4'>
+<arg name='handler' function_pointer='true' declared_type='FBShareDialogHandler' type='@?' index='4'>
 <arg declared_type='FBNativeDialogResult' type='i'/>
 <arg declared_type='NSError*' type='@'/>
 <retval declared_type='void' type='v'/>
@@ -919,7 +919,7 @@
 <arg name='initialText' declared_type='NSString*' type='@' index='1'/>
 <arg name='images' declared_type='NSArray*' type='@' index='2'/>
 <arg name='urls' declared_type='NSArray*' type='@' index='3'/>
-<arg name='handler' declared_type='FBShareDialogHandler' function_pointer='true' type='@?' index='4'>
+<arg name='handler' function_pointer='true' declared_type='FBShareDialogHandler' type='@?' index='4'>
 <arg declared_type='FBNativeDialogResult' type='i'/>
 <arg declared_type='NSError*' type='@'/>
 <retval declared_type='void' type='v'/>
@@ -932,7 +932,7 @@
 <arg name='initialText' declared_type='NSString*' type='@' index='2'/>
 <arg name='images' declared_type='NSArray*' type='@' index='3'/>
 <arg name='urls' declared_type='NSArray*' type='@' index='4'/>
-<arg name='handler' declared_type='FBShareDialogHandler' function_pointer='true' type='@?' index='5'>
+<arg name='handler' function_pointer='true' declared_type='FBShareDialogHandler' type='@?' index='5'>
 <arg declared_type='FBNativeDialogResult' type='i'/>
 <arg declared_type='NSError*' type='@'/>
 <retval declared_type='void' type='v'/>
@@ -1278,7 +1278,7 @@
 <retval declared_type='void' type='v'/>
 </method>
 <method selector='startWithCompletionHandler:'>
-<arg name='handler' declared_type='FBRequestHandler' function_pointer='true' type='@?' index='0'>
+<arg name='handler' function_pointer='true' declared_type='FBRequestHandler' type='@?' index='0'>
 <arg declared_type='FBRequestConnection*' type='@'/>
 <arg declared_type='id' type='@'/>
 <arg declared_type='NSError*' type='@'/>
@@ -1325,7 +1325,7 @@
 <class name='FBRequestConnection'>
 <method selector='addRequest:completionHandler:'>
 <arg name='request' declared_type='FBRequest*' type='@' index='0'/>
-<arg name='handler' declared_type='FBRequestHandler' function_pointer='true' type='@?' index='1'>
+<arg name='handler' function_pointer='true' declared_type='FBRequestHandler' type='@?' index='1'>
 <arg declared_type='FBRequestConnection*' type='@'/>
 <arg declared_type='id' type='@'/>
 <arg declared_type='NSError*' type='@'/>
@@ -1335,7 +1335,7 @@
 </method>
 <method selector='addRequest:completionHandler:batchEntryName:'>
 <arg name='request' declared_type='FBRequest*' type='@' index='0'/>
-<arg name='handler' declared_type='FBRequestHandler' function_pointer='true' type='@?' index='1'>
+<arg name='handler' function_pointer='true' declared_type='FBRequestHandler' type='@?' index='1'>
 <arg declared_type='FBRequestConnection*' type='@'/>
 <arg declared_type='id' type='@'/>
 <arg declared_type='NSError*' type='@'/>
@@ -1365,7 +1365,7 @@
 <retval declared_type='void' type='v'/>
 </method>
 <method class_method='true' selector='startForMeWithCompletionHandler:'>
-<arg name='handler' declared_type='FBRequestHandler' function_pointer='true' type='@?' index='0'>
+<arg name='handler' function_pointer='true' declared_type='FBRequestHandler' type='@?' index='0'>
 <arg declared_type='FBRequestConnection*' type='@'/>
 <arg declared_type='id' type='@'/>
 <arg declared_type='NSError*' type='@'/>
@@ -1374,7 +1374,7 @@
 <retval declared_type='FBRequestConnection*' type='@'/>
 </method>
 <method class_method='true' selector='startForMyFriendsWithCompletionHandler:'>
-<arg name='handler' declared_type='FBRequestHandler' function_pointer='true' type='@?' index='0'>
+<arg name='handler' function_pointer='true' declared_type='FBRequestHandler' type='@?' index='0'>
 <arg declared_type='FBRequestConnection*' type='@'/>
 <arg declared_type='id' type='@'/>
 <arg declared_type='NSError*' type='@'/>
@@ -1387,7 +1387,7 @@
 <arg name='radius' declared_type='NSInteger' type='i' index='1'/>
 <arg name='limit' declared_type='NSInteger' type='i' index='2'/>
 <arg name='searchText' declared_type='NSString*' type='@' index='3'/>
-<arg name='handler' declared_type='FBRequestHandler' function_pointer='true' type='@?' index='4'>
+<arg name='handler' function_pointer='true' declared_type='FBRequestHandler' type='@?' index='4'>
 <arg declared_type='FBRequestConnection*' type='@'/>
 <arg declared_type='id' type='@'/>
 <arg declared_type='NSError*' type='@'/>
@@ -1397,7 +1397,7 @@
 </method>
 <method class_method='true' selector='startForPostStatusUpdate:completionHandler:'>
 <arg name='message' declared_type='NSString*' type='@' index='0'/>
-<arg name='handler' declared_type='FBRequestHandler' function_pointer='true' type='@?' index='1'>
+<arg name='handler' function_pointer='true' declared_type='FBRequestHandler' type='@?' index='1'>
 <arg declared_type='FBRequestConnection*' type='@'/>
 <arg declared_type='id' type='@'/>
 <arg declared_type='NSError*' type='@'/>
@@ -1409,7 +1409,7 @@
 <arg name='message' declared_type='NSString*' type='@' index='0'/>
 <arg name='place' declared_type='id' type='@' index='1'/>
 <arg name='tags' declared_type='id' type='@' index='2'/>
-<arg name='handler' declared_type='FBRequestHandler' function_pointer='true' type='@?' index='3'>
+<arg name='handler' function_pointer='true' declared_type='FBRequestHandler' type='@?' index='3'>
 <arg declared_type='FBRequestConnection*' type='@'/>
 <arg declared_type='id' type='@'/>
 <arg declared_type='NSError*' type='@'/>
@@ -1420,7 +1420,7 @@
 <method class_method='true' selector='startForPostWithGraphPath:graphObject:completionHandler:'>
 <arg name='graphPath' declared_type='NSString*' type='@' index='0'/>
 <arg name='graphObject' declared_type='id' type='@' index='1'/>
-<arg name='handler' declared_type='FBRequestHandler' function_pointer='true' type='@?' index='2'>
+<arg name='handler' function_pointer='true' declared_type='FBRequestHandler' type='@?' index='2'>
 <arg declared_type='FBRequestConnection*' type='@'/>
 <arg declared_type='id' type='@'/>
 <arg declared_type='NSError*' type='@'/>
@@ -1430,7 +1430,7 @@
 </method>
 <method class_method='true' selector='startForUploadPhoto:completionHandler:'>
 <arg name='photo' declared_type='UIImage*' type='@' index='0'/>
-<arg name='handler' declared_type='FBRequestHandler' function_pointer='true' type='@?' index='1'>
+<arg name='handler' function_pointer='true' declared_type='FBRequestHandler' type='@?' index='1'>
 <arg declared_type='FBRequestConnection*' type='@'/>
 <arg declared_type='id' type='@'/>
 <arg declared_type='NSError*' type='@'/>
@@ -1445,7 +1445,7 @@
 </method>
 <method class_method='true' selector='startWithGraphPath:completionHandler:'>
 <arg name='graphPath' declared_type='NSString*' type='@' index='0'/>
-<arg name='handler' declared_type='FBRequestHandler' function_pointer='true' type='@?' index='1'>
+<arg name='handler' function_pointer='true' declared_type='FBRequestHandler' type='@?' index='1'>
 <arg declared_type='FBRequestConnection*' type='@'/>
 <arg declared_type='id' type='@'/>
 <arg declared_type='NSError*' type='@'/>
@@ -1457,7 +1457,7 @@
 <arg name='graphPath' declared_type='NSString*' type='@' index='0'/>
 <arg name='parameters' declared_type='NSDictionary*' type='@' index='1'/>
 <arg name='HTTPMethod' declared_type='NSString*' type='@' index='2'/>
-<arg name='handler' declared_type='FBRequestHandler' function_pointer='true' type='@?' index='3'>
+<arg name='handler' function_pointer='true' declared_type='FBRequestHandler' type='@?' index='3'>
 <arg declared_type='FBRequestConnection*' type='@'/>
 <arg declared_type='id' type='@'/>
 <arg declared_type='NSError*' type='@'/>
@@ -1629,7 +1629,7 @@
 <method class_method='true' selector='openActiveSessionWithPermissions:allowLoginUI:completionHandler:'>
 <arg name='permissions' declared_type='NSArray*' type='@' index='0'/>
 <arg name='allowLoginUI' declared_type='BOOL' type='B' index='1'/>
-<arg name='handler' declared_type='FBSessionStateHandler' function_pointer='true' type='@?' index='2'>
+<arg name='handler' function_pointer='true' declared_type='FBSessionStateHandler' type='@?' index='2'>
 <arg declared_type='FBSession*' type='@'/>
 <arg declared_type='FBSessionState' type='i'/>
 <arg declared_type='NSError*' type='@'/>
@@ -1641,7 +1641,7 @@
 <arg name='publishPermissions' declared_type='NSArray*' type='@' index='0'/>
 <arg name='defaultAudience' declared_type='FBSessionDefaultAudience' type='i' index='1'/>
 <arg name='allowLoginUI' declared_type='BOOL' type='B' index='2'/>
-<arg name='handler' declared_type='FBSessionStateHandler' function_pointer='true' type='@?' index='3'>
+<arg name='handler' function_pointer='true' declared_type='FBSessionStateHandler' type='@?' index='3'>
 <arg declared_type='FBSession*' type='@'/>
 <arg declared_type='FBSessionState' type='i'/>
 <arg declared_type='NSError*' type='@'/>
@@ -1652,7 +1652,7 @@
 <method class_method='true' selector='openActiveSessionWithReadPermissions:allowLoginUI:completionHandler:'>
 <arg name='readPermissions' declared_type='NSArray*' type='@' index='0'/>
 <arg name='allowLoginUI' declared_type='BOOL' type='B' index='1'/>
-<arg name='handler' declared_type='FBSessionStateHandler' function_pointer='true' type='@?' index='2'>
+<arg name='handler' function_pointer='true' declared_type='FBSessionStateHandler' type='@?' index='2'>
 <arg declared_type='FBSession*' type='@'/>
 <arg declared_type='FBSessionState' type='i'/>
 <arg declared_type='NSError*' type='@'/>
@@ -1662,7 +1662,7 @@
 </method>
 <method selector='openWithBehavior:completionHandler:'>
 <arg name='behavior' declared_type='FBSessionLoginBehavior' type='i' index='0'/>
-<arg name='handler' declared_type='FBSessionStateHandler' function_pointer='true' type='@?' index='1'>
+<arg name='handler' function_pointer='true' declared_type='FBSessionStateHandler' type='@?' index='1'>
 <arg declared_type='FBSession*' type='@'/>
 <arg declared_type='FBSessionState' type='i'/>
 <arg declared_type='NSError*' type='@'/>
@@ -1671,7 +1671,7 @@
 <retval declared_type='void' type='v'/>
 </method>
 <method selector='openWithCompletionHandler:'>
-<arg name='handler' declared_type='FBSessionStateHandler' function_pointer='true' type='@?' index='0'>
+<arg name='handler' function_pointer='true' declared_type='FBSessionStateHandler' type='@?' index='0'>
 <arg declared_type='FBSession*' type='@'/>
 <arg declared_type='FBSessionState' type='i'/>
 <arg declared_type='NSError*' type='@'/>
@@ -1685,7 +1685,7 @@
 <method selector='reauthorizeWithPermissions:behavior:completionHandler:'>
 <arg name='permissions' declared_type='NSArray*' type='@' index='0'/>
 <arg name='behavior' declared_type='FBSessionLoginBehavior' type='i' index='1'/>
-<arg name='handler' declared_type='FBSessionReauthorizeResultHandler' function_pointer='true' type='@?' index='2'>
+<arg name='handler' function_pointer='true' declared_type='FBSessionReauthorizeResultHandler' type='@?' index='2'>
 <arg declared_type='FBSession*' type='@'/>
 <arg declared_type='NSError*' type='@'/>
 <retval declared_type='void' type='v'/>
@@ -1695,7 +1695,7 @@
 <method selector='reauthorizeWithPublishPermissions:defaultAudience:completionHandler:'>
 <arg name='writePermissions' declared_type='NSArray*' type='@' index='0'/>
 <arg name='defaultAudience' declared_type='FBSessionDefaultAudience' type='i' index='1'/>
-<arg name='handler' declared_type='FBSessionReauthorizeResultHandler' function_pointer='true' type='@?' index='2'>
+<arg name='handler' function_pointer='true' declared_type='FBSessionReauthorizeResultHandler' type='@?' index='2'>
 <arg declared_type='FBSession*' type='@'/>
 <arg declared_type='NSError*' type='@'/>
 <retval declared_type='void' type='v'/>
@@ -1704,7 +1704,7 @@
 </method>
 <method selector='reauthorizeWithReadPermissions:completionHandler:'>
 <arg name='readPermissions' declared_type='NSArray*' type='@' index='0'/>
-<arg name='handler' declared_type='FBSessionReauthorizeResultHandler' function_pointer='true' type='@?' index='1'>
+<arg name='handler' function_pointer='true' declared_type='FBSessionReauthorizeResultHandler' type='@?' index='1'>
 <arg declared_type='FBSession*' type='@'/>
 <arg declared_type='NSError*' type='@'/>
 <retval declared_type='void' type='v'/>
@@ -1854,7 +1854,7 @@
 <method selector='initWithRequest:skipRoundTripIfCached:completionHandler:'>
 <arg name='request' declared_type='NSURLRequest*' type='@' index='0'/>
 <arg name='skipRoundtripIfCached' declared_type='BOOL' type='B' index='1'/>
-<arg name='handler' declared_type='FBURLConnectionHandler' function_pointer='true' type='@?' index='2'>
+<arg name='handler' function_pointer='true' declared_type='FBURLConnectionHandler' type='@?' index='2'>
 <arg declared_type='FBURLConnection*' type='@'/>
 <arg declared_type='NSError*' type='@'/>
 <arg declared_type='NSURLResponse*' type='@'/>
@@ -1865,7 +1865,7 @@
 </method>
 <method selector='initWithURL:completionHandler:'>
 <arg name='url' declared_type='NSURL*' type='@' index='0'/>
-<arg name='handler' declared_type='FBURLConnectionHandler' function_pointer='true' type='@?' index='1'>
+<arg name='handler' function_pointer='true' declared_type='FBURLConnectionHandler' type='@?' index='1'>
 <arg declared_type='FBURLConnection*' type='@'/>
 <arg declared_type='NSError*' type='@'/>
 <arg declared_type='NSURLResponse*' type='@'/>
@@ -1974,7 +1974,7 @@
 <method selector='presentModallyFromViewController:animated:handler:'>
 <arg name='viewController' declared_type='UIViewController*' type='@' index='0'/>
 <arg name='animated' declared_type='BOOL' type='B' index='1'/>
-<arg name='handler' declared_type='FBModalCompletionHandler' function_pointer='true' type='@?' index='2'>
+<arg name='handler' function_pointer='true' declared_type='FBModalCompletionHandler' type='@?' index='2'>
 <arg declared_type='FBViewController*' type='@'/>
 <arg declared_type='BOOL' type='B'/>
 <retval declared_type='void' type='v'/>
@@ -2125,55 +2125,55 @@
 </class>
 <class name='KKBlocksDelegate'>
 <method selector='cell'>
-<retval declared_type='int *(^)(int *, int *)' function_pointer='true' type='@?'>
+<retval function_pointer='true' declared_type='int *(^)(int *, int *)' type='@?'>
 <arg declared_type='int*' type='^i'/>
 <arg declared_type='int*' type='^i'/>
 <retval declared_type='int*' type='^i'/>
 </retval>
 </method>
 <method selector='didDeselectItem'>
-<retval declared_type='void (^)(int *, int *)' function_pointer='true' type='@?'>
+<retval function_pointer='true' declared_type='void (^)(int *, int *)' type='@?'>
 <arg declared_type='int*' type='^i'/>
 <arg declared_type='int*' type='^i'/>
 <retval declared_type='void' type='v'/>
 </retval>
 </method>
 <method selector='didSelectItem'>
-<retval declared_type='void (^)(int *, int *)' function_pointer='true' type='@?'>
+<retval function_pointer='true' declared_type='void (^)(int *, int *)' type='@?'>
 <arg declared_type='int*' type='^i'/>
 <arg declared_type='int*' type='^i'/>
 <retval declared_type='void' type='v'/>
 </retval>
 </method>
 <method selector='heightForFooter'>
-<retval declared_type='CGFloat (^)(int *, NSUInteger)' function_pointer='true' type='@?'>
+<retval function_pointer='true' declared_type='CGFloat (^)(int *, NSUInteger)' type='@?'>
 <arg declared_type='int*' type='^i'/>
 <arg declared_type='NSUInteger' type='I'/>
 <retval declared_type='CGFloat' type='f'/>
 </retval>
 </method>
 <method selector='heightForHeader'>
-<retval declared_type='CGFloat (^)(int *, NSUInteger)' function_pointer='true' type='@?'>
+<retval function_pointer='true' declared_type='CGFloat (^)(int *, NSUInteger)' type='@?'>
 <arg declared_type='int*' type='^i'/>
 <arg declared_type='NSUInteger' type='I'/>
 <retval declared_type='CGFloat' type='f'/>
 </retval>
 </method>
 <method selector='numberOfItems'>
-<retval declared_type='NSUInteger (^)(int *, NSUInteger)' function_pointer='true' type='@?'>
+<retval function_pointer='true' declared_type='NSUInteger (^)(int *, NSUInteger)' type='@?'>
 <arg declared_type='int*' type='^i'/>
 <arg declared_type='NSUInteger' type='I'/>
 <retval declared_type='NSUInteger' type='I'/>
 </retval>
 </method>
 <method selector='numberOfSections'>
-<retval declared_type='NSUInteger (^)(int *)' function_pointer='true' type='@?'>
+<retval function_pointer='true' declared_type='NSUInteger (^)(int *)' type='@?'>
 <arg declared_type='int*' type='^i'/>
 <retval declared_type='NSUInteger' type='I'/>
 </retval>
 </method>
 <method selector='setCell:'>
-<arg name='cell' declared_type='int *(^)(int *, int *)' function_pointer='true' type='@?' index='0'>
+<arg name='cell' function_pointer='true' declared_type='int *(^)(int *, int *)' type='@?' index='0'>
 <arg declared_type='int*' type='^i'/>
 <arg declared_type='int*' type='^i'/>
 <retval declared_type='int*' type='^i'/>
@@ -2181,7 +2181,7 @@
 <retval declared_type='void' type='v'/>
 </method>
 <method selector='setDidDeselectItem:'>
-<arg name='didDeselectItem' declared_type='void (^)(int *, int *)' function_pointer='true' type='@?' index='0'>
+<arg name='didDeselectItem' function_pointer='true' declared_type='void (^)(int *, int *)' type='@?' index='0'>
 <arg declared_type='int*' type='^i'/>
 <arg declared_type='int*' type='^i'/>
 <retval declared_type='void' type='v'/>
@@ -2189,7 +2189,7 @@
 <retval declared_type='void' type='v'/>
 </method>
 <method selector='setDidSelectItem:'>
-<arg name='didSelectItem' declared_type='void (^)(int *, int *)' function_pointer='true' type='@?' index='0'>
+<arg name='didSelectItem' function_pointer='true' declared_type='void (^)(int *, int *)' type='@?' index='0'>
 <arg declared_type='int*' type='^i'/>
 <arg declared_type='int*' type='^i'/>
 <retval declared_type='void' type='v'/>
@@ -2197,7 +2197,7 @@
 <retval declared_type='void' type='v'/>
 </method>
 <method selector='setHeightForFooter:'>
-<arg name='heightForFooter' declared_type='CGFloat (^)(int *, NSUInteger)' function_pointer='true' type='@?' index='0'>
+<arg name='heightForFooter' function_pointer='true' declared_type='CGFloat (^)(int *, NSUInteger)' type='@?' index='0'>
 <arg declared_type='int*' type='^i'/>
 <arg declared_type='NSUInteger' type='I'/>
 <retval declared_type='CGFloat' type='f'/>
@@ -2205,7 +2205,7 @@
 <retval declared_type='void' type='v'/>
 </method>
 <method selector='setHeightForHeader:'>
-<arg name='heightForHeader' declared_type='CGFloat (^)(int *, NSUInteger)' function_pointer='true' type='@?' index='0'>
+<arg name='heightForHeader' function_pointer='true' declared_type='CGFloat (^)(int *, NSUInteger)' type='@?' index='0'>
 <arg declared_type='int*' type='^i'/>
 <arg declared_type='NSUInteger' type='I'/>
 <retval declared_type='CGFloat' type='f'/>
@@ -2213,7 +2213,7 @@
 <retval declared_type='void' type='v'/>
 </method>
 <method selector='setNumberOfItems:'>
-<arg name='numberOfItems' declared_type='NSUInteger (^)(int *, NSUInteger)' function_pointer='true' type='@?' index='0'>
+<arg name='numberOfItems' function_pointer='true' declared_type='NSUInteger (^)(int *, NSUInteger)' type='@?' index='0'>
 <arg declared_type='int*' type='^i'/>
 <arg declared_type='NSUInteger' type='I'/>
 <retval declared_type='NSUInteger' type='I'/>
@@ -2221,14 +2221,14 @@
 <retval declared_type='void' type='v'/>
 </method>
 <method selector='setNumberOfSections:'>
-<arg name='numberOfSections' declared_type='NSUInteger (^)(int *)' function_pointer='true' type='@?' index='0'>
+<arg name='numberOfSections' function_pointer='true' declared_type='NSUInteger (^)(int *)' type='@?' index='0'>
 <arg declared_type='int*' type='^i'/>
 <retval declared_type='NSUInteger' type='I'/>
 </arg>
 <retval declared_type='void' type='v'/>
 </method>
 <method selector='setTitleForFooter:'>
-<arg name='titleForFooter' declared_type='NSString *(^)(int *, NSUInteger)' function_pointer='true' type='@?' index='0'>
+<arg name='titleForFooter' function_pointer='true' declared_type='NSString *(^)(int *, NSUInteger)' type='@?' index='0'>
 <arg declared_type='int*' type='^i'/>
 <arg declared_type='NSUInteger' type='I'/>
 <retval declared_type='NSString*' type='@'/>
@@ -2236,7 +2236,7 @@
 <retval declared_type='void' type='v'/>
 </method>
 <method selector='setTitleForHeader:'>
-<arg name='titleForHeader' declared_type='NSString *(^)(int *, NSUInteger)' function_pointer='true' type='@?' index='0'>
+<arg name='titleForHeader' function_pointer='true' declared_type='NSString *(^)(int *, NSUInteger)' type='@?' index='0'>
 <arg declared_type='int*' type='^i'/>
 <arg declared_type='NSUInteger' type='I'/>
 <retval declared_type='NSString*' type='@'/>
@@ -2244,7 +2244,7 @@
 <retval declared_type='void' type='v'/>
 </method>
 <method selector='setViewForFooter:'>
-<arg name='viewForFooter' declared_type='UIView *(^)(int *, NSUInteger)' function_pointer='true' type='@?' index='0'>
+<arg name='viewForFooter' function_pointer='true' declared_type='UIView *(^)(int *, NSUInteger)' type='@?' index='0'>
 <arg declared_type='int*' type='^i'/>
 <arg declared_type='NSUInteger' type='I'/>
 <retval declared_type='UIView*' type='@'/>
@@ -2252,7 +2252,7 @@
 <retval declared_type='void' type='v'/>
 </method>
 <method selector='setViewForHeader:'>
-<arg name='viewForHeader' declared_type='UIView *(^)(int *, NSUInteger)' function_pointer='true' type='@?' index='0'>
+<arg name='viewForHeader' function_pointer='true' declared_type='UIView *(^)(int *, NSUInteger)' type='@?' index='0'>
 <arg declared_type='int*' type='^i'/>
 <arg declared_type='NSUInteger' type='I'/>
 <retval declared_type='UIView*' type='@'/>
@@ -2260,7 +2260,7 @@
 <retval declared_type='void' type='v'/>
 </method>
 <method selector='setWillDeselectItem:'>
-<arg name='willDeselectItem' declared_type='int *(^)(int *, int *)' function_pointer='true' type='@?' index='0'>
+<arg name='willDeselectItem' function_pointer='true' declared_type='int *(^)(int *, int *)' type='@?' index='0'>
 <arg declared_type='int*' type='^i'/>
 <arg declared_type='int*' type='^i'/>
 <retval declared_type='int*' type='^i'/>
@@ -2268,7 +2268,7 @@
 <retval declared_type='void' type='v'/>
 </method>
 <method selector='setWillDisplayCell:'>
-<arg name='willDisplayCell' declared_type='void (^)(int *, int *, int *)' function_pointer='true' type='@?' index='0'>
+<arg name='willDisplayCell' function_pointer='true' declared_type='void (^)(int *, int *, int *)' type='@?' index='0'>
 <arg declared_type='int*' type='^i'/>
 <arg declared_type='int*' type='^i'/>
 <arg declared_type='int*' type='^i'/>
@@ -2277,7 +2277,7 @@
 <retval declared_type='void' type='v'/>
 </method>
 <method selector='setWillSelectItem:'>
-<arg name='willSelectItem' declared_type='int *(^)(int *, int *)' function_pointer='true' type='@?' index='0'>
+<arg name='willSelectItem' function_pointer='true' declared_type='int *(^)(int *, int *)' type='@?' index='0'>
 <arg declared_type='int*' type='^i'/>
 <arg declared_type='int*' type='^i'/>
 <retval declared_type='int*' type='^i'/>
@@ -2285,42 +2285,42 @@
 <retval declared_type='void' type='v'/>
 </method>
 <method selector='titleForFooter'>
-<retval declared_type='NSString *(^)(int *, NSUInteger)' function_pointer='true' type='@?'>
+<retval function_pointer='true' declared_type='NSString *(^)(int *, NSUInteger)' type='@?'>
 <arg declared_type='int*' type='^i'/>
 <arg declared_type='NSUInteger' type='I'/>
 <retval declared_type='NSString*' type='@'/>
 </retval>
 </method>
 <method selector='titleForHeader'>
-<retval declared_type='NSString *(^)(int *, NSUInteger)' function_pointer='true' type='@?'>
+<retval function_pointer='true' declared_type='NSString *(^)(int *, NSUInteger)' type='@?'>
 <arg declared_type='int*' type='^i'/>
 <arg declared_type='NSUInteger' type='I'/>
 <retval declared_type='NSString*' type='@'/>
 </retval>
 </method>
 <method selector='viewForFooter'>
-<retval declared_type='UIView *(^)(int *, NSUInteger)' function_pointer='true' type='@?'>
+<retval function_pointer='true' declared_type='UIView *(^)(int *, NSUInteger)' type='@?'>
 <arg declared_type='int*' type='^i'/>
 <arg declared_type='NSUInteger' type='I'/>
 <retval declared_type='UIView*' type='@'/>
 </retval>
 </method>
 <method selector='viewForHeader'>
-<retval declared_type='UIView *(^)(int *, NSUInteger)' function_pointer='true' type='@?'>
+<retval function_pointer='true' declared_type='UIView *(^)(int *, NSUInteger)' type='@?'>
 <arg declared_type='int*' type='^i'/>
 <arg declared_type='NSUInteger' type='I'/>
 <retval declared_type='UIView*' type='@'/>
 </retval>
 </method>
 <method selector='willDeselectItem'>
-<retval declared_type='int *(^)(int *, int *)' function_pointer='true' type='@?'>
+<retval function_pointer='true' declared_type='int *(^)(int *, int *)' type='@?'>
 <arg declared_type='int*' type='^i'/>
 <arg declared_type='int*' type='^i'/>
 <retval declared_type='int*' type='^i'/>
 </retval>
 </method>
 <method selector='willDisplayCell'>
-<retval declared_type='void (^)(int *, int *, int *)' function_pointer='true' type='@?'>
+<retval function_pointer='true' declared_type='void (^)(int *, int *, int *)' type='@?'>
 <arg declared_type='int*' type='^i'/>
 <arg declared_type='int*' type='^i'/>
 <arg declared_type='int*' type='^i'/>
@@ -2328,7 +2328,7 @@
 </retval>
 </method>
 <method selector='willSelectItem'>
-<retval declared_type='int *(^)(int *, int *)' function_pointer='true' type='@?'>
+<retval function_pointer='true' declared_type='int *(^)(int *, int *)' type='@?'>
 <arg declared_type='int*' type='^i'/>
 <arg declared_type='int*' type='^i'/>
 <retval declared_type='int*' type='^i'/>
@@ -2612,7 +2612,7 @@
 <retval declared_type='NSArray*' type='@'/>
 </method>
 <method selector='sectionTracked'>
-<retval declared_type='void (^)(NSUInteger)' function_pointer='true' type='@?'>
+<retval function_pointer='true' declared_type='void (^)(NSUInteger)' type='@?'>
 <arg declared_type='NSUInteger' type='I'/>
 <retval declared_type='void' type='v'/>
 </retval>
@@ -2622,7 +2622,7 @@
 <retval declared_type='void' type='v'/>
 </method>
 <method selector='setSectionTracked:'>
-<arg name='sectionTracked' declared_type='void (^)(NSUInteger)' function_pointer='true' type='@?' index='0'>
+<arg name='sectionTracked' function_pointer='true' declared_type='void (^)(NSUInteger)' type='@?' index='0'>
 <arg declared_type='NSUInteger' type='I'/>
 <retval declared_type='void' type='v'/>
 </arg>
@@ -2813,57 +2813,6 @@
 <retval declared_type='KKIndexPath*' type='@'/>
 </method>
 </class>
-<class name='KenBurnsView'>
-<method selector='animateWithImages:transitionDuration:loop:isLandscape:'>
-<arg name='images' declared_type='NSArray*' type='@' index='0'/>
-<arg name='time' declared_type='float' type='f' index='1'/>
-<arg name='isLoop' declared_type='BOOL' type='B' index='2'/>
-<arg name='isLandscape' declared_type='BOOL' type='B' index='3'/>
-<retval declared_type='void' type='v'/>
-</method>
-<method selector='animateWithURLs:transitionDuration:loop:isLandscape:'>
-<arg name='urls' declared_type='NSArray*' type='@' index='0'/>
-<arg name='duration' declared_type='float' type='f' index='1'/>
-<arg name='shouldLoop' declared_type='BOOL' type='B' index='2'/>
-<arg name='inLandscape' declared_type='BOOL' type='B' index='3'/>
-<retval declared_type='void' type='v'/>
-</method>
-<method selector='delegate'>
-<retval declared_type='id' type='@'/>
-</method>
-<method selector='imagesArray'>
-<retval declared_type='NSMutableArray*' type='@'/>
-</method>
-<method selector='isLandscape'>
-<retval declared_type='BOOL' type='B'/>
-</method>
-<method selector='isLoop'>
-<retval declared_type='BOOL' type='B'/>
-</method>
-<method selector='setDelegate:'>
-<arg name='delegate' declared_type='id' type='@' index='0'/>
-<retval declared_type='void' type='v'/>
-</method>
-<method selector='setImagesArray:'>
-<arg name='imagesArray' declared_type='NSMutableArray*' type='@' index='0'/>
-<retval declared_type='void' type='v'/>
-</method>
-<method selector='setIsLandscape:'>
-<arg name='isLandscape' declared_type='BOOL' type='B' index='0'/>
-<retval declared_type='void' type='v'/>
-</method>
-<method selector='setIsLoop:'>
-<arg name='isLoop' declared_type='BOOL' type='B' index='0'/>
-<retval declared_type='void' type='v'/>
-</method>
-<method selector='setTimeTransition:'>
-<arg name='timeTransition' declared_type='float' type='f' index='0'/>
-<retval declared_type='void' type='v'/>
-</method>
-<method selector='timeTransition'>
-<retval declared_type='float' type='f'/>
-</method>
-</class>
 <class name='NSObject'>
 <method selector='application'>
 <retval declared_type='id' type='@'/>
@@ -2924,13 +2873,6 @@
 </method>
 <method selector='dialogDidNotCompleteWithUrl:'>
 <arg name='url' declared_type='NSURL*' type='@' index='0'/>
-<retval declared_type='void' type='v'/>
-</method>
-<method selector='didFinishAllAnimations'>
-<retval declared_type='void' type='v'/>
-</method>
-<method selector='didShowImageAtIndex:'>
-<arg name='index' declared_type='NSUInteger' type='I' index='0'/>
 <retval declared_type='void' type='v'/>
 </method>
 <method selector='end_time'>
@@ -3697,7 +3639,7 @@
 </class>
 <class name='SDWebImageManager'>
 <method selector='cacheKeyFilter'>
-<retval declared_type='CacheKeyFilter' function_pointer='true' type='@?'>
+<retval function_pointer='true' declared_type='CacheKeyFilter' type='@?'>
 <arg declared_type='NSURL*' type='@'/>
 <retval declared_type='NSString*' type='@'/>
 </retval>
@@ -3721,12 +3663,12 @@
 <arg name='url' declared_type='NSURL*' type='@' index='0'/>
 <arg name='delegate' declared_type='id' type='@' index='1'/>
 <arg name='options' declared_type='SDWebImageOptions' type='i' index='2'/>
-<arg name='success' declared_type='SDWebImageSuccessBlock' function_pointer='true' type='@?' index='3'>
+<arg name='success' function_pointer='true' declared_type='SDWebImageSuccessBlock' type='@?' index='3'>
 <arg declared_type='UIImage*' type='@'/>
 <arg declared_type='BOOL' type='B'/>
 <retval declared_type='void' type='v'/>
 </arg>
-<arg name='failure' declared_type='SDWebImageFailureBlock' function_pointer='true' type='@?' index='4'>
+<arg name='failure' function_pointer='true' declared_type='SDWebImageFailureBlock' type='@?' index='4'>
 <arg declared_type='NSError*' type='@'/>
 <retval declared_type='void' type='v'/>
 </arg>
@@ -3744,12 +3686,12 @@
 <arg name='delegate' declared_type='id' type='@' index='1'/>
 <arg name='options' declared_type='SDWebImageOptions' type='i' index='2'/>
 <arg name='info' declared_type='NSDictionary*' type='@' index='3'/>
-<arg name='success' declared_type='SDWebImageSuccessBlock' function_pointer='true' type='@?' index='4'>
+<arg name='success' function_pointer='true' declared_type='SDWebImageSuccessBlock' type='@?' index='4'>
 <arg declared_type='UIImage*' type='@'/>
 <arg declared_type='BOOL' type='B'/>
 <retval declared_type='void' type='v'/>
 </arg>
-<arg name='failure' declared_type='SDWebImageFailureBlock' function_pointer='true' type='@?' index='5'>
+<arg name='failure' function_pointer='true' declared_type='SDWebImageFailureBlock' type='@?' index='5'>
 <arg declared_type='NSError*' type='@'/>
 <retval declared_type='void' type='v'/>
 </arg>
@@ -3773,7 +3715,7 @@
 <retval declared_type='UIImage*' type='@'/>
 </method>
 <method selector='setCacheKeyFilter:'>
-<arg name='cacheKeyFilter' declared_type='CacheKeyFilter' function_pointer='true' type='@?' index='0'>
+<arg name='cacheKeyFilter' function_pointer='true' declared_type='CacheKeyFilter' type='@?' index='0'>
 <arg declared_type='NSURL*' type='@'/>
 <retval declared_type='NSString*' type='@'/>
 </arg>
@@ -3832,12 +3774,12 @@
 <arg name='url' declared_type='NSURL*' type='@' index='0'/>
 <arg name='placeholder' declared_type='UIImage*' type='@' index='1'/>
 <arg name='options' declared_type='SDWebImageOptions' type='i' index='2'/>
-<arg name='success' declared_type='SDWebImageSuccessBlock' function_pointer='true' type='@?' index='3'>
+<arg name='success' function_pointer='true' declared_type='SDWebImageSuccessBlock' type='@?' index='3'>
 <arg declared_type='UIImage*' type='@'/>
 <arg declared_type='BOOL' type='B'/>
 <retval declared_type='void' type='v'/>
 </arg>
-<arg name='failure' declared_type='SDWebImageFailureBlock' function_pointer='true' type='@?' index='4'>
+<arg name='failure' function_pointer='true' declared_type='SDWebImageFailureBlock' type='@?' index='4'>
 <arg declared_type='NSError*' type='@'/>
 <retval declared_type='void' type='v'/>
 </arg>
@@ -3846,12 +3788,12 @@
 <method selector='setBackgroundImageWithURL:placeholderImage:success:failure:'>
 <arg name='url' declared_type='NSURL*' type='@' index='0'/>
 <arg name='placeholder' declared_type='UIImage*' type='@' index='1'/>
-<arg name='success' declared_type='SDWebImageSuccessBlock' function_pointer='true' type='@?' index='2'>
+<arg name='success' function_pointer='true' declared_type='SDWebImageSuccessBlock' type='@?' index='2'>
 <arg declared_type='UIImage*' type='@'/>
 <arg declared_type='BOOL' type='B'/>
 <retval declared_type='void' type='v'/>
 </arg>
-<arg name='failure' declared_type='SDWebImageFailureBlock' function_pointer='true' type='@?' index='3'>
+<arg name='failure' function_pointer='true' declared_type='SDWebImageFailureBlock' type='@?' index='3'>
 <arg declared_type='NSError*' type='@'/>
 <retval declared_type='void' type='v'/>
 </arg>
@@ -3859,12 +3801,12 @@
 </method>
 <method selector='setBackgroundImageWithURL:success:failure:'>
 <arg name='url' declared_type='NSURL*' type='@' index='0'/>
-<arg name='success' declared_type='SDWebImageSuccessBlock' function_pointer='true' type='@?' index='1'>
+<arg name='success' function_pointer='true' declared_type='SDWebImageSuccessBlock' type='@?' index='1'>
 <arg declared_type='UIImage*' type='@'/>
 <arg declared_type='BOOL' type='B'/>
 <retval declared_type='void' type='v'/>
 </arg>
-<arg name='failure' declared_type='SDWebImageFailureBlock' function_pointer='true' type='@?' index='2'>
+<arg name='failure' function_pointer='true' declared_type='SDWebImageFailureBlock' type='@?' index='2'>
 <arg declared_type='NSError*' type='@'/>
 <retval declared_type='void' type='v'/>
 </arg>
@@ -3889,12 +3831,12 @@
 <arg name='url' declared_type='NSURL*' type='@' index='0'/>
 <arg name='placeholder' declared_type='UIImage*' type='@' index='1'/>
 <arg name='options' declared_type='SDWebImageOptions' type='i' index='2'/>
-<arg name='success' declared_type='SDWebImageSuccessBlock' function_pointer='true' type='@?' index='3'>
+<arg name='success' function_pointer='true' declared_type='SDWebImageSuccessBlock' type='@?' index='3'>
 <arg declared_type='UIImage*' type='@'/>
 <arg declared_type='BOOL' type='B'/>
 <retval declared_type='void' type='v'/>
 </arg>
-<arg name='failure' declared_type='SDWebImageFailureBlock' function_pointer='true' type='@?' index='4'>
+<arg name='failure' function_pointer='true' declared_type='SDWebImageFailureBlock' type='@?' index='4'>
 <arg declared_type='NSError*' type='@'/>
 <retval declared_type='void' type='v'/>
 </arg>
@@ -3903,12 +3845,12 @@
 <method selector='setImageWithURL:placeholderImage:success:failure:'>
 <arg name='url' declared_type='NSURL*' type='@' index='0'/>
 <arg name='placeholder' declared_type='UIImage*' type='@' index='1'/>
-<arg name='success' declared_type='SDWebImageSuccessBlock' function_pointer='true' type='@?' index='2'>
+<arg name='success' function_pointer='true' declared_type='SDWebImageSuccessBlock' type='@?' index='2'>
 <arg declared_type='UIImage*' type='@'/>
 <arg declared_type='BOOL' type='B'/>
 <retval declared_type='void' type='v'/>
 </arg>
-<arg name='failure' declared_type='SDWebImageFailureBlock' function_pointer='true' type='@?' index='3'>
+<arg name='failure' function_pointer='true' declared_type='SDWebImageFailureBlock' type='@?' index='3'>
 <arg declared_type='NSError*' type='@'/>
 <retval declared_type='void' type='v'/>
 </arg>
@@ -3916,12 +3858,12 @@
 </method>
 <method selector='setImageWithURL:success:failure:'>
 <arg name='url' declared_type='NSURL*' type='@' index='0'/>
-<arg name='success' declared_type='SDWebImageSuccessBlock' function_pointer='true' type='@?' index='1'>
+<arg name='success' function_pointer='true' declared_type='SDWebImageSuccessBlock' type='@?' index='1'>
 <arg declared_type='UIImage*' type='@'/>
 <arg declared_type='BOOL' type='B'/>
 <retval declared_type='void' type='v'/>
 </arg>
-<arg name='failure' declared_type='SDWebImageFailureBlock' function_pointer='true' type='@?' index='2'>
+<arg name='failure' function_pointer='true' declared_type='SDWebImageFailureBlock' type='@?' index='2'>
 <arg declared_type='NSError*' type='@'/>
 <retval declared_type='void' type='v'/>
 </arg>
@@ -3957,12 +3899,12 @@
 <arg name='url' declared_type='NSURL*' type='@' index='0'/>
 <arg name='placeholder' declared_type='UIImage*' type='@' index='1'/>
 <arg name='options' declared_type='SDWebImageOptions' type='i' index='2'/>
-<arg name='success' declared_type='SDWebImageSuccessBlock' function_pointer='true' type='@?' index='3'>
+<arg name='success' function_pointer='true' declared_type='SDWebImageSuccessBlock' type='@?' index='3'>
 <arg declared_type='UIImage*' type='@'/>
 <arg declared_type='BOOL' type='B'/>
 <retval declared_type='void' type='v'/>
 </arg>
-<arg name='failure' declared_type='SDWebImageFailureBlock' function_pointer='true' type='@?' index='4'>
+<arg name='failure' function_pointer='true' declared_type='SDWebImageFailureBlock' type='@?' index='4'>
 <arg declared_type='NSError*' type='@'/>
 <retval declared_type='void' type='v'/>
 </arg>
@@ -3971,12 +3913,12 @@
 <method selector='setImageWithURL:placeholderImage:success:failure:'>
 <arg name='url' declared_type='NSURL*' type='@' index='0'/>
 <arg name='placeholder' declared_type='UIImage*' type='@' index='1'/>
-<arg name='success' declared_type='SDWebImageSuccessBlock' function_pointer='true' type='@?' index='2'>
+<arg name='success' function_pointer='true' declared_type='SDWebImageSuccessBlock' type='@?' index='2'>
 <arg declared_type='UIImage*' type='@'/>
 <arg declared_type='BOOL' type='B'/>
 <retval declared_type='void' type='v'/>
 </arg>
-<arg name='failure' declared_type='SDWebImageFailureBlock' function_pointer='true' type='@?' index='3'>
+<arg name='failure' function_pointer='true' declared_type='SDWebImageFailureBlock' type='@?' index='3'>
 <arg declared_type='NSError*' type='@'/>
 <retval declared_type='void' type='v'/>
 </arg>
@@ -3984,12 +3926,12 @@
 </method>
 <method selector='setImageWithURL:success:failure:'>
 <arg name='url' declared_type='NSURL*' type='@' index='0'/>
-<arg name='success' declared_type='SDWebImageSuccessBlock' function_pointer='true' type='@?' index='1'>
+<arg name='success' function_pointer='true' declared_type='SDWebImageSuccessBlock' type='@?' index='1'>
 <arg declared_type='UIImage*' type='@'/>
 <arg declared_type='BOOL' type='B'/>
 <retval declared_type='void' type='v'/>
 </arg>
-<arg name='failure' declared_type='SDWebImageFailureBlock' function_pointer='true' type='@?' index='2'>
+<arg name='failure' function_pointer='true' declared_type='SDWebImageFailureBlock' type='@?' index='2'>
 <arg declared_type='NSError*' type='@'/>
 <retval declared_type='void' type='v'/>
 </arg>
@@ -4647,15 +4589,6 @@
 <arg name='gridView' declared_type='KKGridView*' type='@' index='0'/>
 <arg name='indexPath' declared_type='id' type='@' index='1'/>
 <retval declared_type='id' type='@'/>
-</method>
-</informal_protocol>
-<informal_protocol name='KenBurnsViewDelegate'>
-<method type='v8@0:4' selector='didFinishAllAnimations'>
-<retval declared_type='void' type='v'/>
-</method>
-<method type='v12@0:4I8' selector='didShowImageAtIndex:'>
-<arg name='index' declared_type='NSUInteger' type='I' index='0'/>
-<retval declared_type='void' type='v'/>
 </method>
 </informal_protocol>
 <informal_protocol name='SBProxyForJson'>

@@ -17,8 +17,8 @@ class FriendsViewController < UITableViewController
     super
   end
 
-  def viewDidAppear(animated)
-    self.navigationController.setNavigationBarHidden(false)
+  def viewWillAppear(animated)
+    # self.navigationController.setNavigationBarHidden(false)
   end
 
   def shouldAutorotateToInterfaceOrientation(interfaceOrientation)

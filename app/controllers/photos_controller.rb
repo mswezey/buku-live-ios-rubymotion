@@ -15,18 +15,27 @@ class PhotosController < UITableViewController
     225
   end
 
+  def setToolbarButtons
+    buttons = []
+
+    flexibleSpace = UIBarButtonItem.alloc.initWithBarButtonSystemItem(UIBarButtonSystemItemFlexibleSpace, target:nil, action:nil)
+    camera_button = UIBarButtonItem.alloc.initWithBarButtonSystemItem(UIBarButtonSystemItemCamera, target:self, action:'takePhoto')
+
+    buttons << flexibleSpace
+    buttons << App.delegate.points
+    buttons << camera_button
+
+    App.delegate.navToolbar.setItems(buttons, animated:false)
+  end
+
   def viewDidLoad
     super
-    # photos_string = File.read("#{App.documents_path}/fan_photos.json")
-    # @photos = BW::JSON.parse(photos_string)
-
-
-    rightButton = UIBarButtonItem.alloc.initWithTitle("Take Photo", style: UIBarButtonItemStyleBordered, target:self, action:'takePhoto')
-    self.navigationItem.rightBarButtonItem = rightButton
+    setToolbarButtons
+    self.navigationItem.rightBarButtonItem = UIBarButtonItem.alloc.initWithCustomView(App.delegate.navToolbar)
   end
 
   def viewWillAppear(animated)
-    self.navigationController.setNavigationBarHidden(false)
+    setToolbarButtons
   end
 
   def viewDidAppear(animated)
@@ -155,7 +164,7 @@ class PhotosController < UITableViewController
   end
 
   def takePhoto
-    BW::Device.camera.rear.picture(media_types: [:movie, :image], allows_editing: true) do |result|
+    BW::Device.camera.rear.picture(media_types: [:image]) do |result|
       image = result[:original_image]
       # small_image = UIImage.imageWithCGImage(image.CGImage, scale:0.5, orientation:image.imageOrientation)
       # image_view = UIImageView.alloc.initWithImage(image)
@@ -181,7 +190,7 @@ class PhotosController < UITableViewController
       BW::HTTP.post("#{App.delegate.frequency_app_uri}/api/mobile/fan_photos", {payload: data, files: {:picture => image_jpeg} }) do |response|
         if response.ok?
           self.view.alpha = 1.0
-          App.delegate.load_fan_photos_data
+          App.delegate.user_photos_list.refresh {load_photos}
         else
           # TODO: handle failure
         end
@@ -192,6 +201,10 @@ class PhotosController < UITableViewController
   def load_photos
     @photos = App.delegate.user_photos_list.all
     self.view.reloadData
+  end
+
+  def imagePickerControllerDidCancel(picker)
+    App.alert("Canceled")
   end
 
 end

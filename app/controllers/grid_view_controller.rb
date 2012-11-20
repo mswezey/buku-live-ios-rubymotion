@@ -11,29 +11,26 @@ class GridViewController < UIViewController
 
   def viewDidLoad
     super
-    # App.delegate.load_fan_photos_data
+    self.navigationController.navigationBar.setBackgroundImage(UIImage.imageNamed("top-nav-bg.png"), forBarMetrics: UIBarMetricsDefault)
 
-    @font_light = UIFont.fontWithName("DINLi", size:15)
-
-    # create background ken burns + overlay
-    bg_image1 = UIImage.imageNamed("lan-crowd1.jpg")
-    bg_image2 = UIImage.imageNamed("lan-crowd2.jpeg")
-    bg_kbv = KenBurnsView.alloc.initWithFrame([[0,208],[640, 640]])
-    bg_kbv.animateWithImages([bg_image1, bg_image2], transitionDuration:45, loop: true, isLandscape:false)
-
-    # TODO: set the size to fill background
-    bg_overlay = UIImageView.alloc.init
-    bg_overlay.image = UIImage.imageNamed("diamond.png")
-    bg_overlay.frame = [[0,208],[320,570]]
-
+    @font_light = UIFont.fontWithName("DIN-Light", size:17)
 
     @scroll_view = UIScrollView.alloc.initWithFrame(view.bounds)
-    @scroll_view.contentSize = [320, 778]
+    @scroll_view.contentSize = [320, 822]
     @scroll_view.alwaysBounceVertical = false
     @scroll_view.delegate = self
-    @scroll_view.addSubview(bg_kbv)
-    @scroll_view.addSubview(bg_overlay)
     view.addSubview(@scroll_view)
+
+    label_row_2_bg = UIView.alloc.initWithFrame([[0,208],[320,30]])
+    label_row_2_bg.backgroundColor = UIColor.blackColor.colorWithAlphaComponent(0.39)
+    label_row_3_bg = UIView.alloc.initWithFrame([[0,398],[320,30]])
+    label_row_3_bg.backgroundColor = UIColor.blackColor.colorWithAlphaComponent(0.39)
+    label_row_4_bg = UIView.alloc.initWithFrame([[0,588],[320,30]])
+    label_row_4_bg.backgroundColor = UIColor.blackColor.colorWithAlphaComponent(0.39)
+
+    @scroll_view.addSubview(label_row_2_bg)
+    @scroll_view.addSubview(label_row_3_bg)
+    @scroll_view.addSubview(label_row_4_bg)
 
     loadPhotoSection
     loadNowPerformingSection
@@ -53,18 +50,22 @@ class GridViewController < UIViewController
   end
 
   def loadPhotoSection
-    @photos_view = UIView.alloc.initWithFrame([[0,0],[320, 208]])
+    @photos_view = UIView.alloc.initWithFrame([[0,0],[320, 208]]) # row 1
     @photos_view.backgroundColor = UIColor.blackColor
 
     @photos_view.when_tapped do
       self.navigationController.pushViewController(App.delegate.photosController, animated:true)
     end
 
-    @photos_view_label = UILabel.alloc.initWithFrame([[0,0], [320,30]])
+    @label_row_1_bg = UIView.alloc.initWithFrame([[0,0],[320,30]])
+    @label_row_1_bg.backgroundColor = UIColor.blackColor.colorWithAlphaComponent(0.39)
+    @photos_view.addSubview(@label_row_1_bg)
+
+    @photos_view_label = UILabel.alloc.initWithFrame([[10,0], [310,30]])
     @photos_view_label.text = "LOADING PHOTOS"
     @photos_view_label.font = @font_light
     @photos_view_label.textColor = UIColor.whiteColor
-    @photos_view_label.backgroundColor = UIColor.blackColor.colorWithAlphaComponent(0.39)
+    @photos_view_label.backgroundColor = UIColor.clearColor
     @photos_view.addSubview(@photos_view_label)
 
     # observe(App.delegate, :user_photos_json) do |old_value, new_value|
@@ -75,17 +76,17 @@ class GridViewController < UIViewController
   end
 
   def loadNowPerformingSection
-    label = UILabel.alloc.initWithFrame([[0,208], [160,30]])
-    label.text = "NOW PERFORMING"
+    label = UILabel.alloc.initWithFrame([[10,208], [150,30]])
+    label.text = "ON STAGE"
     label.font = @font_light
     label.textColor = UIColor.whiteColor
-    label.backgroundColor = UIColor.blackColor.colorWithAlphaComponent(0.39)
+    label.backgroundColor = UIColor.clearColor
     @scroll_view.addSubview(label)
 
     @now_performing_view = UIView.alloc.initWithFrame([[0,238],[160, 160]]) # row 2
     @now_performing_view.backgroundColor = "#e65af5".to_color.colorWithAlphaComponent(0.42)
     @now_performing_view.when_tapped do
-      App.delegate.window.rootViewController = App.delegate.tabController
+      self.navigationController.pushViewController(App.delegate.scannerViewController, animated:true)
     end
 
     artist = UIImageView.alloc.init
@@ -95,11 +96,11 @@ class GridViewController < UIViewController
   end
 
   def loadStillToComeSection
-    label = UILabel.alloc.initWithFrame([[160,208], [160,30]])
-    label.text = "STILL TO COME"
+    label = UILabel.alloc.initWithFrame([[170,208], [150,30]])
+    label.text = "UP NEXT"
     label.font = @font_light
     label.textColor = UIColor.whiteColor
-    label.backgroundColor = UIColor.blackColor.colorWithAlphaComponent(0.39)
+    label.backgroundColor = UIColor.clearColor
     @scroll_view.addSubview(label)
 
     @still_to_come_view = UIView.alloc.initWithFrame([[160, 238],[160, 160]]) # row 2
@@ -128,35 +129,23 @@ class GridViewController < UIViewController
   end
 
   def loadMyPointsSection
-    label = UILabel.alloc.initWithFrame([[0,398], [160,30]])
+    label = UILabel.alloc.initWithFrame([[10,398], [150,30]])
     label.text = "MY POINTS"
     label.font = @font_light
     label.textColor = UIColor.whiteColor
-    label.backgroundColor = UIColor.blackColor.colorWithAlphaComponent(0.39)
+    label.backgroundColor = UIColor.clearColor
     @scroll_view.addSubview(label)
 
-    @my_points_view = UIView.alloc.initWithFrame([[0, 428],[160, 160]]) # row 3
+    @my_points_view = PointsView.alloc.initWithFrame([[0, 428],[160, 160]]) # row 3
     @my_points_view.backgroundColor = '#39a7d2'.to_color
-
-    points_value_label = UILabel.alloc.initWithFrame([[0,0],[160,50]])
-    points_value_label.text = "52,475"
-    points_value_label.textColor = UIColor.whiteColor
-    points_value_label.textAlignment = UITextAlignmentCenter
-    points_value_label.font = UIFont.boldSystemFontOfSize(24)
-    points_value_label.backgroundColor = '#133948'.to_color
-    @my_points_view.addSubview(points_value_label)
-
-    points_gem_view = UIImageView.alloc.initWithFrame([[28,59],[105, 92]])
-    points_gem_view.image = UIImage.imageNamed("gem.png")
-    @my_points_view.addSubview(points_gem_view)
   end
 
   def loadBadgesSection
-    label = UILabel.alloc.initWithFrame([[160,398], [160,30]])
+    label = UILabel.alloc.initWithFrame([[170,398], [150,30]])
     label.text = "BADGES"
     label.font = @font_light
     label.textColor = UIColor.whiteColor
-    label.backgroundColor = UIColor.blackColor.colorWithAlphaComponent(0.39)
+    label.backgroundColor = UIColor.clearColor
     @scroll_view.addSubview(label)
 
     @badges_view = UIView.alloc.initWithFrame([[160, 428],[160, 160]]) # row 3
@@ -169,19 +158,25 @@ class GridViewController < UIViewController
   def loadFriendsSection
     load_friends_list
 
-    label = UILabel.alloc.initWithFrame([[0,588], [160,30]])
+    label = UILabel.alloc.initWithFrame([[10,588], [150,30]])
     label.text = "FRIENDS"
     label.font = @font_light
     label.textColor = UIColor.whiteColor
-    label.backgroundColor = UIColor.blackColor.colorWithAlphaComponent(0.39)
+    label.backgroundColor = UIColor.clearColor
     @scroll_view.addSubview(label)
 
     @friends_view = UIView.alloc.initWithFrame([[0, 618],[160, 160]]) # row 4
+    @friends_view.layer.masksToBounds = true
     @friends_view.backgroundColor = UIColor.blackColor.colorWithAlphaComponent(0.5)
     @friends_view.when_tapped do
       self.navigationController.pushViewController(App.delegate.friendsGridController, animated:true)
     end
+
     @friend = UIImageView.alloc.initWithFrame(@friends_view.bounds)
+    @friend.setImageWithURL(NSURL.URLWithString(@friends_list.all.first['fb_profile_image_url']), placeholder: UIImage.imageNamed("friends.png")) if @friends_list.all.first
+
+    @next_friend = UIImageView.alloc.initWithFrame(@friends_view.bounds)
+
     @friends_view.addSubview(@friend)
     @current_friend = 0
     rotate_friends
@@ -190,70 +185,121 @@ class GridViewController < UIViewController
   def rotate_friends
     if @friends_list.all.size > 0
 
-        UIView.animateWithDuration(1,
-        animations:lambda {
-          @friend.alpha = 0.0
-        })
-
         friend = @friends_list.all[@current_friend]
         @friend.setImageWithURL(NSURL.URLWithString(friend['fb_profile_image_url']), placeholder: UIImage.imageNamed("friends.png"))
+
         if @friends_list.all.size > @current_friend + 1
             @current_friend += 1
         else
             @current_friend = 0
         end
 
-        UIView.animateWithDuration(1,
-        animations:lambda {
-          @friend.alpha = 1.0
-        })
+        next_friend = @friends_list.all[@current_friend]
 
+        @next_friend.setImageWithURL(NSURL.URLWithString(next_friend['fb_profile_image_url']), placeholder: UIImage.imageNamed("friends.png"))
+
+
+        # @friend.setFrame(@friends_view.bounds)
+
+
+        UIView.transitionWithView(@friend, duration:0.3, options:UIViewAnimationOptionTransitionFlipFromLeft, animations: lambda {@friend.setImageWithURL(NSURL.URLWithString(next_friend['fb_profile_image_url']), placeholder: UIImage.imageNamed("friends.png"))}, completion: lambda do |finished|
+
+        end)
+
+        # UIView.animateWithDuration(1,
+        # animations:lambda {
+        #     origin = @friends_view.bounds.origin
+        #     @friend.setFrame([[origin.x, origin.y], [1378, 1005]])
+        # })
         App.run_after(7) { rotate_friends }
     else
-        App.run_after(15) { rotate_friends }
+        App.run_after(7) { rotate_friends }
     end
   end
 
   def loadActivitySection
-    label = UILabel.alloc.initWithFrame([[160,588], [160,30]])
+    label = UILabel.alloc.initWithFrame([[170,588], [150,30]])
     label.text = "ACTIVITY"
     label.font = @font_light
     label.textColor = UIColor.whiteColor
-    label.backgroundColor = UIColor.blackColor.colorWithAlphaComponent(0.39)
+    label.backgroundColor = UIColor.clearColor
     @scroll_view.addSubview(label)
 
     @activity_view = UIView.alloc.initWithFrame([[160, 618],[160, 160]]) # row 4
-    @activity_view.backgroundColor = '#39a7d2'.to_color.colorWithAlphaComponent(0.42)
+    # @activity_view.backgroundColor = '#39a7d2'.to_color.colorWithAlphaComponent(0.42)
+    @activity_view.backgroundColor = UIColor.clearColor
   end
 
   def viewWillAppear(animated)
-    self.navigationController.setNavigationBarHidden(true)
+    # self.navigationController.setNavigationBarHidden(true)
+    App.delegate.setToolbarButtonsForDashboard
+    @photos_view_label.text = "LOADING PHOTOS" if @photos_view_label
+    load_photos_slideshow
+    load_background_kbv
+  end
+
+  def viewDidDisappear(animated)
+    @bg_kbv.removeFromSuperview
+    @kbv.removeFromSuperview
+    @bg_kbv = nil
+    @kbv = nil
+  end
+
+  def load_background_kbv
+    unless @bg_kbv
+      bg_image1 = UIImageView.alloc.init
+      bg_image2 = UIImageView.alloc.init
+      bg_image1.image = UIImage.imageNamed("lan-crowd1.jpg")
+      bg_image2.image = UIImage.imageNamed("lan-crowd2.jpeg")
+      @bg_kbv = FUI::KenBurnsView.alloc.initWithFrame([[0,208],[320,570]])
+      @bg_kbv.animateWithImages([bg_image1, bg_image2], transitionDuration:45, loop: true, isLandscape:true)
+
+      bg_overlay = UIImageView.alloc.init
+      bg_overlay.image = UIImage.imageNamed("diamond.png")
+      bg_overlay.frame = [[0,208],[320,570]]
+
+      @scroll_view.addSubview(@bg_kbv)
+      @scroll_view.addSubview(bg_overlay)
+
+      @scroll_view.sendSubviewToBack(bg_overlay)
+      @scroll_view.sendSubviewToBack(@bg_kbv)
+    end
   end
 
   def load_photos_slideshow
-    @kbv.release if @kbv
-    @kbv = KenBurnsView.alloc.initWithFrame([[0,0],[416, 208]])
-    load_photos_list
-    @photos = load_photos
-    @kbv.animateWithImages(@photos, transitionDuration:5, loop: true, isLandscape:true)
-    @photos_view.addSubview(@kbv)
-    @photos_view_label.text = "PHOTOS"
-    @photos_view.addSubview(@photos_view_label)
+    unless @kbv
+      Dispatch::Queue.concurrent.async {
+        @kbv = FUI::KenBurnsView.alloc.initWithFrame(@photos_view.bounds)
+        load_photos_list
+        @photos = load_photos
+        Dispatch::Queue.main.sync {
+          @kbv.animateWithImages(@photos, transitionDuration:5, loop: true, isLandscape:true)
+          @photos_view.addSubview(@kbv)
+          @photos_view.addSubview(@label_row_1_bg)
+          @photos_view_label.text = "PHOTOS"
+          @photos_view.addSubview(@photos_view_label)
+        }
+      }
+    end
   end
 
   def load_photos
     photos = []
     @photos_list.all[0..5].each do |photo|
-      # url_string = NSURL.URLWithString(string)
-      # image_view = UIImageView.alloc.initWithFrame(@photos_view.bounds)
-      # image_view.setImageWithURL(url_string, placeholderImage: UIImage.imageNamed("photo-placeholder.png"))
-      # photos << image_view.image
-      url = NSURL.URLWithString(photo['fan_photo']['image']['mobile_small']['url'])
-      data = NSData.dataWithContentsOfURL(url)
-      image = UIImage.imageWithData(data)
-      photos << image
+      url_string = NSURL.URLWithString(photo['fan_photo']['image']['mobile_small']['url'])
+      image_view = UIImageView.alloc.initWithFrame(@photos_view.bounds)
+      image_view.setImageWithURL(url_string, placeholderImage: UIImage.imageNamed("photo-placeholder.png"))
+      photos << image_view
     end
+    sleep 1
     photos
+  end
+
+  def refresh_slideshow
+    # only call this if photos are empty
+    @kbv.removeFromSuperview if @kbv
+    @kbv = nil
+    load_photos_slideshow
   end
 
 end

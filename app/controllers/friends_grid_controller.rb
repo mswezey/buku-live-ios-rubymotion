@@ -2,18 +2,20 @@ class FriendsGridController < KKGridViewController
 
   def loadView
     super
+    self.navigationItem.rightBarButtonItem = UIBarButtonItem.alloc.initWithCustomView(App.delegate.navToolbar)
+
     gridView.scrollsToTop = true
-    gridView.backgroundColor = UIColor.blueColor
+    gridView.backgroundColor = UIColor.blackColor
     gridView.cellSize = [160,160]
     gridView.cellPadding = [0,0]
     # self.view = UIView.alloc.init
     # self.gridView = gridView
 
-    self.title = "Friends"
     backgroundView = UIView.alloc.init
     backgroundView.backgroundColor = UIColor.blackColor #UIColor.scrollViewTexturedBackgroundColor
     self.gridView.backgroundView = backgroundView
     self.gridView.reloadData
+    self.navigationItem.rightBarButtonItem = UIBarButtonItem.alloc.initWithCustomView(App.delegate.navToolbar)
   end
 
   def viewDidLoad
@@ -26,7 +28,7 @@ class FriendsGridController < KKGridViewController
   end
 
   def viewWillAppear(animated)
-    self.navigationController.setNavigationBarHidden(false)
+    App.delegate.setToolbarButtonsForOther
     App.delegate.friends.refresh do |complete|
       @friends = App.delegate.friends.all
       self.gridView.reloadData

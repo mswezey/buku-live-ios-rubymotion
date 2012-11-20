@@ -20,6 +20,7 @@ class UserController < UIViewController
     logoutButton = view.viewWithTag(10)
     @welcomeLabel = view.viewWithTag(2)
     @profileLabel = view.viewWithTag(3)
+    refreshButton.text = "New Design"
     # refreshButton.addTarget(self, action:'refreshProfile', forControlEvents:UIControlEventTouchUpInside)
     refreshButton.addTarget(self, action:'backToNewDesign', forControlEvents:UIControlEventTouchUpInside)
     logoutButton.addTarget(self, action:'logout', forControlEvents:UIControlEventTouchUpInside)

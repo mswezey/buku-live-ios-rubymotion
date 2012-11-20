@@ -2,6 +2,10 @@ class FriendDetailViewController < UIViewController
   attr_accessor :friend
 
   def viewDidLoad
+    self.navigationItem.rightBarButtonItem = UIBarButtonItem.alloc.initWithCustomView(App.delegate.navToolbar)
+
+    @font_light = UIFont.fontWithName("DIN-Light", size:17)
+
     @scroll_view = UIScrollView.alloc.initWithFrame(view.bounds)
     @scroll_view.contentSize = [320, 730]
     view.addSubview(@scroll_view)
@@ -28,6 +32,7 @@ class FriendDetailViewController < UIViewController
 
     name_label = UILabel.alloc.initWithFrame([[10,0],[150,30]])
     name_label.text = friend['name'].upcase #.split(" ").first.upcase rescue friend['name'].upcase # uncomment to show first name only
+    name_label.font = @font_light
     name_label.textColor = UIColor.whiteColor
     name_label.backgroundColor = UIColor.clearColor
     @scroll_view.addSubview(name_label)
@@ -38,28 +43,29 @@ class FriendDetailViewController < UIViewController
 
     points_label = UILabel.alloc.initWithFrame([[170,0],[150,30]])
     points_label.text = "POINTS"
+    points_label.font = @font_light
     points_label.textColor = UIColor.whiteColor
     points_label.backgroundColor = UIColor.clearColor
     @scroll_view.addSubview(points_label)
 
-    points_view = UIView.alloc.initWithFrame([[160,30],[160,160]])
-    points_view.backgroundColor = '#39a7d2'.to_color
+    points_view = PointsView.alloc.initWithFrame([[160,30],[160,160]])
+    # points_view.backgroundColor = '#39a7d2'.to_color
     @scroll_view.addSubview(points_view)
 
-    points_value_label = UILabel.alloc.initWithFrame([[0,0],[160,50]])
-    points_value_label.text = "52,475"
-    points_value_label.textColor = UIColor.whiteColor
-    points_value_label.textAlignment = UITextAlignmentCenter
-    points_value_label.font = UIFont.boldSystemFontOfSize(24)
-    points_value_label.backgroundColor = '#133948'.to_color
-    points_view.addSubview(points_value_label)
+    # points_value_label = UILabel.alloc.initWithFrame([[0,0],[160,50]])
+    # points_value_label.text = "52,475"
+    # points_value_label.textColor = UIColor.whiteColor
+    # points_value_label.textAlignment = UITextAlignmentCenter
+    # points_value_label.font = UIFont.boldSystemFontOfSize(24)
+    # points_value_label.backgroundColor = '#133948'.to_color
+    # points_view.addSubview(points_value_label)
 
-    points_gem_view = UIImageView.alloc.initWithFrame([[28,59],[105, 92]])
-    points_gem_view.image = UIImage.imageNamed("gem.png")
-    points_view.addSubview(points_gem_view)
+    # points_gem_view = GemView.alloc.initWithFrame([[28,59],[105, 92]])
+    # points_view.addSubview(points_gem_view)
 
     badges_label = UILabel.alloc.initWithFrame([[10,190],[150,30]]) # row 2
     badges_label.text = "BADGES"
+    badges_label.font = @font_light
     badges_label.textColor = UIColor.whiteColor
     badges_label.backgroundColor = UIColor.clearColor
     @scroll_view.addSubview(badges_label)
@@ -74,6 +80,7 @@ class FriendDetailViewController < UIViewController
 
     photos_label = UILabel.alloc.initWithFrame([[170,190],[150,30]])  # row 2
     photos_label.text = "PHOTOS"
+    photos_label.font = @font_light
     photos_label.textColor = UIColor.whiteColor
     photos_label.backgroundColor = UIColor.clearColor
     @scroll_view.addSubview(photos_label)
@@ -84,10 +91,33 @@ class FriendDetailViewController < UIViewController
 
     activity_label = UILabel.alloc.initWithFrame([[10,380],[310,30]]) # row 3
     activity_label.text = "ACTIVITY"
+    activity_label.font = @font_light
     activity_label.textColor = UIColor.whiteColor
     activity_label.backgroundColor = UIColor.clearColor
     @scroll_view.addSubview(activity_label)
 
+  end
+
+  def viewWillAppear(animated)
+    # App.delegate.setToolbarButtonsForOther
+    setToolbarButtons
+  end
+
+  def setToolbarButtons
+    buttons = []
+
+    flexibleSpace = UIBarButtonItem.alloc.initWithBarButtonSystemItem(UIBarButtonSystemItemFlexibleSpace, target:nil, action:nil)
+    compose_button = UIBarButtonItem.alloc.initWithBarButtonSystemItem(UIBarButtonSystemItemCompose, target:self, action:'writeMessage')
+
+    buttons << flexibleSpace
+    buttons << App.delegate.points
+    buttons << compose_button
+
+    App.delegate.navToolbar.setItems(buttons, animated:false)
+  end
+
+  def writeMessage
+    App.alert("Write Message")
   end
 
 end
