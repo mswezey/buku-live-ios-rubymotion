@@ -33,7 +33,7 @@ class MapController < UIViewController
   end
 
   def centerOnFestival
-    location = CLLocationCoordinate2DMake(32.78118, -96.76250)
+    location = CLLocationCoordinate2DMake(32.78117, -96.76286)
     region = MKCoordinateRegionMake(location, MKCoordinateSpanMake(0.004, 0.004))
     self.view.setRegion(region)
   end
@@ -60,9 +60,8 @@ class MapController < UIViewController
     self.navigationItem.rightBarButtonItem = UIBarButtonItem.alloc.initWithCustomView(App.delegate.navToolbar)
 
     self.view.mapType = MKMapTypeStandard
-    location = CLLocationCoordinate2DMake(32.78118, -96.76250)
-    region = MKCoordinateRegionMake(location, MKCoordinateSpanMake(0.004, 0.004))
-    self.view.setRegion(region)
+    centerOnFestival
+
     self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight
     self.view.showsUserLocation = true
     self.view.delegate = self
