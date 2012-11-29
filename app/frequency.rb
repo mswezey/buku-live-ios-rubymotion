@@ -40,9 +40,9 @@ module Frequency
         if response.ok?
           block.call(response.body.to_str)
         elsif response.status_code == 401
-          App.alert("Please login again")
           App.delegate.closeSession
           App.delegate.show_login_modal
+          App.alert("Please login again")
           block.call(default)
         else
           block.call(default)
@@ -87,46 +87,94 @@ module Frequency
       "#{base_path}/authentication/facebook"
     end
 
-    def authenticate(&block)
-      puts "posting"
+    # def authenticate(&block)
+    #   puts "posting"
 
-      BW::HTTP.post(url, {payload: payload}) do |response|
-        if response.ok?
-          puts "response ok"
-          json = BW::JSON.parse(response.body.to_str)
-          if json['status'] && json['status'] == 'success'# && json['authentication_token']
-            App::Persistence['user_auth_token'] = json['authentication_token']
-            puts "user auth token saved"
-            block.call(true)
-          else
-            puts "user auth not saved"
-            block.call(false)
-          end
-        else
-          puts "response not ok"
-          block.call(false)
-        end
-      end
-    end
+    #   BW::HTTP.post(url, {payload: payload}) do |response|
+    #     if response.ok?
+    #       puts "response ok"
+    #       json = BW::JSON.parse(response.body.to_str)
+    #       if json['status'] && json['status'] == 'success'# && json['authentication_token']
+    #         App::Persistence['user_auth_token'] = json['authentication_token']
+    #         puts "user auth token saved"
+    #         block.call(true)
+    #       else
+    #         puts "user auth not saved"
+    #         block.call(false)
+    #       end
+    #     else
+    #       puts "response not ok"
+    #       block.call(false)
+    #     end
+    #   end
+    # end
+
   end
 
   class User < Frequency::Base
-    attr_accessor :profile_image_url, :auth_token, :total_points
+    attr_accessor :attributes, :profile_image_url, :total_points, :points_checkins, :points_photos, :points_badges
+
+    def initialize
+      refresh
+    end
+
+    def refresh(&block)
+      puts "refresh user"
+      get_json_string do |json_string|
+        @attributes = BubbleWrap::JSON.parse(json_string)
+        update_points
+        block.call(true) if block
+      end
+    end
+
+    def update_points
+      self.points_checkins = @attributes['points_from_checkins']
+      self.points_badges = @attributes['points_from_badges']
+      self.points_photos = @attributes['points_from_photos']
+    end
 
     def url
-      "#{base_path}/friends/#{id}.json?auth_token=#{auth_token}"
+      "#{base_path}/me.json?auth_token=#{auth_token}"
     end
 
     def profile_image_url
       @profile_image_url = App::Persistence['user_profile_image_url']
     end
 
-    def auth_token
-      @auth_token = App::Persistence['user_auth_token']
+    def points_checkins=(points_checkins)
+      App::Persistence['points_checkins'] = points_checkins.to_i
+      set_points
+    end
+
+    def points_photos=(points_photos)
+      App::Persistence['points_photos'] = points_photos.to_i
+      set_points
+    end
+
+    def points_badges=(points_badges)
+      App::Persistence['points_badges'] = points_badges.to_i
+      set_points
+    end
+
+    def points_checkins
+      App::Persistence['points_checkins']
+    end
+
+    def points_photos
+      App::Persistence['points_photos']
+    end
+
+    def points_badges
+      App::Persistence['points_badges']
     end
 
     def total_points
-      @total_points = App::Persistence['user_total_points']
+      @points_checkins + @points_photos + @points_badges
+    end
+
+    def set_points
+      App.delegate.my_points_view.setPoints(points_checkins, points_badges, points_photos)
+      App.delegate.points_label.text = App.delegate.my_points_view.total_points_formatted
     end
 
   end
@@ -145,15 +193,27 @@ module Frequency
   end
 
   class Friend < Frequency::Base
-    attr_reader :id
+    attr_accessor :id, :attributes, :photos
 
     def initialize(id)
       @id = id
     end
 
-    def url
-      "#{base_path}/friends/#{id}.json?auth_token=#{auth_token}"
+    def refresh(&block)
+      get_json_string do |json_string|
+        @attributes = BubbleWrap::JSON.parse(json_string)
+        block.call(true) if block
+      end
     end
+
+    def url
+      "#{base_path}/friends/#{@id}.json?auth_token=#{auth_token}"
+    end
+
+    def photos
+      @attributes
+    end
+
 
   end
 
@@ -179,6 +239,25 @@ module Frequency
 
     def url
       "#{base_path}/fan_photos/#{id}.json?auth_token=#{auth_token}"
+    end
+
+  end
+
+  class PhotographerList < Frequency::Base
+    attr_accessor :all
+
+    def initialize
+    end
+
+    def refresh(&block)
+      get_json_string do |json_string|
+        @all = BubbleWrap::JSON.parse(json_string)
+        block.call(true) if block
+      end
+    end
+
+    def url
+      "#{base_path}/photographers.json?auth_token=#{auth_token}"
     end
 
   end

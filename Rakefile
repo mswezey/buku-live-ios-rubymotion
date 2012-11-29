@@ -2,6 +2,7 @@
 $:.unshift("/Library/RubyMotion/lib")
 require 'motion/project'
 require 'bundler'
+require "bubble-wrap/location"
 Bundler.require
 
 Motion::Project::App.setup do |app|
@@ -14,7 +15,7 @@ Motion::Project::App.setup do |app|
 
   app.fonts += ["DIN-Light.ttf", "DIN-Medium.ttf", "DIN-Bold.ttf"]
 
-  app.frameworks += %w{ UIKit Foundation AdSupport Accounts Social CoreLocation MapKit CoreData AudioToolbox CoreVideo CoreMedia AddressBook AddressBookUI SDWebImage QuartzCore}
+  app.frameworks += %w{ UIKit Foundation AdSupport Accounts Social CoreLocation MapKit CoreData AudioToolbox CoreVideo CoreMedia AddressBook AddressBookUI QuartzCore CoreGraphics}
   app.weak_frameworks += %w{ AdSupport Accounts Social AVFoundation}
   app.libs += ['/usr/lib/libiconv.dylib']
 
@@ -23,6 +24,7 @@ Motion::Project::App.setup do |app|
     pod 'SDWebImage', '~> 2.7'
     # pod 'JBKenBurnsView', '~> 0.1'
     pod 'KKGridView', '~> 0.6.8.2'
+    # pod 'SVGKit', '~> 0.0.1'
   end
 
   app.device_family          = :iphone

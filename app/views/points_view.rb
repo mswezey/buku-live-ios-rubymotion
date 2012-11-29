@@ -1,5 +1,5 @@
 class PointsView < UIView
-  attr_accessor :left_points, :middle_points, :right_points
+  attr_accessor :left_points, :middle_points, :right_points, :total_points_formatted
 
   def initWithFrame(frame)
     if super
@@ -16,7 +16,7 @@ class PointsView < UIView
       self.addSubview(@gem_view)
       self.backgroundColor = '#39a7d2'.to_color
 
-      setPoints(rand(5000),rand(5000),rand(5000))
+      # setPoints(rand(5000),rand(5000),rand(5000))
 
       self.when_tapped do
         setPoints(rand(5000),rand(5000),rand(5000))
@@ -31,8 +31,12 @@ class PointsView < UIView
     @gem_view.middle_points = middle_points
     @gem_view.right_points = right_points
     total_points = left_points + middle_points + right_points
-    formatted_points = total_points.to_s.reverse.gsub(/...(?=.)/,'\&,').reverse
-    @points_value_label.text = formatted_points
+    @total_points_formatted = total_points.to_s.reverse.gsub(/...(?=.)/,'\&,').reverse
+    @points_value_label.text = @total_points_formatted
+  end
+
+  def total_points_formatted
+    @total_points_formatted ? @total_points_formatted : "0"
   end
 
   def left_points

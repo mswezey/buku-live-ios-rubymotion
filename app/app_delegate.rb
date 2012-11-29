@@ -1,6 +1,6 @@
 class AppDelegate
 
-  attr_accessor :user_photos_list, :friends
+  attr_accessor :user_photos_list, :friends, :photographers
 
   ::FBSessionStateChangedNotification = "#{App.identifier}:FBSessionStateChangedNotification"
 
@@ -72,6 +72,10 @@ class AppDelegate
 
   def frequency_app_uri
     Frequency::FREQUENCY_APP_URL
+  end
+
+  def load_photographers
+    @photographers ||= Frequency::PhotographerList.new
   end
 
   def load_user_photos_list
@@ -178,17 +182,20 @@ class AppDelegate
       points_image = UIImageView.alloc.initWithFrame([[0,0],[158,60]])
       points_image.layer.masksToBounds = true
       points_image.layer.cornerRadius = 3
-
+      points_image.when_tapped do
+        current_user.refresh if logged_in?
+      end
       points_image.image = UIImage.imageNamed("nav-bar-points.png")
       points_image.addSubview(points_label)
       points = UIBarButtonItem.alloc.initWithCustomView(points_image)
+      points
     end
   end
 
   def points_label
     @points_label ||= begin
       points_label = UILabel.alloc.initWithFrame([[4,2],[150,44]])
-      points_label.text = "52,475"
+      points_label.text = "0"
       points_label.font = UIFont.fontWithName("DIN-Bold", size:24)
       points_label.adjustsFontSizeToFitWidth = true
       points_label.textColor = '#222222'.to_color
@@ -214,8 +221,20 @@ class AppDelegate
     end
   end
 
+  def my_points_view
+    @my_points_view ||= begin
+      points_view = PointsView.alloc.initWithFrame([[0, 428],[160, 160]]) # row 3
+      points_view.backgroundColor = '#39a7d2'.to_color
+      points_view
+    end
+  end
+
   def profile_image_url
     App::Persistence['user_profile_image_url'] || ""
+  end
+
+  def current_user
+    @current_user ||= Frequency::User.new
   end
 
   # =============
@@ -223,6 +242,13 @@ class AppDelegate
   # =============
 
   def application(application, didFinishLaunchingWithOptions:launchOptions)
+
+    App::Persistence['points_checkins'] = 0 unless App::Persistence['points_checkins']
+    App::Persistence['points_photos'] = 0 unless App::Persistence['points_photos']
+    App::Persistence['points_badges'] = 0 unless App::Persistence['points_badges']
+
+    current_user if logged_in?
+
     load_user_photos_list
     load_friends_list
     window.rootViewController = gridNavController

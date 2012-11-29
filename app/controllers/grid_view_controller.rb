@@ -11,12 +11,20 @@ class GridViewController < UIViewController
 
   def viewDidLoad
     super
+
+
+    # BW::Location.get_significant do |result|
+    #   p "From Lat #{result[:from].latitude}, Long #{result[:from].longitude}" rescue p "rescue from #{result[:from]}"
+    #   p "To Lat #{result[:to].latitude}, Long #{result[:to].longitude}" rescue p "rescue to #{result[:to]}"
+    # end
+
+
     self.navigationController.navigationBar.setBackgroundImage(UIImage.imageNamed("top-nav-bg.png"), forBarMetrics: UIBarMetricsDefault)
 
     @font_light = UIFont.fontWithName("DIN-Light", size:17)
 
     @scroll_view = UIScrollView.alloc.initWithFrame(view.bounds)
-    @scroll_view.contentSize = [320, 822]
+    @scroll_view.contentSize = [320, 1012]
     @scroll_view.alwaysBounceVertical = false
     @scroll_view.delegate = self
     view.addSubview(@scroll_view)
@@ -27,10 +35,14 @@ class GridViewController < UIViewController
     label_row_3_bg.backgroundColor = UIColor.blackColor.colorWithAlphaComponent(0.39)
     label_row_4_bg = UIView.alloc.initWithFrame([[0,588],[320,30]])
     label_row_4_bg.backgroundColor = UIColor.blackColor.colorWithAlphaComponent(0.39)
+    label_row_5_bg = UIView.alloc.initWithFrame([[0,778],[320,30]])
+    label_row_5_bg.backgroundColor = UIColor.blackColor.colorWithAlphaComponent(0.39)
+
 
     @scroll_view.addSubview(label_row_2_bg)
     @scroll_view.addSubview(label_row_3_bg)
     @scroll_view.addSubview(label_row_4_bg)
+    @scroll_view.addSubview(label_row_5_bg)
 
     loadPhotoSection
     loadNowPerformingSection
@@ -39,14 +51,20 @@ class GridViewController < UIViewController
     loadBadgesSection
     loadFriendsSection
     loadActivitySection
+    loadMapSection
+    loadQrScannerSection
 
     @scroll_view.addSubview(@photos_view)
     @scroll_view.addSubview(@now_performing_view)
     @scroll_view.addSubview(@still_to_come_view)
-    @scroll_view.addSubview(@my_points_view)
+    @scroll_view.addSubview(App.delegate.my_points_view)
     @scroll_view.addSubview(@badges_view)
     @scroll_view.addSubview(@friends_view)
     @scroll_view.addSubview(@activity_view)
+    @scroll_view.addSubview(@map_view)
+    @scroll_view.addSubview(@qr_scanner_view)
+
+    App.delegate.my_points_view.setPoints(App::Persistence['points_checkins'], App::Persistence['points_badges'], App::Persistence['points_photos'])
   end
 
   def loadPhotoSection
@@ -85,9 +103,6 @@ class GridViewController < UIViewController
 
     @now_performing_view = UIView.alloc.initWithFrame([[0,238],[160, 160]]) # row 2
     @now_performing_view.backgroundColor = "#e65af5".to_color.colorWithAlphaComponent(0.42)
-    @now_performing_view.when_tapped do
-      self.navigationController.pushViewController(App.delegate.scannerViewController, animated:true)
-    end
 
     artist = UIImageView.alloc.init
     artist.image = UIImage.imageNamed("diplo.png")
@@ -136,8 +151,9 @@ class GridViewController < UIViewController
     label.backgroundColor = UIColor.clearColor
     @scroll_view.addSubview(label)
 
-    @my_points_view = PointsView.alloc.initWithFrame([[0, 428],[160, 160]]) # row 3
-    @my_points_view.backgroundColor = '#39a7d2'.to_color
+    # moved to app delegate
+    # @my_points_view = PointsView.alloc.initWithFrame([[0, 428],[160, 160]]) # row 3
+    # @my_points_view.backgroundColor = '#39a7d2'.to_color
   end
 
   def loadBadgesSection
@@ -230,8 +246,46 @@ class GridViewController < UIViewController
     @activity_view.backgroundColor = UIColor.clearColor
   end
 
+  def loadMapSection
+    label = UILabel.alloc.initWithFrame([[10,778], [150,30]])
+    label.text = "LIVE MAP"
+    label.font = @font_light
+    label.textColor = UIColor.whiteColor
+    label.backgroundColor = UIColor.clearColor
+    @scroll_view.addSubview(label)
+
+    @map_view = UIView.alloc.initWithFrame([[0, 808],[160, 160]]) # row 4
+    @map_view.backgroundColor = '#39a7d2'.to_color.colorWithAlphaComponent(0.42)
+    live_map_thumb = UIImageView.alloc.initWithFrame([[0,0],[160, 160]])
+    live_map_thumb.image = UIImage.imageNamed("live-map-button.png")
+    @map_view.addSubview(live_map_thumb)
+
+    @map_view.when_tapped do
+      self.navigationController.pushViewController(App.delegate.mapController, animated:true)
+    end
+  end
+
+  def loadQrScannerSection
+    label = UILabel.alloc.initWithFrame([[170,778], [150,30]])
+    label.text = "QR SCANNER"
+    label.font = @font_light
+    label.textColor = UIColor.whiteColor
+    label.backgroundColor = UIColor.clearColor
+    @scroll_view.addSubview(label)
+
+    @qr_scanner_view = UIView.alloc.initWithFrame([[160, 808],[160, 160]]) # row 4
+    qr_code = UIImageView.alloc.initWithFrame([[0,0],[160, 160]])
+    qr_code.image = UIImage.imageNamed("scanner-button.png")
+    @qr_scanner_view.addSubview(qr_code)
+
+
+    @qr_scanner_view.when_tapped do
+      self.navigationController.pushViewController(App.delegate.scannerViewController, animated:true)
+    end
+  end
+
   def viewWillAppear(animated)
-    # self.navigationController.setNavigationBarHidden(true)
+    App.delegate.current_user.refresh if App.delegate.logged_in?
     App.delegate.setToolbarButtonsForDashboard
     @photos_view_label.text = "LOADING PHOTOS" if @photos_view_label
     load_photos_slideshow
@@ -239,8 +293,8 @@ class GridViewController < UIViewController
   end
 
   def viewDidDisappear(animated)
-    @bg_kbv.removeFromSuperview
-    @kbv.removeFromSuperview
+    @bg_kbv.removeFromSuperview if @bg_kbv
+    @kbv.removeFromSuperview if @kbv
     @bg_kbv = nil
     @kbv = nil
   end
@@ -251,12 +305,12 @@ class GridViewController < UIViewController
       bg_image2 = UIImageView.alloc.init
       bg_image1.image = UIImage.imageNamed("lan-crowd1.jpg")
       bg_image2.image = UIImage.imageNamed("lan-crowd2.jpeg")
-      @bg_kbv = FUI::KenBurnsView.alloc.initWithFrame([[0,208],[320,570]])
+      @bg_kbv = FUI::KenBurnsView.alloc.initWithFrame([[0,208],[320,600]])
       @bg_kbv.animateWithImages([bg_image1, bg_image2], transitionDuration:45, loop: true, isLandscape:true)
 
       bg_overlay = UIImageView.alloc.init
       bg_overlay.image = UIImage.imageNamed("diamond.png")
-      bg_overlay.frame = [[0,208],[320,570]]
+      bg_overlay.frame = [[0,208],[320,600]]
 
       @scroll_view.addSubview(@bg_kbv)
       @scroll_view.addSubview(bg_overlay)
@@ -269,17 +323,17 @@ class GridViewController < UIViewController
   def load_photos_slideshow
     unless @kbv
       @kbv = FUI::KenBurnsView.alloc.initWithFrame(@photos_view.bounds)
-      Dispatch::Queue.concurrent.async {
+      # Dispatch::Queue.concurrent.async {
         load_photos_list
         @photos = load_photos
-        Dispatch::Queue.main.sync {
+        # Dispatch::Queue.main.sync {
           @kbv.animateWithImages(@photos, transitionDuration:5, loop: true, isLandscape:true)
           @photos_view.addSubview(@kbv)
           @photos_view.addSubview(@label_row_1_bg)
           @photos_view_label.text = "PHOTOS"
           @photos_view.addSubview(@photos_view_label)
-        }
-      }
+        # }
+      # }
     end
   end
 

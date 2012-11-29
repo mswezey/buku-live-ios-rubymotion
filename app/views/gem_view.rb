@@ -12,6 +12,11 @@ class GemView < UIView
       self.addSubview(@right_facet)
       self.addSubview(@image_view)
       self.backgroundColor = '#39a7d2'.to_color
+
+      # svgDocument = SVGDocument.documentNamed("gem")
+      # docView = SVGDocumentView.documentViewWithDocument(svgDocument)
+      # @gemLayer = docView.rootLayer.sublayers.first
+      # self.layer.addSublayer(@gemLayer)
     end
     self
   end

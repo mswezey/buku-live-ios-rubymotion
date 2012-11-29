@@ -69,7 +69,8 @@ class FriendsGridController < KKGridViewController
   def gridView(gridView, didSelectItemAtIndexPath:indexPath)
     friend = @friends[indexPath.index]
     detail_view_controller = FriendDetailViewController.alloc.init
-    detail_view_controller.friend = friend
+    detail_view_controller.friend_id = friend['id']
+    detail_view_controller.profile_image_url = friend['fb_profile_image_url']
     self.navigationController.pushViewController(detail_view_controller, animated:true)
   end
 

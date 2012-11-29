@@ -8,7 +8,6 @@ class LoginController < UIViewController
   # end
 
   def viewDidLoad
-    puts "LoginController view did load"
     self.view.backgroundColor = UIColor.whiteColor
     view.addSubview(textLabel)
     view.addSubview(authButton)
@@ -122,11 +121,14 @@ class LoginController < UIViewController
           App::Persistence['user_profile_image_url'] = json['profile_image_url']
           puts "user auth token saved"
 
+          App.delegate.current_user
+
           url_string = NSURL.URLWithString(App.delegate.profile_image_url)
           App.delegate.profile_image_view.setImageWithURL(url_string, placeholderImage: UIImage.imageNamed("friends.png"))
+
           App.delegate.friends.refresh
           App.delegate.user_photos_list.refresh {App.delegate.gridController.refresh_slideshow}
-          # App.delegate.window.rootViewController = App.delegate.gridNavController
+
           dismissDialog
 
           unless App::Persistence['asked_user_for_publish_permissions']
