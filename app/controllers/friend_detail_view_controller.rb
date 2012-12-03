@@ -1,66 +1,7 @@
 class FriendDetailViewController < UIViewController
   attr_accessor :friend_id, :profile_image_url
 
-  def rotate_photos
-    if @friends_list.all.size > 0
-
-        friend = @friends_list.all[@current_friend]
-        @friend.setImageWithURL(NSURL.URLWithString(friend['fb_profile_image_url']), placeholder: UIImage.imageNamed("friends.png"))
-
-        if @friends_list.all.size > @current_friend + 1
-            @current_friend += 1
-        else
-            @current_friend = 0
-        end
-
-        next_friend = @friends_list.all[@current_friend]
-
-        @next_friend.setImageWithURL(NSURL.URLWithString(next_friend['fb_profile_image_url']), placeholder: UIImage.imageNamed("friends.png"))
-
-
-        # @friend.setFrame(@friends_view.bounds)
-
-
-        UIView.transitionWithView(@friend, duration:0.3, options:UIViewAnimationOptionTransitionFlipFromLeft, animations: lambda {@friend.setImageWithURL(NSURL.URLWithString(next_friend['fb_profile_image_url']), placeholder: UIImage.imageNamed("friends.png"))}, completion: lambda do |finished|
-
-        end)
-
-        # UIView.animateWithDuration(1,
-        # animations:lambda {
-        #     origin = @friends_view.bounds.origin
-        #     @friend.setFrame([[origin.x, origin.y], [1378, 1005]])
-        # })
-        App.run_after(7) { rotate_friends }
-    else
-        App.run_after(7) { rotate_friends }
-    end
-  end
-
-  def friendDidLoad
-    puts "friend did load"
-    @points_view.setPoints(@friend.attributes["points_from_checkins"], @friend.attributes["points_from_badges"], @friend.attributes["points_from_photos"])
-    @name_label.text = @friend.attributes['name'].upcase
-
-    @photos_list = @friend.attributes["recent_fan_photos"]
-    if @photos_list.size > 0
-      @photos = []
-      @photos_list.each do |photo|
-        url_string = NSURL.URLWithString(photo['fan_photo']['image']['mobile_small']['url'])
-        image_view = UIImageView.alloc.initWithFrame(@photos_view.frame)
-        image_view.setImageWithURL(url_string, placeholderImage: UIImage.imageNamed("photo-placeholder.png"))
-        @photos << image_view
-      end
-      @kbv = FUI::KenBurnsView.alloc.initWithFrame(@photos_view.bounds)
-      @kbv.animateWithImages(@photos, transitionDuration:5, loop: true, isLandscape:true)
-      @photos_view.addSubview(@kbv)
-    end
-  end
-
   def viewDidLoad
-    @friend = Frequency::Friend.new(@friend_id)
-    @friend.refresh { friendDidLoad }
-
-
     self.navigationItem.rightBarButtonItem = UIBarButtonItem.alloc.initWithCustomView(App.delegate.navToolbar)
 
     @font_light = UIFont.fontWithName("DIN-Light", size:17)
@@ -96,7 +37,6 @@ class FriendDetailViewController < UIViewController
     @scroll_view.addSubview(@name_label)
 
     @profile_picture = UIImageView.alloc.initWithFrame([[0,30],[160,160]])
-    @profile_picture.setImageWithURL(NSURL.URLWithString(@profile_image_url), placeholder: UIImage.imageNamed("friends.png")) # TODO: Replace placeholder image
     @scroll_view.addSubview(@profile_picture)
 
     points_label = UILabel.alloc.initWithFrame([[170,0],[150,30]])
@@ -146,8 +86,37 @@ class FriendDetailViewController < UIViewController
   end
 
   def viewWillAppear(animated)
-    # App.delegate.setToolbarButtonsForOther
+    @name_label.text = "LOADING"
+    @points_view.resetPoints
+    if (@photos_view.subviews.count > 0)
+      @photos_view.subviews.objectAtIndex(0).removeFromSuperview
+    end
+    @friend = Frequency::Friend.new(@friend_id)
+    @friend.refresh
+
+    @profile_picture.setImageWithURL(NSURL.URLWithString(@profile_image_url), placeholder: UIImage.imageNamed("friends.png")) # TODO: Replace placeholder image
+
     setToolbarButtons
+  end
+
+  def friendDidLoad
+    puts "friend did load"
+    @points_view.setPoints(@friend.attributes["points_from_checkins"], @friend.attributes["points_from_badges"], @friend.attributes["points_from_photos"])
+    @name_label.text = @friend.attributes['name'].upcase
+
+    @photos_list = @friend.attributes["recent_fan_photos"]
+    if @photos_list.size > 0
+      @photos = []
+      @photos_list.each do |photo|
+        url_string = NSURL.URLWithString(photo['fan_photo']['image']['mobile_small']['url'])
+        image_view = UIImageView.alloc.initWithFrame(@photos_view.frame)
+        image_view.setImageWithURL(url_string, placeholderImage: UIImage.imageNamed("photo-placeholder.png"))
+        @photos << image_view
+      end
+      @kbv = FUI::KenBurnsView.alloc.initWithFrame(@photos_view.bounds)
+      @kbv.animateWithImages(@photos, transitionDuration:5, loop: true, isLandscape:true)
+      @photos_view.addSubview(@kbv)
+    end
   end
 
   def setToolbarButtons

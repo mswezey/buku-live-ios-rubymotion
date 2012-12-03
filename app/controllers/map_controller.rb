@@ -15,7 +15,7 @@ class MapController < UIViewController
   end
 
   def locatePhotographers
-    App.delegate.photographers.refresh {addPhotographers}
+    App.delegate.photographers.refresh
   end
 
   def addPhotographers
@@ -29,7 +29,11 @@ class MapController < UIViewController
   end
 
   def centerOnUser
-    self.view.centerCoordinate = self.view.userLocation.location.coordinate
+    if self.view.userLocation.location
+      self.view.centerCoordinate = self.view.userLocation.location.coordinate
+    else
+      App.alert("Turn on location services to see yourself on the map.")
+    end
   end
 
   def centerOnFestival

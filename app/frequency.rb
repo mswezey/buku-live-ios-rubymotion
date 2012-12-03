@@ -1,3 +1,52 @@
+# RKLogInitialize()
+# lcl_configure_by_name("RestKit/Network", RKLogLevelTrace);
+# lcl_configure_by_name("RestKit/ObjectMapping", RKLogLevelTrace);
+GET    = 0
+POST   = 1
+PUT    = 2
+DELETE = 3
+
+class Server
+  attr_accessor :base_url
+
+  def initialize(base_url)
+    self.base_url = base_url
+    RKClient.clientWithBaseURLString(base_url)
+  end
+end
+
+class FRequest
+  attr_accessor :method, :path, :params, :delegate, :response
+
+  def initialize(method, path, params, delegate)
+    @method = method
+    @path = path
+    @params = params
+    @delegate = delegate
+    sendRequest
+  end
+
+  def sendRequest
+    case @method
+    when GET
+      get(@path, @params, @delegate)
+    when POST
+      post(@path, @params, @delegate)
+    else
+      puts "no method"
+    end
+  end
+
+  def get(path, queryParameters, delegate)
+    RKClient.sharedClient.get(path, queryParameters:queryParameters, delegate:delegate)
+  end
+
+  def post(path, params, delegate)
+    puts "new post"
+    RKClient.sharedClient.post(path, params:params, delegate:delegate)
+  end
+end
+
 module Frequency
 
   FREQUENCY_APP_URL = 'http://www.lan-live.com'
@@ -12,61 +61,56 @@ module Frequency
     def initialize
       unless File.exists?("#{App.documents_path}/#{filename}")
         puts "#{filename} not found... creating it"
-        File.open("#{App.documents_path}/#{filename}", "w") {|f| f.write("[]")}
+        create_local_cache_file
       end
-      json_string = File.read("#{App.documents_path}/#{filename}")
-      @all = BW::JSON.parse(json_string)
+      load_local_cache_file
+      if @all == nil
+        puts "file corruption detected, recreating local cache file..."
+        create_local_cache_file
+        load_local_cache_file
+        puts "cannot load local cache file" if @all == nil
+      end
     end
 
-    def self.ensuring_json(&block)
-      block.call(self.result) if self.result
-      request = self.new
-      request.get_json do |result|
-        self.result = result
-        block.call(result)
-      end
+    def create_local_cache_file
+      return false unless filename
+      File.open("#{App.documents_path}/#{filename}", "w") {|f| f.write("[]")}
+    end
+
+    def load_local_cache_file
+      return false unless filename
+      puts "loading local cache file #{filename}..."
+      data = File.read("#{App.documents_path}/#{filename}").dataUsingEncoding(NSUTF8StringEncoding)
+      error_ptr = Pointer.new(:object)
+      @all = NSJSONSerialization.JSONObjectWithData(data, options:0, error:error_ptr)
     end
 
     def base_path
-      "#{FREQUENCY_APP_URL}/api/mobile"
+      "/api/mobile"
     end
 
     def auth_token
       App::Persistence['user_auth_token']
     end
 
-    def get_json_string(default="[]", &block)
-      BW::HTTP.get(url) do |response|
-        if response.ok?
-          block.call(response.body.to_str)
-        elsif response.status_code == 401
-          App.delegate.closeSession
-          App.delegate.show_login_modal
-          App.alert("Please login again")
-          block.call(default)
-        else
-          block.call(default)
-        end
-      end
+    def refresh
+      puts "base refresh called"
+      FRequest.new(GET, path, nil, self)
+      App.delegate.notificationController.setNotificationTitle "Loading #{loading_title}"
+      App.delegate.notificationController.show
     end
 
-    def post_json(payload, default=[], &block)
-      BW::HTTP.post(url, {payload: payload}) do |response|
-        if response.ok?
-          block.call(BW::JSON.parse(response.body.to_str))
-        else
-          block.call(default)
-        end
-      end
+    def request(request, didLoadResponse: response)
+      puts "new response called"
+      data = response.bodyAsString.dataUsingEncoding(NSUTF8StringEncoding)
+      error_ptr = Pointer.new(:object)
+      @all = NSJSONSerialization.JSONObjectWithData(data, options:0, error:error_ptr)
+      File.open("#{App.documents_path}/#{filename}", "w") {|f| f.write(response.bodyAsString)}
+      App.delegate.notificationController.hide
     end
 
-    def refresh(default=[], &block)
-      puts "refresh called"
-      get_json_string do |json_string|
-        @all = BubbleWrap::JSON.parse(json_string)
-        File.open("#{App.documents_path}/#{filename}", "w") {|f| f.write(json_string)}
-        block.call(default) if block
-      end
+    def request(request, didFailWithError:error)
+      puts "base request response error: #{error}"
     end
 
   end
@@ -79,35 +123,13 @@ module Frequency
       true
     end
 
-    def payload
+    def params
       data = {access_token: @access_token}
     end
 
-    def url
+    def path
       "#{base_path}/authentication/facebook"
     end
-
-    # def authenticate(&block)
-    #   puts "posting"
-
-    #   BW::HTTP.post(url, {payload: payload}) do |response|
-    #     if response.ok?
-    #       puts "response ok"
-    #       json = BW::JSON.parse(response.body.to_str)
-    #       if json['status'] && json['status'] == 'success'# && json['authentication_token']
-    #         App::Persistence['user_auth_token'] = json['authentication_token']
-    #         puts "user auth token saved"
-    #         block.call(true)
-    #       else
-    #         puts "user auth not saved"
-    #         block.call(false)
-    #       end
-    #     else
-    #       puts "response not ok"
-    #       block.call(false)
-    #     end
-    #   end
-    # end
 
   end
 
@@ -115,16 +137,30 @@ module Frequency
     attr_accessor :attributes, :profile_image_url, :total_points, :points_checkins, :points_photos, :points_badges
 
     def initialize
-      refresh
+      # refresh
     end
 
-    def refresh(&block)
+    def path
+      "#{base_path}/me.json?auth_token=#{auth_token}"
+    end
+
+    def refresh
       puts "refresh user"
-      get_json_string do |json_string|
-        @attributes = BubbleWrap::JSON.parse(json_string)
-        update_points
-        block.call(true) if block
-      end
+      FRequest.new(GET, path, nil, self)
+      App.delegate.notificationController.setNotificationTitle "Refreshing"
+      App.delegate.notificationController.show
+    end
+
+    def request(request, didLoadResponse: response)
+      data = response.bodyAsString.dataUsingEncoding(NSUTF8StringEncoding)
+      error_ptr = Pointer.new(:object)
+      @attributes = NSJSONSerialization.JSONObjectWithData(data, options:0, error:error_ptr)
+      update_points
+      App.delegate.notificationController.hide
+    end
+
+    def request(request, didFailWithError:error)
+      puts "user request #{error}"
     end
 
     def update_points
@@ -133,26 +169,22 @@ module Frequency
       self.points_photos = @attributes['points_from_photos']
     end
 
-    def url
-      "#{base_path}/me.json?auth_token=#{auth_token}"
-    end
-
     def profile_image_url
       @profile_image_url = App::Persistence['user_profile_image_url']
     end
 
     def points_checkins=(points_checkins)
-      App::Persistence['points_checkins'] = points_checkins.to_i
+      App::Persistence['points_checkins'] = points_checkins
       set_points
     end
 
     def points_photos=(points_photos)
-      App::Persistence['points_photos'] = points_photos.to_i
+      App::Persistence['points_photos'] = points_photos
       set_points
     end
 
     def points_badges=(points_badges)
-      App::Persistence['points_badges'] = points_badges.to_i
+      App::Persistence['points_badges'] = points_badges
       set_points
     end
 
@@ -182,7 +214,7 @@ module Frequency
   class FriendList < Frequency::Base
     attr_accessor :all
 
-    def url
+    def path
       "#{base_path}/#{filename}?auth_token=#{auth_token}"
     end
 
@@ -190,23 +222,39 @@ module Frequency
       "friends.json"
     end
 
+    def loading_title
+      "friends"
+    end
+
   end
 
   class Friend < Frequency::Base
-    attr_accessor :id, :attributes, :photos
+    attr_accessor :id, :name, :fb_profile_image_square_url, :fb_profile_image_url, :attributes, :photos
 
     def initialize(id)
       @id = id
     end
 
-    def refresh(&block)
-      get_json_string do |json_string|
-        @attributes = BubbleWrap::JSON.parse(json_string)
-        block.call(true) if block
-      end
+    def refresh
+      # App.delegate.server.get(url, nil, delegate, callback)
+      FRequest.new(GET, path, nil, self)
+      App.delegate.notificationController.setNotificationTitle "Loading friend"
+      App.delegate.notificationController.show
     end
 
-    def url
+    def request(request, didLoadResponse: response)
+      data = response.bodyAsString.dataUsingEncoding(NSUTF8StringEncoding)
+      error_ptr = Pointer.new(:object)
+      @attributes = NSJSONSerialization.JSONObjectWithData(data, options:0, error:error_ptr)
+      App.delegate.friendDetailViewController.friendDidLoad
+      App.delegate.notificationController.hide
+    end
+
+    def request(request, didFailWithError:error)
+      puts "Friend error: #{error}"
+    end
+
+    def path
       "#{base_path}/friends/#{@id}.json?auth_token=#{auth_token}"
     end
 
@@ -214,18 +262,45 @@ module Frequency
       @attributes
     end
 
+    def filename
+      "friend_#{id}.json"
+    end
 
   end
 
   class FanPhotoList < Frequency::Base
     attr_accessor :all
 
-    def url
+    def refresh
+      FRequest.new(GET, path, nil, self)
+      App.delegate.notificationController.setNotificationTitle "Loading photos"
+      App.delegate.notificationController.show
+    end
+
+    def request(request, didLoadResponse: response)
+      data = response.bodyAsString.dataUsingEncoding(NSUTF8StringEncoding)
+      error_ptr = Pointer.new(:object)
+      @all = NSJSONSerialization.JSONObjectWithData(data, options:0, error:error_ptr)
+      File.open("#{App.documents_path}/#{filename}", "w") {|f| f.write(response.bodyAsString)}
+      App.delegate.notificationController.hide
+      App.delegate.photosController.load_photos
+      App.delegate.gridViewController.refresh_slideshow
+    end
+
+    def request(request, didFailWithError:error)
+      puts "photo list response error: #{error}"
+    end
+
+    def path
       "#{base_path}/fan_photos.json?auth_token=#{auth_token}"
     end
 
     def filename
       "fan_photos.json"
+    end
+
+    def loading_title
+      "photos"
     end
 
   end
@@ -237,7 +312,7 @@ module Frequency
       @id = id
     end
 
-    def url
+    def path
       "#{base_path}/fan_photos/#{id}.json?auth_token=#{auth_token}"
     end
 
@@ -249,14 +324,25 @@ module Frequency
     def initialize
     end
 
-    def refresh(&block)
-      get_json_string do |json_string|
-        @all = BubbleWrap::JSON.parse(json_string)
-        block.call(true) if block
-      end
+    def refresh
+      FRequest.new(GET, path, nil, self)
+      App.delegate.notificationController.setNotificationTitle "Refreshing photographer locations"
+      App.delegate.notificationController.show
     end
 
-    def url
+    def request(request, didLoadResponse: response)
+      data = response.bodyAsString.dataUsingEncoding(NSUTF8StringEncoding)
+      error_ptr = Pointer.new(:object)
+      @all = NSJSONSerialization.JSONObjectWithData(data, options:0, error:error_ptr)
+      App.delegate.notificationController.hide
+      App.delegate.mapController.addPhotographers
+    end
+
+    def request(request, didFailWithError:error)
+      puts "#{error}"
+    end
+
+    def path
       "#{base_path}/photographers.json?auth_token=#{auth_token}"
     end
 

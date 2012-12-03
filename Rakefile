@@ -7,6 +7,7 @@ Bundler.require
 
 Motion::Project::App.setup do |app|
   app.name = 'LAN Live!'
+  app.icons = ['Icon.png', 'Icon@2x.png']
   app.identifier = 'com.myfrequencyinc.LANLive!'
   app.sdk_version = '6.0'
   app.deployment_target = '5.1'
@@ -22,9 +23,10 @@ Motion::Project::App.setup do |app|
   app.pods do
     pod 'Facebook-iOS-SDK', '~> 3.1.1'
     pod 'SDWebImage', '~> 2.7'
-    # pod 'JBKenBurnsView', '~> 0.1'
     pod 'KKGridView', '~> 0.6.8.2'
     # pod 'SVGKit', '~> 0.0.1'
+    pod 'RestKit', '~> 0.10.1'
+    pod 'SJNotificationViewController', '~> 1.0.1'
   end
 
   app.device_family          = :iphone

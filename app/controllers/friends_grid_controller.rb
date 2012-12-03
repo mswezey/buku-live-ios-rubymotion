@@ -55,6 +55,11 @@ class FriendsGridController < KKGridViewController
     url_string = NSURL.URLWithString(friend['fb_profile_image_url'])
     image_view = UIImageView.alloc.initWithFrame([[0,0],[160,160]])
     image_view.setImageWithURL(url_string, placeholder: UIImage.imageNamed("friends.png"))
+    image_view.setContentMode(UIViewContentModeScaleAspectFill)
+
+    layer = image_view.layer
+    layer.masksToBounds = true
+
     label = UILabel.alloc.initWithFrame([[0,130],[160,30]])
     label.textColor = UIColor.whiteColor
     label.backgroundColor = UIColor.blackColor.colorWithAlphaComponent(0.39)
@@ -67,8 +72,9 @@ class FriendsGridController < KKGridViewController
   end
 
   def gridView(gridView, didSelectItemAtIndexPath:indexPath)
+    gridView.deselectAll true
     friend = @friends[indexPath.index]
-    detail_view_controller = FriendDetailViewController.alloc.init
+    detail_view_controller = App.delegate.friendDetailViewController
     detail_view_controller.friend_id = friend['id']
     detail_view_controller.profile_image_url = friend['fb_profile_image_url']
     self.navigationController.pushViewController(detail_view_controller, animated:true)

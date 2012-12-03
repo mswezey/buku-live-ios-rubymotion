@@ -19,7 +19,7 @@ class PhotosController < UITableViewController
     buttons = []
 
     flexibleSpace = UIBarButtonItem.alloc.initWithBarButtonSystemItem(UIBarButtonSystemItemFlexibleSpace, target:nil, action:nil)
-    camera_button = UIBarButtonItem.alloc.initWithBarButtonSystemItem(UIBarButtonSystemItemCamera, target:self, action:'takePhoto')
+    camera_button = UIBarButtonItem.alloc.initWithBarButtonSystemItem(UIBarButtonSystemItemCamera, target:self, action:'photoCaptureButtonAction')
 
     buttons << flexibleSpace
     buttons << App.delegate.points
@@ -28,19 +28,120 @@ class PhotosController < UITableViewController
     App.delegate.navToolbar.setItems(buttons, animated:false)
   end
 
+  def photoCaptureButtonAction
+    cameraDeviceAvailable = UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceTypeCamera)
+    photoLibraryAvailable = UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceTypePhotoLibrary)
+    if cameraDeviceAvailable && photoLibraryAvailable
+      popupQuery = UIActionSheet.alloc.initWithTitle("", delegate:self, cancelButtonTitle:'Cancel', destructiveButtonTitle:nil, otherButtonTitles:"Take Picture", "Choose Existing", nil)
+      popupQuery.delegate = self
+      popupQuery.actionSheetStyle = UIActionSheetStyleBlackOpaque
+      popupQuery.showInView(view)
+    else
+      shouldStartPhotoLibraryPickerController
+    end
+  end
+
+  def shouldStartCameraController
+    if UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceTypeCamera) == false
+      return false
+    end
+
+    cameraUI = UIImagePickerController.alloc.init
+
+    if UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceTypeCamera) && UIImagePickerController.availableMediaTypesForSourceType(UIImagePickerControllerSourceTypeCamera).containsObject(KUTTypeImage)
+
+      cameraUI.mediaTypes = [KUTTypeImage]
+      cameraUI.sourceType = UIImagePickerControllerSourceTypeCamera
+
+      if UIImagePickerController.isCameraDeviceAvailable(UIImagePickerControllerCameraDeviceRear)
+        cameraUI.cameraDevice = UIImagePickerControllerCameraDeviceRear
+      elsif UIImagePickerController.isCameraDeviceAvailable(UIImagePickerControllerCameraDeviceFront)
+        cameraUI.cameraDevice = UIImagePickerControllerCameraDeviceFront
+      end
+
+    else
+      return false
+    end
+
+    cameraUI.allowsEditing = true
+    cameraUI.showsCameraControls = true
+    cameraUI.delegate = self
+
+    self.presentModalViewController(cameraUI, animated:true)
+
+    return true
+  end
+
+  def shouldStartPhotoLibraryPickerController
+    if UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceTypePhotoLibrary) == false && UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceTypeSavedPhotosAlbum) == false
+      return false
+    end
+
+    cameraUI = UIImagePickerController.alloc.init
+    if UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceTypePhotoLibrary) && UIImagePickerController.availableMediaTypesForSourceType(UIImagePickerControllerSourceTypePhotoLibrary).containsObject(KUTTypeImage)
+
+        cameraUI.sourceType = UIImagePickerControllerSourceTypePhotoLibrary
+        cameraUI.mediaTypes = [KUTTypeImage]
+
+    elsif UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceTypeSavedPhotosAlbum) && UIImagePickerController.availableMediaTypesForSourceType(UIImagePickerControllerSourceTypeSavedPhotosAlbum).containsObject(KUTTypeImage)
+        cameraUI.sourceType = UIImagePickerControllerSourceTypeSavedPhotosAlbum
+        cameraUI.mediaTypes = [KUTTypeImage]
+    else
+      return false
+    end
+
+    cameraUI.allowsEditing = true
+    cameraUI.delegate = self
+
+    self.presentModalViewController(cameraUI, animated:true)
+
+    return true
+  end
+
+  def shouldPresentPhotoCaptureController
+    presentedPhotoCaptureController = shouldStartCameraController
+
+    if !presentedPhotoCaptureController
+      presentedPhotoCaptureController = shouldStartPhotoLibraryPickerController
+    end
+
+    return presentedPhotoCaptureController
+  end
+
+  def actionSheet(actionSheet, clickedButtonAtIndex:buttonIndex)
+    case buttonIndex
+      when 0
+        shouldStartCameraController
+      when 1
+        shouldStartPhotoLibraryPickerController # choose_existing
+      when 2
+        # cancelled
+    end
+  end
+
+
   def viewDidLoad
     super
-    setToolbarButtons
     self.navigationItem.rightBarButtonItem = UIBarButtonItem.alloc.initWithCustomView(App.delegate.navToolbar)
+    view.dataSource = view.delegate = self
+  end
+
+  def objectLoader(object_loader, didLoadObjects:coffee_shops)
+    add_coffee_shops(coffee_shops)
+  end
+
+  def objectLoader(object_loader, didFailWithError:error)
+    log "Error: #{error.inspect}"
   end
 
   def viewWillAppear(animated)
     setToolbarButtons
+    App.delegate.user_photos_list.refresh
+    load_photos
   end
 
   def viewDidAppear(animated)
     self.view.alpha = 1.0
-    load_photos
   end
 
   def viewDidUnload
@@ -79,6 +180,11 @@ class PhotosController < UITableViewController
 
     image_view = UIImageView.alloc.init
     image_view.setImageWithURL(urlString, placeholderImage: UIImage.imageNamed("photo-placeholder.png"))
+    image_view.setContentMode(UIViewContentModeScaleAspectFill)
+
+    layer = image_view.layer
+    layer.masksToBounds = true
+
     cell.backgroundView = image_view
     # [ [[UIImageView alloc] initWithImage:[ [UIImage imageNamed:@"cell_normal.png"] stretchableImageWithLeftCapWidth:0.0 topCapHeight:5.0] ]autorelease];
 
@@ -164,6 +270,7 @@ class PhotosController < UITableViewController
   end
 
   def takePhoto
+    return false
     BW::Device.camera.rear.picture(media_types: [:image]) do |result|
       image = result[:original_image]
       # small_image = UIImage.imageWithCGImage(image.CGImage, scale:0.5, orientation:image.imageOrientation)
@@ -204,7 +311,23 @@ class PhotosController < UITableViewController
   end
 
   def imagePickerControllerDidCancel(picker)
-    App.alert("Canceled")
+    self.dismissModalViewControllerAnimated(true)
+  end
+
+  def imagePickerController(picker, didFinishPickingMediaWithInfo:info)
+    self.dismissModalViewControllerAnimated(false)
+
+    image = info.objectForKey(UIImagePickerControllerEditedImage)
+
+    viewController = EditPhotoViewController.alloc.initWithImage(image)
+    viewController.setModalTransitionStyle(UIModalTransitionStyleCrossDissolve)
+
+    navController = UINavigationController.alloc.initWithRootViewController(viewController)
+
+    navController.setModalTransitionStyle(UIModalTransitionStyleCrossDissolve)
+    navController.navigationBar.setBackgroundImage(UIImage.imageNamed("top-nav-bg.png"), forBarMetrics: UIBarMetricsDefault)
+
+    self.presentModalViewController(navController, animated:true)
   end
 
 end

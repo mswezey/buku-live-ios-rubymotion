@@ -12,12 +12,26 @@ class AppDelegate
   # = Properties =
   # ==============
 
+  def notificationController
+    @notificationController ||= begin
+      notificationController = SJNotificationViewController.alloc.initWithNibName("SJNotificationViewController", bundle:nil)
+      notificationController.setParentView App.delegate.window
+      notificationController.setNotificationTitle "Loading"
+      notificationController.backgroundColor = '#39a7d2'.to_color.colorWithAlphaComponent(0.42)
+      notificationController.setShowSpinner true
+    end
+  end
+
   def dashboardController
     @dashboardController ||= DashboardController.alloc.initWithTabBar
   end
 
   def friendsViewController
     @friendsViewController ||= FriendsViewController.alloc.initWithTabBar
+  end
+
+  def friendDetailViewController
+    @friendDetailViewController ||= FriendDetailViewController.alloc.init
   end
 
   def friendsGridController
@@ -36,12 +50,12 @@ class AppDelegate
     @photosNavController ||= UINavigationController.alloc.initWithRootViewController(photosController)
   end
 
-  def gridController
-    @gridController ||= GridViewController.new
+  def gridViewController
+    @gridViewController ||= GridViewController.new
   end
 
   def gridNavController
-    @gridNavController ||= UINavigationController.alloc.initWithRootViewController(gridController)
+    @gridNavController ||= UINavigationController.alloc.initWithRootViewController(gridViewController)
   end
 
   def userController
@@ -64,6 +78,10 @@ class AppDelegate
       login_controller.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal
       login_controller
     end
+  end
+
+  def server
+    @server ||= Server.new(frequency_app_uri)
   end
 
   def window
@@ -242,7 +260,7 @@ class AppDelegate
   # =============
 
   def application(application, didFinishLaunchingWithOptions:launchOptions)
-
+    server # initialize Server communications
     App::Persistence['points_checkins'] = 0 unless App::Persistence['points_checkins']
     App::Persistence['points_photos'] = 0 unless App::Persistence['points_photos']
     App::Persistence['points_badges'] = 0 unless App::Persistence['points_badges']
@@ -259,7 +277,7 @@ class AppDelegate
     gridNavController.navigationBar.setBackgroundImage(UIImage.imageNamed("top-nav-bg.png"), forBarMetrics: UIBarMetricsDefault)
 
     setToolbarButtonsForDashboard
-    gridController.navigationItem.rightBarButtonItem = UIBarButtonItem.alloc.initWithCustomView(navToolbar)
+    gridViewController.navigationItem.rightBarButtonItem = UIBarButtonItem.alloc.initWithCustomView(navToolbar)
 
     App.run_after(0.5) {show_login_modal} unless logged_in?
 

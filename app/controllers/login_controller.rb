@@ -82,17 +82,10 @@ class LoginController < UIViewController
 
   private
 
-  # Populate the textField with the user's username if successfully signed in
+
   def showUserInfo
     textLabel.textColor = UIColor.blackColor
     textLabel.text = "Login Successful!"
-    # FBRequest.requestForMe.startWithCompletionHandler(lambda do |connection, user, error|
-    #   if error.nil?
-    #     NSLog("#{user.inspect}")
-    #     textLabel.textColor = UIColor.blackColor
-    #     textLabel.text = "#{user[:name]}"
-    #   end
-    # end)
   end
 
   # Reset the textLable back to gray with DEFAULT_TEXT
@@ -105,55 +98,102 @@ class LoginController < UIViewController
     self.dismissModalViewControllerAnimated(true)
   end
 
+  def request(request, didLoadResponse: response)
+    data = response.bodyAsString.dataUsingEncoding(NSUTF8StringEncoding)
+    error_ptr = Pointer.new(:object)
+    json = NSJSONSerialization.JSONObjectWithData(data, options:0, error:error_ptr)
+    puts "new request worked"
+    if json['status'] && json['status'] == 'success'# && json['authentication_token']
+
+      App::Persistence['user_auth_token'] = json['authentication_token']
+      App::Persistence['user_profile_image_url'] = json['profile_image_url']
+      puts "user auth token saved"
+
+      App.delegate.current_user
+
+      url_string = NSURL.URLWithString(App.delegate.profile_image_url)
+      App.delegate.profile_image_view.setImageWithURL(url_string, placeholderImage: UIImage.imageNamed("friends.png"))
+
+      App.delegate.friends.refresh
+      App.delegate.user_photos_list.refresh {App.delegate.gridViewController.refresh_slideshow}
+
+      dismissDialog
+
+      unless App::Persistence['asked_user_for_publish_permissions']
+
+        App.run_after(3) {
+          FBSession.activeSession.reauthorizeWithPublishPermissions(["publish_checkins", "publish_stream"],
+                                  defaultAudience:FBSessionDefaultAudienceFriends,
+                                  completionHandler: lambda do |session, error|
+                                    App::Persistence['asked_user_for_publish_permissions'] = true
+                                    puts "finished asking"
+                                    puts "session: #{session.permissions}"
+                                  end)
+        }
+
+
+      end
+    else
+      puts "user auth not saved"
+      resetTextLabel
+      authButton.setTitle("Sign in with Facebook", forState: UIControlStateNormal)
+      App.alert("Login Failed")
+    end
+
+  end
+
   def authenticateWithServer
     puts "requesting user auth token from facebook access token"
     access_token = FBSession.activeSession.accessToken
     puts "init"
     authentication = Frequency::Authentication.new(access_token)
     puts "authenticate"
-    BW::HTTP.post(authentication.url, {payload: authentication.payload}) do |response|
-      if response.ok?
-        puts "response ok"
-        json = BW::JSON.parse(response.body.to_str)
-        if json['status'] && json['status'] == 'success'# && json['authentication_token']
+    # App.delegate.server.post(authentication.url, authentication.payload, self)
+    FRequest.new(POST, authentication.path, authentication.params, self)
 
-          App::Persistence['user_auth_token'] = json['authentication_token']
-          App::Persistence['user_profile_image_url'] = json['profile_image_url']
-          puts "user auth token saved"
+    # BW::HTTP.post(authentication.url, {payload: authentication.payload}) do |response|
+    #   if response.ok?
+    #     puts "response ok"
+    #     json = BW::JSON.parse(response.body.to_str)
+    #     if json['status'] && json['status'] == 'success'# && json['authentication_token']
 
-          App.delegate.current_user
+    #       App::Persistence['user_auth_token'] = json['authentication_token']
+    #       App::Persistence['user_profile_image_url'] = json['profile_image_url']
+    #       puts "user auth token saved"
 
-          url_string = NSURL.URLWithString(App.delegate.profile_image_url)
-          App.delegate.profile_image_view.setImageWithURL(url_string, placeholderImage: UIImage.imageNamed("friends.png"))
+    #       App.delegate.current_user
 
-          App.delegate.friends.refresh
-          App.delegate.user_photos_list.refresh {App.delegate.gridController.refresh_slideshow}
+    #       url_string = NSURL.URLWithString(App.delegate.profile_image_url)
+    #       App.delegate.profile_image_view.setImageWithURL(url_string, placeholderImage: UIImage.imageNamed("friends.png"))
 
-          dismissDialog
+    #       App.delegate.friends.refresh
+    #       App.delegate.user_photos_list.refresh {App.delegate.gridController.refresh_slideshow}
 
-          unless App::Persistence['asked_user_for_publish_permissions']
+    #       dismissDialog
 
-            App.run_after(3) {
-              FBSession.activeSession.reauthorizeWithPublishPermissions(["publish_checkins", "publish_stream"],
-                                      defaultAudience:FBSessionDefaultAudienceFriends,
-                                      completionHandler: lambda do |session, error|
-                                        App::Persistence['asked_user_for_publish_permissions'] = true
-                                        puts "finished asking"
-                                        puts "session: #{session.permissions}"
-                                      end)
-            }
+    #       unless App::Persistence['asked_user_for_publish_permissions']
+
+    #         App.run_after(3) {
+    #           FBSession.activeSession.reauthorizeWithPublishPermissions(["publish_checkins", "publish_stream"],
+    #                                   defaultAudience:FBSessionDefaultAudienceFriends,
+    #                                   completionHandler: lambda do |session, error|
+    #                                     App::Persistence['asked_user_for_publish_permissions'] = true
+    #                                     puts "finished asking"
+    #                                     puts "session: #{session.permissions}"
+    #                                   end)
+    #         }
 
 
-          end
-        else
-          puts "user auth not saved"
-          App.alert("Login Failed")
-        end
-      else
-        puts "response not ok"
-        App.alert("Login Failed due to server error. Please Try Again.")
-      end
-    end
+    #       end
+    #     else
+    #       puts "user auth not saved"
+    #       App.alert("Login Failed")
+    #     end
+    #   else
+    #     puts "response not ok"
+    #     App.alert("Login Failed due to server error. Please Try Again.")
+    #   end
+    # end
   end
 
   # Called when the FBSessionStateChangedNotification is pushed out

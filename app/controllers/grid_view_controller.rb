@@ -80,7 +80,7 @@ class GridViewController < UIViewController
     @photos_view.addSubview(@label_row_1_bg)
 
     @photos_view_label = UILabel.alloc.initWithFrame([[10,0], [310,30]])
-    @photos_view_label.text = "LOADING PHOTOS"
+    @photos_view_label.text = "PHOTOS"
     @photos_view_label.font = @font_light
     @photos_view_label.textColor = UIColor.whiteColor
     @photos_view_label.backgroundColor = UIColor.clearColor
@@ -189,9 +189,17 @@ class GridViewController < UIViewController
     end
 
     @friend = UIImageView.alloc.initWithFrame(@friends_view.bounds)
-    @friend.setImageWithURL(NSURL.URLWithString(@friends_list.all.first['fb_profile_image_url']), placeholder: UIImage.imageNamed("friends.png")) if @friends_list.all.first
+    @friend.setImageWithURL(NSURL.URLWithString(@friends_list.all.first['fb_profile_image_url']), placeholder: UIImage.imageNamed("friends.png")) if @friends_list.all && @friends_list.all.first
+    @friend.setContentMode(UIViewContentModeScaleAspectFill)
+
+    friend_layer = @friend.layer
+    friend_layer.masksToBounds = true
 
     @next_friend = UIImageView.alloc.initWithFrame(@friends_view.bounds)
+    @next_friend.setContentMode(UIViewContentModeScaleAspectFill)
+
+    next_layer = @friend.layer
+    next_layer.masksToBounds = true
 
     @friends_view.addSubview(@friend)
     @current_friend = 0
@@ -199,7 +207,7 @@ class GridViewController < UIViewController
   end
 
   def rotate_friends
-    if @friends_list.all.size > 0
+    if @friends_list.all && @friends_list.all.size > 0
 
         friend = @friends_list.all[@current_friend]
         @friend.setImageWithURL(NSURL.URLWithString(friend['fb_profile_image_url']), placeholder: UIImage.imageNamed("friends.png"))
@@ -287,7 +295,6 @@ class GridViewController < UIViewController
   def viewWillAppear(animated)
     App.delegate.current_user.refresh if App.delegate.logged_in?
     App.delegate.setToolbarButtonsForDashboard
-    @photos_view_label.text = "LOADING PHOTOS" if @photos_view_label
     load_photos_slideshow
     load_background_kbv
   end
@@ -323,17 +330,13 @@ class GridViewController < UIViewController
   def load_photos_slideshow
     unless @kbv
       @kbv = FUI::KenBurnsView.alloc.initWithFrame(@photos_view.bounds)
-      # Dispatch::Queue.concurrent.async {
-        load_photos_list
-        @photos = load_photos
-        # Dispatch::Queue.main.sync {
-          @kbv.animateWithImages(@photos, transitionDuration:5, loop: true, isLandscape:true)
-          @photos_view.addSubview(@kbv)
-          @photos_view.addSubview(@label_row_1_bg)
-          @photos_view_label.text = "PHOTOS"
-          @photos_view.addSubview(@photos_view_label)
-        # }
-      # }
+      load_photos_list
+      @photos = load_photos
+      @kbv.animateWithImages(@photos, transitionDuration:5, loop: true, isLandscape:true)
+      @photos_view.addSubview(@kbv)
+      @photos_view.addSubview(@label_row_1_bg)
+      @photos_view_label.text = "PHOTOS"
+      @photos_view.addSubview(@photos_view_label)
     end
   end
 

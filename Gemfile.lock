@@ -54,6 +54,6 @@ PLATFORMS
 DEPENDENCIES
   bubble-wrap
   map-kit-wrapper
-  motion-cocoapods
+  motion-cocoapods (~> 1.2.1)
   motion-testflight
   rubymotion_generators

@@ -35,6 +35,13 @@ class PointsView < UIView
     @points_value_label.text = @total_points_formatted
   end
 
+  def resetPoints
+    @gem_view.left_points = 0
+    @gem_view.middle_points = 0
+    @gem_view.right_points = 0
+    @points_value_label.text = "0"
+  end
+
   def total_points_formatted
     @total_points_formatted ? @total_points_formatted : "0"
   end
