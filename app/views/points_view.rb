@@ -18,9 +18,9 @@ class PointsView < UIView
 
       # setPoints(rand(5000),rand(5000),rand(5000))
 
-      self.when_tapped do
-        setPoints(rand(5000),rand(5000),rand(5000))
-      end
+      # self.when_tapped do
+      #   setPoints(rand(5000),rand(5000),rand(5000))
+      # end
 
     end
     self

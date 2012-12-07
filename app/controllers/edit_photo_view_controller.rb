@@ -1,19 +1,21 @@
 class EditPhotoViewController < UIViewController
-  attr_accessor :image, :image_jpeg, :file_upload_background_task_id
+  attr_accessor :image, :photo, :pro_photo
 
-  def initWithImage(aImage)
+  def initWithImage(aImage, photo:photo)
+    @font_light = UIFont.fontWithName("DIN-Light", size:18)
     me = init
-    # @image = aImage
     self.image = aImage
-    self.file_upload_background_task_id = UIBackgroundTaskInvalid
+    self.photo = photo
+    if photo['taken_by']
+      self.pro_photo = false
+    else
+      self.pro_photo = true
+    end
     me
   end
 
   def viewDidLoad
     super
-
-    cancel_button = UIBarButtonItem.alloc.initWithTitle("Cancel", style:UIBarButtonItemStyleBordered, target:self, action:'dismissModal')
-    self.navigationItem.leftBarButtonItem = cancel_button
 
     self.navigationItem.rightBarButtonItem = UIBarButtonItem.alloc.initWithCustomView(App.delegate.navToolbar)
 
@@ -22,22 +24,70 @@ class EditPhotoViewController < UIViewController
     @scrollView.backgroundColor = UIColor.grayColor
     self.view.addSubview @scrollView
 
-    photoImageView = UIImageView.alloc.initWithFrame([[20, 42], [280, 280]])
+    puts self.pro_photo
+    frame = self.pro_photo ? [[5, 32], [310, 213]] : [[10, 22], [300, 300]]
+
+    photoImageView = UIImageView.alloc.initWithFrame(frame)
     photoImageView.setBackgroundColor(UIColor.blackColor)
-    # photoImageView.setImage(@image)
     photoImageView.setImage(self.image)
-    photoImageView.setContentMode(UIViewContentModeScaleAspectFit)
+    photoImageView.setContentMode(UIViewContentModeScaleAspectFill)
 
     layer = photoImageView.layer
-    layer.masksToBounds = false
+    layer.masksToBounds = true
     layer.shadowRadius = 3.0
     layer.shadowOffset = [0.0, 2.0]
     layer.shadowOpacity = 0.5
     layer.shouldRasterize = true
 
-    @scrollView.addSubview(photoImageView)
+    if self.pro_photo && photo['users'].size > 0
+      tagged = []
 
-    @scrollView.setContentSize([320, 500])
+      containerView = UIView.alloc.initWithFrame([[5,245 + tagged.size * 54], [310, 54]])
+      containerView.backgroundColor = UIColor.whiteColor
+      tagged_label = UILabel.alloc.initWithFrame [[13, 10], [180, 30]]
+      tagged_label.font = UIFont.fontWithName("DIN-Light", size:24)
+      tagged_label.backgroundColor = UIColor.clearColor
+      tagged_label.text = "In this photo"
+      containerView.addSubview tagged_label
+
+      tagged << containerView
+
+      photo['users'].each do |user|
+        containerView = UIView.alloc.initWithFrame([[5,245 + tagged.size * 54], [310, 54]])
+        containerView.backgroundColor = UIColor.whiteColor
+        profile_image_view = UIImageView.alloc.initWithFrame([[4,4],[45,45]])
+        url_string = NSURL.URLWithString(user['fb_profile_image_square_url'])
+        profile_image_view.setImageWithURL(url_string, placeholderImage: UIImage.imageNamed("friends.png"))
+
+        containerView.addSubview profile_image_view
+
+        layer = profile_image_view.layer
+        layer.cornerRadius = 3
+        layer.masksToBounds = true
+
+        # profile_button = UIButton.buttonWithType(UIButtonTypeCustom)
+        # profile_button.frame = [[4,4],[45,45]]
+        # profile_button.addTarget(self, action:"didTapUserButtonAction", forControlEvents:UIControlEventTouchUpInside)
+        # containerView.addSubview profile_button
+
+        tagged_label = UILabel.alloc.initWithFrame [[55, 3], [180, 30]]
+        tagged_label.font = @font_light
+        tagged_label.backgroundColor = UIColor.clearColor
+        tagged_label.text = user['name']
+
+        containerView.addSubview tagged_label
+
+        tagged << containerView
+      end
+
+      tagged.each do |view|
+        @scrollView.addSubview view
+      end
+    end
+
+    @scrollView.addSubview(photoImageView)
+    size = self.pro_photo ? [320, 300 + tagged.size * 54] : [320, 400]
+    @scrollView.setContentSize(size)
   end
 
   def viewWillAppear(animated)
@@ -49,94 +99,39 @@ class EditPhotoViewController < UIViewController
 
     flexibleSpace = UIBarButtonItem.alloc.initWithBarButtonSystemItem(UIBarButtonSystemItemFlexibleSpace, target:nil, action:nil)
 
-    publish_button = UIBarButtonItem.alloc.initWithTitle("Publish", style:UIBarButtonItemStyleDone, target:self, action:'publishImage')
+    more_button = UIBarButtonItem.alloc.initWithBarButtonSystemItem(UIBarButtonSystemItemTrash, target:self, action:'showOptions')
 
     buttons << flexibleSpace
     buttons << App.delegate.points
     buttons << flexibleSpace
-    buttons << publish_button
+    buttons << more_button if photo['user_id'] == App.delegate.current_user.id
 
     App.delegate.navToolbar.setItems(buttons, animated:false)
   end
 
-  def dismissModal
-    App.delegate.photosController.navigationItem.rightBarButtonItem = UIBarButtonItem.alloc.initWithCustomView(App.delegate.navToolbar)
-    App.delegate.photosController.setToolbarButtons
-    self.dismissModalViewControllerAnimated(true)
+  def showOptions
+    popupQuery = UIActionSheet.alloc.initWithTitle("", delegate:self, cancelButtonTitle:'Cancel', destructiveButtonTitle:"Delete", otherButtonTitles:nil)
+    popupQuery.delegate = self
+    popupQuery.actionSheetStyle = UIActionSheetStyleBlackOpaque
+    popupQuery.showInView(view)
   end
 
-  # def resizeImage(image, width, height)
-  #   size = image.size # TODO: make new size object correct way
-  #   size.width = width
-  #   size.height = height
-  #   newRect = CGRectIntegral(CGRectMake(0, 0, size.width, size.height))
-  #   imageRef = image.CGImage
-  #   UIGraphicsBeginImageContext(size)
-  #   context = UIGraphicsGetCurrentContext()
-
-  #   CGContextSetInterpolationQuality(context, KCGInterpolationHigh)
-  #   flipVertical = CGAffineTransformMake(1, 0, 0, -1, 0, size.height)
-
-  #   CGContextConcatCTM(context, flipVertical)
-  #   CGContextDrawImage(context, newRect, imageRef)
-
-  #   newImageRef = CGBitmapContextCreateImage(context)
-  #   newImage = UIImage.imageWithCGImage(newImageRef)
-
-  #   CGImageRelease(newImageRef)
-  #   UIGraphicsEndImageContext()
-
-  #   return newImage
-  # end
-
-  def publishImage
-    if self.file_upload_background_task_id != UIBackgroundTaskInvalid
-      App.alert("Photo upload in progress.")
-      return false
+  def actionSheet(actionSheet, clickedButtonAtIndex:buttonIndex)
+    puts buttonIndex
+    case buttonIndex
+      when 0
+        deletePhoto
+      when 1
+        # cancelled
     end
-    # small_image = resizeImage(@image, 960, 716)
-    # imageData = UIImageJPEGRepresentation(small_image, 0.8)
+  end
 
-    # image_jpeg = UIImageJPEGRepresentation(@image, 0.8)
-    self.image_jpeg = UIImageJPEGRepresentation(image, 0.6)
-
-    # self.file_upload_background_task_id = UIApplication.sharedApplication.beginBackgroundTaskWithExpirationHandler(lambda do
-    #     puts "start background handler block"
-    #     if self.file_upload_background_task_id != UIBackgroundTaskInvalid
-
-    #       puts "#{self.file_upload_background_task_id}"
-    #       # UIApplication.sharedApplication.endBackgroundTask(self.file_upload_background_task_id)
-    #       # self.file_upload_background_task_id = UIBackgroundTaskInvalid
-    #     end
-    #     puts "end background handler block"
-    # end)
-
-
-    self.file_upload_background_task_id = UIApplication.sharedApplication.beginBackgroundTaskWithExpirationHandler(nil)
-
-    puts "Requested background expiration task with id #{self.file_upload_background_task_id} for Fan Photo upload"
-    data = {auth_token: App::Persistence['user_auth_token']}
-    App.delegate.notificationController.setNotificationTitle "Uploading photo"
+  def deletePhoto
+    App.delegate.notificationController.setNotificationTitle "Deleting photo"
     App.delegate.notificationController.show
-
-    BW::HTTP.post("#{App.delegate.frequency_app_uri}/api/mobile/fan_photos", {payload: data, files: {:picture => image_jpeg} }) do |response|
-      if response.ok?
-        puts "Fan Photo uploaded successfully"
-        App.delegate.notificationController.hide
-        App.delegate.user_photos_list.refresh
-        UIApplication.sharedApplication.endBackgroundTask(self.file_upload_background_task_id)
-      self.file_upload_background_task_id = UIBackgroundTaskInvalid
-      dismissModal
-      else
-        App.delegate.notificationController.hide
-        UIApplication.sharedApplication.endBackgroundTask(self.file_upload_background_task_id)
-        self.file_upload_background_task_id = UIBackgroundTaskInvalid
-        App.alert("There was an error uploading your photo.  Please try again later.")
-        # TODO: handle failure
-      end
-
-    end
-
+    fan_photo = Frequency::FanPhoto.new(photo['id'])
+    fan_photo.destroy #{|request| puts request}
+    App.run_after(1) { App.delegate.user_photos_list.refresh; self.navigationController.popViewControllerAnimated(true) }
   end
 
 end

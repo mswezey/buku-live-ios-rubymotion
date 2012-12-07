@@ -85,8 +85,16 @@ class FriendDetailViewController < UIViewController
 
   end
 
+  def viewDidDisappear(animated)
+    @activity_list.removeFromSuperview if @activity_list
+  end
+
   def viewWillAppear(animated)
     @name_label.text = "LOADING"
+
+    @activity_list = ActivityView.alloc.initWithFrame([[10,415],[310,270]])
+    @scroll_view.addSubview(@activity_list)
+
     @points_view.resetPoints
     if (@photos_view.subviews.count > 0)
       @photos_view.subviews.objectAtIndex(0).removeFromSuperview
@@ -95,14 +103,24 @@ class FriendDetailViewController < UIViewController
     @friend.refresh
 
     @profile_picture.setImageWithURL(NSURL.URLWithString(@profile_image_url), placeholder: UIImage.imageNamed("friends.png")) # TODO: Replace placeholder image
+    @profile_picture.setContentMode(UIViewContentModeScaleAspectFill)
+
+    profile_picture_layer = @profile_picture.layer
+    profile_picture_layer.masksToBounds = true
 
     setToolbarButtons
   end
 
   def friendDidLoad
     puts "friend did load"
+
+    @profile_picture.setImageWithURL(NSURL.URLWithString(@friend.attributes['fb_profile_image_url']), placeholder: UIImage.imageNamed("friends.png")) # TODO: Replace placeholder image
+
     @points_view.setPoints(@friend.attributes["points_from_checkins"], @friend.attributes["points_from_badges"], @friend.attributes["points_from_photos"])
+
     @name_label.text = @friend.attributes['name'].upcase
+
+    @activity_list.activities = @friend.attributes['activities']
 
     @photos_list = @friend.attributes["recent_fan_photos"]
     if @photos_list.size > 0

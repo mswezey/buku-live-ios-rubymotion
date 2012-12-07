@@ -29,10 +29,12 @@ class FriendsGridController < KKGridViewController
 
   def viewWillAppear(animated)
     App.delegate.setToolbarButtonsForOther
-    App.delegate.friends.refresh do |complete|
-      @friends = App.delegate.friends.all
-      self.gridView.reloadData
-    end
+    App.delegate.friends.refresh
+  end
+
+  def friendsDidLoad
+    @friends = App.delegate.friends.all
+    # TODO: FIX THIS - self.gridView.reloadData
   end
 
   # def shouldAutorotateToInterfaceOrientation(interfaceOrientation)

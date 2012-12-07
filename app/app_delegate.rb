@@ -1,6 +1,6 @@
 class AppDelegate
 
-  attr_accessor :user_photos_list, :friends, :photographers
+  attr_accessor :photographers
 
   ::FBSessionStateChangedNotification = "#{App.identifier}:FBSessionStateChangedNotification"
 
@@ -24,6 +24,10 @@ class AppDelegate
 
   def dashboardController
     @dashboardController ||= DashboardController.alloc.initWithTabBar
+  end
+
+  def dashboard_activity_view
+    @dashboard_activity_view ||= ActivityView.alloc.initWithFrame([[0,428],[320,160]])
   end
 
   def friendsViewController
@@ -96,14 +100,35 @@ class AppDelegate
     @photographers ||= Frequency::PhotographerList.new
   end
 
-  def load_user_photos_list
+  def user_photos_list
+    NSLog("USER PHOTOS NEW")
     @user_photos_list ||= Frequency::FanPhotoList.new
+    NSLog("AFTER USER PHOTOS NEW")
+    @user_photos_list
+  end
+
+  def pro_photos_list
+    @pro_photos_list ||= Frequency::ProPhotoList.new
+  end
+
+  def combined_photos_list
+    @combined_photos_list ||= Frequency::CombinedPhotoList.new
+    @combined_photos_list
+  end
+
+  def load_user_photos_list
+    NSLog("LOAD USER PHOTOS")
+    user_photos_list
     @user_photos_list.refresh if logged_in?
+    NSLog("AFTER LOAD USER PHOTOS")
+  end
+
+  def friends
+    @friends ||= Frequency::FriendList.new
   end
 
   def load_friends_list
-    @friends ||= Frequency::FriendList.new
-    @friends.refresh if logged_in?
+    friends.refresh if logged_in?
   end
 
   def logged_in?
@@ -111,7 +136,7 @@ class AppDelegate
   end
 
   def show_login_modal
-    window.rootViewController.presentModalViewController(loginController, animated:true )
+    window.rootViewController.presentModalViewController(loginController, animated:true ) unless window.rootViewController.visibleViewController == loginController
   end
 
   def menuButton
@@ -227,6 +252,7 @@ class AppDelegate
     # profile picture for nav bar
     @profile ||= begin
       profile = UIBarButtonItem.alloc.initWithCustomView(profile_image_view)
+      profile
     end
   end
 
@@ -236,22 +262,32 @@ class AppDelegate
       profile_image_view.layer.masksToBounds = true
       url_string = NSURL.URLWithString(profile_image_url)
       profile_image_view.setImageWithURL(url_string, placeholderImage: UIImage.imageNamed("friends.png"))
+      profile_image_view.when_tapped do
+        if logged_in?
+          detail_view_controller = App.delegate.friendDetailViewController
+          detail_view_controller.friend_id = current_user.id
+          detail_view_controller.profile_image_url = current_user.profile_image_url
+          App.delegate.gridNavController.pushViewController(detail_view_controller, animated:true)
+        end
+      end
+      profile_image_view
     end
   end
 
   def my_points_view
     @my_points_view ||= begin
-      points_view = PointsView.alloc.initWithFrame([[0, 428],[160, 160]]) # row 3
+      points_view = PointsView.alloc.initWithFrame([[0, 238],[160, 160]]) # row 2
       points_view.backgroundColor = '#39a7d2'.to_color
       points_view
     end
   end
 
   def profile_image_url
-    App::Persistence['user_profile_image_url'] || ""
+    App::Persistence['user_profile_image_url']
   end
 
   def current_user
+    NSLog("INITIALIZE CURRENT USER")
     @current_user ||= Frequency::User.new
   end
 
@@ -269,8 +305,8 @@ class AppDelegate
 
     load_user_photos_list
     load_friends_list
+    NSLog("BEFORE rootViewController")
     window.rootViewController = gridNavController
-    # window.rootViewController = logged_in? ? gridNavController : loginController
     window.rootViewController.wantsFullScreenLayout = true
     window.makeKeyAndVisible
 
@@ -345,6 +381,8 @@ class AppDelegate
     FBSession.activeSession.closeAndClearTokenInformation
     App::Persistence['user_auth_token'] = nil
     App::Persistence['user_profile_image_url'] = nil
+    App::Persistence['user_fb_profile_image_url'] = nil
+    App::Persistence['user_id'] = nil
     App::Persistence['asked_user_for_publish_permissions'] = nil
     File.open("#{App.documents_path}/friends.json", "w") {|f| f.write("[]")}
     File.open("#{App.documents_path}/fan_photos.json", "w") {|f| f.write("[]")}

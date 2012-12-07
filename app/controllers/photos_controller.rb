@@ -11,15 +11,12 @@ class PhotosController < UITableViewController
     me
   end
 
-  def tableView(tableView, heightForRowAtIndexPath:indexPath)
-    225
-  end
-
   def setToolbarButtons
     buttons = []
 
     flexibleSpace = UIBarButtonItem.alloc.initWithBarButtonSystemItem(UIBarButtonSystemItemFlexibleSpace, target:nil, action:nil)
     camera_button = UIBarButtonItem.alloc.initWithBarButtonSystemItem(UIBarButtonSystemItemCamera, target:self, action:'photoCaptureButtonAction')
+
 
     buttons << flexibleSpace
     buttons << App.delegate.points
@@ -124,19 +121,14 @@ class PhotosController < UITableViewController
     super
     self.navigationItem.rightBarButtonItem = UIBarButtonItem.alloc.initWithCustomView(App.delegate.navToolbar)
     view.dataSource = view.delegate = self
-  end
-
-  def objectLoader(object_loader, didLoadObjects:coffee_shops)
-    add_coffee_shops(coffee_shops)
-  end
-
-  def objectLoader(object_loader, didFailWithError:error)
-    log "Error: #{error.inspect}"
+    self.tableView.setSeparatorStyle(UITableViewCellSeparatorStyleNone)
+    self.view.backgroundColor = UIColor.grayColor
+    load_photos
   end
 
   def viewWillAppear(animated)
     setToolbarButtons
-    App.delegate.user_photos_list.refresh
+    App.delegate.combined_photos_list.refresh
     load_photos
   end
 
@@ -154,39 +146,76 @@ class PhotosController < UITableViewController
 
 ## Table view data source
 
+  def tableView(tableView, viewForHeaderInSection:section)
+    photo = @photos[section]['fan_photo']
+    if photo
+      headerView = PhotoHeaderView.alloc.initWithFrame([[0,0],[self.view.bounds.size.width, 74]], photo:photo)
+      return headerView
+    else
+      headerView = UIView.alloc.initWithFrame([[0,0],[self.view.bounds.size.width, 20]])
+      headerView.backgroundColor = UIColor.clearColor
+      return headerView
+    end
+  end
+
+  def tableView(tableView, heightForHeaderInSection:section)
+    photo = @photos[section]['fan_photo']
+    if photo
+      74
+    else
+      20
+    end
+  end
+
+  def tableView(tableView, viewForFooterInSection:section)
+    footerView = UIView.alloc.initWithFrame([[0,0], [self.tableView.bounds.size.width, 16.0]])
+    footerView
+  end
+
+  def tableView(tableView, heightForFooterInSection:section)
+    16
+  end
+
+  def tableView(tableView, heightForRowAtIndexPath:indexPath)
+    photo = @photos[indexPath.section]['fan_photo']
+    if photo
+      280
+    else
+      213
+    end
+  end
+
   def numberOfSectionsInTableView(tableView)
     # Return the number of sections.
-    1
+    @photos ? @photos.length : 0
   end
 
   def tableView(tableView, numberOfRowsInSection:section)
     # Return the number of rows in the section.
-    @photos ? @photos.length : 0
+    # @photos ? @photos.length : 0
+    1
   end
 
   def tableView(tableView, cellForRowAtIndexPath:indexPath)
-    @reuseIdentifier ||= "CELL_IDENTIFIER"
+    photo = @photos[indexPath.section]
+    if photo['fan_photo']
+      photo_type = "FAN"
+      photo = photo['fan_photo']
+    else
+      photo_type = "PRO"
+      photo = photo['picture']
+    end
+
+    reuseIdentifier = "CELL_IDENTIFIER_#{photo_type}"
     cell = tableView.dequeueReusableCellWithIdentifier(@reuseIdentifier) || begin
-      cell = UITableViewCell.alloc.initWithStyle(UITableViewCellStyleDefault, reuseIdentifier:@reuseIdentifier)
+      cell = PhotoCell.alloc.initWithStyle(UITableViewCellStyleDefault, reuseIdentifier:@reuseIdentifier, photo:photo)
       # cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator
       cell
     end
-    photo = @photos[indexPath.row]
-
-    string = photo['fan_photo']['image']['mobile_small']['url']
+    string = photo['image']['mobile_small']['url']
     urlString = NSURL.URLWithString(string)
-
-    # cell.imageView.setImageWithURL(urlString, placeholderImage: UIImage.imageNamed("photo-placeholder.png"))
-
-    image_view = UIImageView.alloc.init
-    image_view.setImageWithURL(urlString, placeholderImage: UIImage.imageNamed("photo-placeholder.png"))
-    image_view.setContentMode(UIViewContentModeScaleAspectFill)
-
-    layer = image_view.layer
-    layer.masksToBounds = true
-
-    cell.backgroundView = image_view
-    # [ [[UIImageView alloc] initWithImage:[ [UIImage imageNamed:@"cell_normal.png"] stretchableImageWithLeftCapWidth:0.0 topCapHeight:5.0] ]autorelease];
+    cell.imageView.setImageWithURL(urlString, placeholderImage: UIImage.imageNamed("photo-placeholder.png"))
+    cell.photo = photo
 
     cell
   end
@@ -229,84 +258,27 @@ class PhotosController < UITableViewController
 ## Table view delegate
 
   def tableView(tableView, didSelectRowAtIndexPath:indexPath)
-    # Navigation logic may go here. Create and push another view controller.
-    detailViewController = PhotoDetailViewController.alloc.init
-    detailViewController.view = UIScrollView.alloc.initWithFrame(self.view.bounds)
+    tableView.deselectRowAtIndexPath(indexPath, animated:true)
 
-    photo = @photos[indexPath.row]
-    url = NSURL.URLWithString(photo['fan_photo']['image']['mobile_medium']['url'])
-    data = NSData.dataWithContentsOfURL(url)
-    image = UIImage.imageWithData(data)
-    image_view = UIImageView.alloc.initWithImage(image)
-    detailViewController.view.contentSize = image_view.bounds.size
-    detailViewController.view.addSubview(image_view)
+    # # Navigation logic may go here. Create and push another view controller.
+    # detailViewController = PhotoDetailViewController.alloc.init
+    # detailViewController.view = UIScrollView.alloc.initWithFrame(self.view.bounds)
 
-    # Pass the selected object to the new view controller.
-    self.navigationController.pushViewController(detailViewController, animated:true)
-  end
+    # photo = @photos[indexPath.row]
+    # url = NSURL.URLWithString(photo['fan_photo']['image']['mobile_medium']['url'])
+    # data = NSData.dataWithContentsOfURL(url)
+    # image = UIImage.imageWithData(data)
+    # image_view = UIImageView.alloc.initWithImage(image)
+    # detailViewController.view.contentSize = image_view.bounds.size
+    # detailViewController.view.addSubview(image_view)
 
-  def resizeImage(image, width, height)
-    size = image.size # TODO: make new size object correct way
-    size.width = width
-    size.height = height
-    newRect = CGRectIntegral(CGRectMake(0, 0, size.width, size.height))
-    imageRef = image.CGImage
-    UIGraphicsBeginImageContext(size)
-    context = UIGraphicsGetCurrentContext()
-
-    CGContextSetInterpolationQuality(context, KCGInterpolationHigh)
-    flipVertical = CGAffineTransformMake(1, 0, 0, -1, 0, size.height)
-
-    CGContextConcatCTM(context, flipVertical)
-    CGContextDrawImage(context, newRect, imageRef)
-
-    newImageRef = CGBitmapContextCreateImage(context)
-    newImage = UIImage.imageWithCGImage(newImageRef)
-
-    CGImageRelease(newImageRef)
-    UIGraphicsEndImageContext()
-
-    return newImage
-  end
-
-  def takePhoto
-    return false
-    BW::Device.camera.rear.picture(media_types: [:image]) do |result|
-      image = result[:original_image]
-      # small_image = UIImage.imageWithCGImage(image.CGImage, scale:0.5, orientation:image.imageOrientation)
-      # image_view = UIImageView.alloc.initWithImage(image)
-
-      # image_data = NSData.initWithImage(image)
-      # image_png = UIImagePNGRepresentation(image)
-
-      small_image = resizeImage(image, 960, 716)
-      image_jpeg = UIImageJPEGRepresentation(small_image, 0.2)
-
-      # self.title = "Uploading image..."
-      # self.view.image = small_image
-      self.view.alpha = 0.5
-
-      # progressBlock = Proc.new do |sending, written, expected|
-        # while sending <= expected do
-        #   @label.text = "#{sending} #{written} #{expected}"
-        #   sleep 1
-        # end
-      # end
-      # , :upload_progress => progressBlock
-      data = {auth_token: App::Persistence['user_auth_token']}
-      BW::HTTP.post("#{App.delegate.frequency_app_uri}/api/mobile/fan_photos", {payload: data, files: {:picture => image_jpeg} }) do |response|
-        if response.ok?
-          self.view.alpha = 1.0
-          App.delegate.user_photos_list.refresh {load_photos}
-        else
-          # TODO: handle failure
-        end
-      end
-    end
+    # # Pass the selected object to the new view controller.
+    # self.navigationController.pushViewController(detailViewController, animated:true)
   end
 
   def load_photos
-    @photos = App.delegate.user_photos_list.all
+    # @photos = App.delegate.user_photos_list.all
+    @photos = App.delegate.combined_photos_list.all
     self.view.reloadData
   end
 
@@ -319,7 +291,7 @@ class PhotosController < UITableViewController
 
     image = info.objectForKey(UIImagePickerControllerEditedImage)
 
-    viewController = EditPhotoViewController.alloc.initWithImage(image)
+    viewController = PublishPhotoViewController.alloc.initWithImage(image)
     viewController.setModalTransitionStyle(UIModalTransitionStyleCrossDissolve)
 
     navController = UINavigationController.alloc.initWithRootViewController(viewController)
