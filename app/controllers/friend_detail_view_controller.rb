@@ -60,7 +60,7 @@ class FriendDetailViewController < UIViewController
     badges_view.backgroundColor = '#39a7d2'.to_color.colorWithAlphaComponent(0.42)
     @scroll_view.addSubview(badges_view)
 
-    photo_badge = UIImageView.alloc.initWithFrame([[34,19],[90, 122]])
+    photo_badge = UIImageView.alloc.initWithFrame([[34,19],[90, 107]])
     photo_badge.image = UIImage.imageNamed("badge-photo.png")
     badges_view.addSubview(photo_badge)
 

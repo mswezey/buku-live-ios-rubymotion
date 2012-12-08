@@ -10,6 +10,7 @@ class ProPhotoList < Frequency::Base
 
   def request(request, didLoadResponse: response)
     if response.isOK
+      App.delegate.unauthorized_count = 0
       data = response.bodyAsString.dataUsingEncoding(NSUTF8StringEncoding)
       error_ptr = Pointer.new(:object)
       json_object = NSJSONSerialization.JSONObjectWithData(data, options:0, error:error_ptr)

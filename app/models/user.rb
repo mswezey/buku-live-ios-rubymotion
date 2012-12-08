@@ -18,12 +18,14 @@ class User < Frequency::Base
 
   def request(request, didLoadResponse: response)
     if response.isOK
+      App.delegate.unauthorized_count = 0
       App.delegate.notificationController.hide
       data = response.bodyAsString.dataUsingEncoding(NSUTF8StringEncoding)
       error_ptr = Pointer.new(:object)
       json_object = NSJSONSerialization.JSONObjectWithData(data, options:0, error:error_ptr)
       @attributes = json_object if json_object != nil
       update_points
+      load_badges
       load_activity
       App::Persistence['user_profile_image_url'] = @attributes['fb_profile_image_square_url']
       App::Persistence['user_fb_profile_image_url'] = @attributes['fb_profile_image_url']
@@ -44,6 +46,7 @@ class User < Frequency::Base
     self.points_checkins = @attributes['points_from_checkins']
     self.points_badges = @attributes['points_from_badges']
     self.points_photos = @attributes['points_from_photos']
+    App::Persistence['points_total'] = total_points_formatted
   end
 
   def id
@@ -86,11 +89,20 @@ class User < Frequency::Base
   end
 
   def total_points
-    @points_checkins + @points_photos + @points_badges
+    points_checkins + points_photos + points_badges
+  end
+
+  def total_points_formatted
+    total_points.to_s.reverse.gsub(/...(?=.)/,'\&,').reverse
   end
 
   def load_activity
-    App.delegate.dashboard_activity_view.activities = []#@attributes['activities']
+    App.delegate.dashboard_activity_view.activities = @attributes['activities']
+  end
+
+  def load_badges
+    App.delegate.badgeViewController.badges = @attributes['awards']
+    App.delegate.gridViewController.reloadBadgeData
   end
 
   def set_points

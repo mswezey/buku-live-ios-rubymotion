@@ -1,7 +1,7 @@
 module Frequency
 
-  # FREQUENCY_APP_URL = 'http://www.lan-live.com'
-  FREQUENCY_APP_URL = 'http://10.0.1.17:3000'
+  FREQUENCY_APP_URL = 'http://www.lan-live.com'
+  # FREQUENCY_APP_URL = 'http://10.0.1.17:3000'
 
   class Base
 
@@ -27,9 +27,18 @@ module Frequency
     end
 
     def handle_unauthorized_response
-      App.alert("Session Expired. Please login again.")
-      App.delegate.closeSession
-      App.delegate.show_login_modal
+      App.delegate.unauthorized_count += 1
+      NSLog("****** UNAUTHORIZED ATTEMPT #{App.delegate.unauthorized_count} ******")
+      if App.delegate.unauthorized_count > 5
+        NSLog("GIVING UP AFTER UNAUTHORIZED")
+        App.alert("Session Expired. Please login again.")
+        App.delegate.closeSession
+        App.delegate.show_login_modal
+        App.delegate.unauthorized_count = 0
+      else
+        NSLog("REFRESH AFTER UNAUTHORIZED")
+        refresh
+      end
     end
 
     def check_cache_file
@@ -82,6 +91,7 @@ module Frequency
 
     def request(request, didLoadResponse: response)
       puts "new response called"
+      App.delegate.unauthorized_count = 0
       data = response.bodyAsString.dataUsingEncoding(NSUTF8StringEncoding)
       error_ptr = Pointer.new(:object)
       @all = NSJSONSerialization.JSONObjectWithData(data, options:0, error:error_ptr)

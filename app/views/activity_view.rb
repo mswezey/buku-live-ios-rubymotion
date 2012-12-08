@@ -9,10 +9,7 @@ class ActivityView < UIWebView
       self.backgroundColor = UIColor.clearColor
       self.setOpaque false
       self.loadHTMLString("<html>#{html_head}<body><div class='activity din-medium'>Loading activity...</div></body></html>", baseURL:@baseURL)
-      # self.textColor = UIColor.whiteColor
-      # self.editable = false
-      # self.text = "Loading activity..."
-      # self.font = UIFont.fontWithName("DIN-Light", size:14)
+      self.scrollView.indicatorStyle = UIScrollViewIndicatorStyleWhite
     end
     self
   end

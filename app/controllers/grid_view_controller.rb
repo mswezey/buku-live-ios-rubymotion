@@ -1,5 +1,7 @@
 class GridViewController < UIViewController
-  include BubbleWrap::KVO
+  attr_accessor :carousel, :badges
+
+  # include BubbleWrap::KVO
 
   def load_photos_list
     NSLog("START LOAD PHOTOS LIST")
@@ -20,24 +22,24 @@ class GridViewController < UIViewController
     #   p "To Lat #{result[:to].latitude}, Long #{result[:to].longitude}" rescue p "rescue to #{result[:to]}"
     # end
 
-
+    self.navigationItem.leftBarButtonItem = App.delegate.qrButton
     self.navigationController.navigationBar.setBackgroundImage(UIImage.imageNamed("top-nav-bg.png"), forBarMetrics: UIBarMetricsDefault)
 
     @font_light = UIFont.fontWithName("DIN-Light", size:17)
 
     @scroll_view = UIScrollView.alloc.initWithFrame(view.bounds)
-    @scroll_view.contentSize = [320, 1012]
+    @scroll_view.contentSize = [320,995]
     @scroll_view.alwaysBounceVertical = false
     @scroll_view.delegate = self
     view.addSubview(@scroll_view)
 
-    label_row_2_bg = UIView.alloc.initWithFrame([[0,208],[320,30]])
+    label_row_2_bg = UIView.alloc.initWithFrame([[0,190],[320,30]])
     label_row_2_bg.backgroundColor = UIColor.blackColor.colorWithAlphaComponent(0.39)
-    label_row_3_bg = UIView.alloc.initWithFrame([[0,398],[320,30]])
+    label_row_3_bg = UIView.alloc.initWithFrame([[0,380],[320,30]])
     label_row_3_bg.backgroundColor = UIColor.blackColor.colorWithAlphaComponent(0.39)
-    label_row_4_bg = UIView.alloc.initWithFrame([[0,588],[320,30]])
+    label_row_4_bg = UIView.alloc.initWithFrame([[0,570],[320,30]])
     label_row_4_bg.backgroundColor = UIColor.blackColor.colorWithAlphaComponent(0.39)
-    label_row_5_bg = UIView.alloc.initWithFrame([[0,778],[320,30]])
+    label_row_5_bg = UIView.alloc.initWithFrame([[0,760],[320,30]])
     label_row_5_bg.backgroundColor = UIColor.blackColor.colorWithAlphaComponent(0.39)
 
 
@@ -55,7 +57,6 @@ class GridViewController < UIViewController
     loadFriendsSection
     loadActivitySection
     loadMapSection
-    loadQrScannerSection
 
     @scroll_view.addSubview(@photos_view)
     @scroll_view.addSubview(@now_performing_view)
@@ -65,14 +66,13 @@ class GridViewController < UIViewController
     @scroll_view.addSubview(@friends_view)
     @scroll_view.addSubview(@activity_view)
     @scroll_view.addSubview(@map_view)
-    @scroll_view.addSubview(@qr_scanner_view)
 
     App.delegate.my_points_view.setPoints(App::Persistence['points_checkins'], App::Persistence['points_badges'], App::Persistence['points_photos'])
     NSLog("END VIEW DID LOAD")
   end
 
   def loadPhotoSection
-    @photos_view = UIView.alloc.initWithFrame([[0,0],[320, 208]]) # row 1
+    @photos_view = UIView.alloc.initWithFrame([[0,0],[320, 190]]) # row 1
     @photos_view.backgroundColor = UIColor.blackColor
 
     @photos_view.when_tapped do
@@ -98,57 +98,57 @@ class GridViewController < UIViewController
   end
 
   def loadNowPerformingSection
-    # label = UILabel.alloc.initWithFrame([[10,208], [150,30]])
-    # label.text = "ON STAGE"
-    # label.font = @font_light
-    # label.textColor = UIColor.whiteColor
-    # label.backgroundColor = UIColor.clearColor
-    # @scroll_view.addSubview(label)
+    label = UILabel.alloc.initWithFrame([[10,760], [150,30]])
+    label.text = "ON STAGE"
+    label.font = @font_light
+    label.textColor = UIColor.whiteColor
+    label.backgroundColor = UIColor.clearColor
+    @scroll_view.addSubview(label)
 
-    # @now_performing_view = UIView.alloc.initWithFrame([[0,238],[160, 160]]) # row 2
-    # @now_performing_view.backgroundColor = "#e65af5".to_color.colorWithAlphaComponent(0.42)
+    @now_performing_view = UIView.alloc.initWithFrame([[0,790],[160, 160]]) # row 5
+    @now_performing_view.backgroundColor = "#e65af5".to_color.colorWithAlphaComponent(0.42)
 
-    # artist = UIImageView.alloc.init
-    # artist.image = UIImage.imageNamed("diplo.png")
-    # artist.frame = [[0,0],[160,160]]
-    # @now_performing_view.addSubview(artist)
+    artist = UIImageView.alloc.init
+    artist.image = UIImage.imageNamed("diplo.png")
+    artist.frame = [[0,0],[160,160]]
+    @now_performing_view.addSubview(artist)
   end
 
   def loadStillToComeSection
-    # label = UILabel.alloc.initWithFrame([[170,208], [150,30]])
-    # label.text = "UP NEXT"
-    # label.font = @font_light
-    # label.textColor = UIColor.whiteColor
-    # label.backgroundColor = UIColor.clearColor
-    # @scroll_view.addSubview(label)
+    label = UILabel.alloc.initWithFrame([[170,760], [150,30]])
+    label.text = "UP NEXT"
+    label.font = @font_light
+    label.textColor = UIColor.whiteColor
+    label.backgroundColor = UIColor.clearColor
+    @scroll_view.addSubview(label)
 
-    # @still_to_come_view = UIView.alloc.initWithFrame([[160, 238],[160, 160]]) # row 2
-    # @still_to_come_view.backgroundColor = '#e65af5'.to_color.colorWithAlphaComponent(0.42)
+    @still_to_come_view = UIView.alloc.initWithFrame([[160, 790],[160, 160]]) # row 5
+    @still_to_come_view.backgroundColor = '#e65af5'.to_color.colorWithAlphaComponent(0.42)
 
-    # label2 = UILabel.alloc.initWithFrame([[10,10], [150,20]])
-    # label2.text = "AVICII"
-    # label2.font = @font_light
-    # label2.textColor = UIColor.whiteColor
-    # label2.backgroundColor = UIColor.clearColor
-    # @still_to_come_view.addSubview(label2)
+    label2 = UILabel.alloc.initWithFrame([[10,10], [150,20]])
+    label2.text = "AVICII"
+    label2.font = @font_light
+    label2.textColor = UIColor.whiteColor
+    label2.backgroundColor = UIColor.clearColor
+    @still_to_come_view.addSubview(label2)
 
-    # label3 = UILabel.alloc.initWithFrame([[10,30], [150,20]])
-    # label3.text = "ADVENTURE CLUB"
-    # label3.font = @font_light
-    # label3.textColor = UIColor.whiteColor
-    # label3.backgroundColor = UIColor.clearColor
-    # @still_to_come_view.addSubview(label3)
+    label3 = UILabel.alloc.initWithFrame([[10,30], [150,20]])
+    label3.text = "ADVENTURE CLUB"
+    label3.font = @font_light
+    label3.textColor = UIColor.whiteColor
+    label3.backgroundColor = UIColor.clearColor
+    @still_to_come_view.addSubview(label3)
 
-    # label4 = UILabel.alloc.initWithFrame([[10,50], [150,20]])
-    # label4.text = "A-TRAK"
-    # label4.font = @font_light
-    # label4.textColor = UIColor.whiteColor
-    # label4.backgroundColor = UIColor.clearColor
-    # @still_to_come_view.addSubview(label4)
+    label4 = UILabel.alloc.initWithFrame([[10,50], [150,20]])
+    label4.text = "A-TRAK"
+    label4.font = @font_light
+    label4.textColor = UIColor.whiteColor
+    label4.backgroundColor = UIColor.clearColor
+    @still_to_come_view.addSubview(label4)
   end
 
   def loadMyPointsSection
-    label = UILabel.alloc.initWithFrame([[10,208], [150,30]])
+    label = UILabel.alloc.initWithFrame([[10,190], [150,30]])
     label.text = "MY POINTS"
     label.font = @font_light
     label.textColor = UIColor.whiteColor
@@ -161,31 +161,37 @@ class GridViewController < UIViewController
   end
 
   def loadBadgesSection
-    label = UILabel.alloc.initWithFrame([[170,208], [150,30]])
+    label = UILabel.alloc.initWithFrame([[170,190], [150,30]])
     label.text = "BADGES"
     label.font = @font_light
     label.textColor = UIColor.whiteColor
     label.backgroundColor = UIColor.clearColor
     @scroll_view.addSubview(label)
 
-    @badges_view = UIView.alloc.initWithFrame([[160, 238],[160, 160]]) # row 3
+    i_carousel = NSClassFromString('iCarousel')
+    @badges_view = i_carousel.alloc.initWithFrame([[160, 220],[160, 160]])
     @badges_view.backgroundColor = '#39a7d2'.to_color.colorWithAlphaComponent(0.42)
-    photo_badge = UIImageView.alloc.initWithFrame([[34,19],[90, 122]])
-    photo_badge.image = UIImage.imageNamed("badge-photo.png")
-    @badges_view.addSubview(photo_badge)
+    @badges_view.type = 1
+    @badges_view.delegate = App.delegate.badgeViewController
+    @badges_view.dataSource = App.delegate.badgeViewController
+    @badges_view.clipsToBounds = true
+  end
+
+  def reloadBadgeData
+    @badges_view.reloadData
   end
 
   def loadFriendsSection
     load_friends_list
 
-    label = UILabel.alloc.initWithFrame([[10,588], [150,30]])
+    label = UILabel.alloc.initWithFrame([[10,570], [150,30]])
     label.text = "FRIENDS"
     label.font = @font_light
     label.textColor = UIColor.whiteColor
     label.backgroundColor = UIColor.clearColor
     @scroll_view.addSubview(label)
 
-    @friends_view = UIView.alloc.initWithFrame([[0, 618],[160, 160]]) # row 4
+    @friends_view = UIView.alloc.initWithFrame([[0, 600],[160, 160]]) # row 4
     @friends_view.layer.masksToBounds = true
     @friends_view.backgroundColor = UIColor.blackColor.colorWithAlphaComponent(0.5)
     @friends_view.when_tapped do
@@ -245,7 +251,7 @@ class GridViewController < UIViewController
   end
 
   def loadActivitySection
-    label = UILabel.alloc.initWithFrame([[170,588], [150,30]])
+    label = UILabel.alloc.initWithFrame([[10,380], [150,30]])
     label.text = "ACTIVITY"
     label.font = @font_light
     label.textColor = UIColor.whiteColor
@@ -260,14 +266,14 @@ class GridViewController < UIViewController
   end
 
   def loadMapSection
-    label = UILabel.alloc.initWithFrame([[10,778], [150,30]])
+    label = UILabel.alloc.initWithFrame([[170,570], [150,30]])
     label.text = "LIVE MAP"
     label.font = @font_light
     label.textColor = UIColor.whiteColor
     label.backgroundColor = UIColor.clearColor
     @scroll_view.addSubview(label)
 
-    @map_view = UIView.alloc.initWithFrame([[0, 808],[160, 160]]) # row 4
+    @map_view = UIView.alloc.initWithFrame([[160, 600],[160, 160]]) # row 4
     @map_view.backgroundColor = '#39a7d2'.to_color.colorWithAlphaComponent(0.42)
     live_map_thumb = UIImageView.alloc.initWithFrame([[0,0],[160, 160]])
     live_map_thumb.image = UIImage.imageNamed("live-map-button.png")
@@ -275,25 +281,6 @@ class GridViewController < UIViewController
 
     @map_view.when_tapped do
       self.navigationController.pushViewController(App.delegate.mapController, animated:true)
-    end
-  end
-
-  def loadQrScannerSection
-    label = UILabel.alloc.initWithFrame([[170,778], [150,30]])
-    label.text = "QR SCANNER"
-    label.font = @font_light
-    label.textColor = UIColor.whiteColor
-    label.backgroundColor = UIColor.clearColor
-    @scroll_view.addSubview(label)
-
-    @qr_scanner_view = UIView.alloc.initWithFrame([[160, 808],[160, 160]]) # row 4
-    qr_code = UIImageView.alloc.initWithFrame([[0,0],[160, 160]])
-    qr_code.image = UIImage.imageNamed("scanner-button.png")
-    @qr_scanner_view.addSubview(qr_code)
-
-
-    @qr_scanner_view.when_tapped do
-      self.navigationController.pushViewController(App.delegate.scannerViewController, animated:true)
     end
   end
 
@@ -323,13 +310,13 @@ class GridViewController < UIViewController
       bg_image2 = UIImageView.alloc.init
       bg_image1.image = UIImage.imageNamed("lan-crowd1.jpg")
       bg_image2.image = UIImage.imageNamed("lan-crowd2.jpeg")
-      @bg_kbv = FUI::KenBurnsView.alloc.initWithFrame([[0,208],[320,600]])
+      @bg_kbv = FUI::KenBurnsView.alloc.initWithFrame([[0,190],[320,600]])
       NSLog("BG KBV ANIMATE WITH IMAGES")
       @bg_kbv.animateWithImages([bg_image1, bg_image2], transitionDuration:45, loop: true, isLandscape:true)
 
       bg_overlay = UIImageView.alloc.init
       bg_overlay.image = UIImage.imageNamed("diamond.png")
-      bg_overlay.frame = [[0,208],[320,600]]
+      bg_overlay.frame = [[0,190],[320,600]]
 
       @scroll_view.addSubview(@bg_kbv)
       @scroll_view.addSubview(bg_overlay)

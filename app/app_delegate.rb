@@ -1,6 +1,6 @@
 class AppDelegate
 
-  attr_accessor :photographers
+  attr_accessor :photographers, :unauthorized_count, :notification_showing
 
   ::FBSessionStateChangedNotification = "#{App.identifier}:FBSessionStateChangedNotification"
 
@@ -27,7 +27,7 @@ class AppDelegate
   end
 
   def dashboard_activity_view
-    @dashboard_activity_view ||= ActivityView.alloc.initWithFrame([[0,428],[320,160]])
+    @dashboard_activity_view ||= ActivityView.alloc.initWithFrame([[0,410],[320,160]])
   end
 
   def friendsViewController
@@ -40,6 +40,10 @@ class AppDelegate
 
   def friendsGridController
     @friendsGridController ||= FriendsGridController.alloc.init
+  end
+
+  def badgeViewController
+    @badgeViewController ||= BadgeViewController.alloc.init
   end
 
   def mapController
@@ -109,6 +113,7 @@ class AppDelegate
 
   def pro_photos_list
     @pro_photos_list ||= Frequency::ProPhotoList.new
+    @pro_photos_list
   end
 
   def combined_photos_list
@@ -139,6 +144,32 @@ class AppDelegate
     window.rootViewController.presentModalViewController(loginController, animated:true ) unless window.rootViewController.visibleViewController == loginController
   end
 
+  def qrButton
+    @qrButton ||= begin
+
+      button = UIButton.buttonWithType(UIButtonTypeCustom)
+      buttonFrame = button.frame
+      buttonFrame.size.width = 34
+      buttonFrame.size.height = 34
+
+      buttonImage = UIImage.imageNamed("qr-icon.png")
+      buttonPressedImage = UIImage.imageNamed("qr-icon-pressed.png")
+
+      button.setFrame(buttonFrame)
+      button.addTarget(self, action:"showQrReader", forControlEvents:UIControlEventTouchUpInside)
+
+      button.setBackgroundImage(buttonImage, forState:UIControlStateNormal)
+      button.setBackgroundImage(buttonPressedImage, forState:UIControlStateHighlighted)
+
+      buttonItem = UIBarButtonItem.alloc.initWithCustomView(button)
+      buttonItem
+    end
+  end
+
+  def showQrReader
+    gridNavController.pushViewController(App.delegate.scannerViewController, animated:true)
+  end
+
   def menuButton
     @menuButton ||= begin
 
@@ -162,9 +193,22 @@ class AppDelegate
   end
 
   def showMenu
-    App.alert("Show Menu")
-    # window.rootViewController.presentModalViewController(loginController, animated:true )
-    # closeSession
+    popupQuery = UIActionSheet.alloc.initWithTitle("", delegate:self, cancelButtonTitle:'Cancel', destructiveButtonTitle:nil, otherButtonTitles:"View Profile", "Logout", nil)
+    popupQuery.delegate = self
+    popupQuery.actionSheetStyle = UIActionSheetStyleBlackTranslucent
+    popupQuery.showInView(gridViewController.view)
+  end
+
+  def actionSheet(actionSheet, clickedButtonAtIndex:buttonIndex)
+    case buttonIndex
+      when 0
+        show_user_profile
+      when 1
+        App.delegate.closeSession
+        App.delegate.show_login_modal
+      when 2
+        # cancelled
+    end
   end
 
   def navToolbar
@@ -180,7 +224,6 @@ class AppDelegate
     buttons = []
 
     flexibleSpaceLeft = UIBarButtonItem.alloc.initWithBarButtonSystemItem(UIBarButtonSystemItemFlexibleSpace, target:nil, action:nil)
-    buttons << flexibleSpaceLeft
 
     negativeSpacer12 = UIBarButtonItem.alloc.initWithBarButtonSystemItem(UIBarButtonSystemItemFixedSpace, target:nil, action:nil)
     negativeSpacer12.width = -12
@@ -191,7 +234,9 @@ class AppDelegate
     negativeSpacer5 = UIBarButtonItem.alloc.initWithBarButtonSystemItem(UIBarButtonSystemItemFixedSpace, target:nil, action:nil)
     negativeSpacer5.width = -5
 
-    buttons << negativeSpacer12
+    buttons << flexibleSpaceLeft
+
+    buttons << negativeSpacer7
 
     buttons << points
     buttons << negativeSpacer7
@@ -238,7 +283,7 @@ class AppDelegate
   def points_label
     @points_label ||= begin
       points_label = UILabel.alloc.initWithFrame([[4,2],[150,44]])
-      points_label.text = "0"
+      points_label.text = App::Persistence['points_total'] || "0"
       points_label.font = UIFont.fontWithName("DIN-Bold", size:24)
       points_label.adjustsFontSizeToFitWidth = true
       points_label.textColor = '#222222'.to_color
@@ -263,20 +308,24 @@ class AppDelegate
       url_string = NSURL.URLWithString(profile_image_url)
       profile_image_view.setImageWithURL(url_string, placeholderImage: UIImage.imageNamed("friends.png"))
       profile_image_view.when_tapped do
-        if logged_in?
-          detail_view_controller = App.delegate.friendDetailViewController
-          detail_view_controller.friend_id = current_user.id
-          detail_view_controller.profile_image_url = current_user.profile_image_url
-          App.delegate.gridNavController.pushViewController(detail_view_controller, animated:true)
-        end
+        show_user_profile
       end
       profile_image_view
     end
   end
 
+  def show_user_profile
+    if logged_in?
+      detail_view_controller = App.delegate.friendDetailViewController
+      detail_view_controller.friend_id = current_user.id
+      detail_view_controller.profile_image_url = current_user.profile_image_url
+      App.delegate.gridNavController.pushViewController(detail_view_controller, animated:true)
+    end
+  end
+
   def my_points_view
     @my_points_view ||= begin
-      points_view = PointsView.alloc.initWithFrame([[0, 238],[160, 160]]) # row 2
+      points_view = PointsView.alloc.initWithFrame([[0, 220],[160, 160]]) # row 2
       points_view.backgroundColor = '#39a7d2'.to_color
       points_view
     end
@@ -289,6 +338,22 @@ class AppDelegate
   def current_user
     NSLog("INITIALIZE CURRENT USER")
     @current_user ||= Frequency::User.new
+  end
+
+  def unauthorized_count
+    App::Persistence['unauthorized_count'] || 0
+  end
+
+  def unauthorized_count=(unauthorized_count)
+    App::Persistence['unauthorized_count'] = unauthorized_count
+  end
+
+  def notification_showing
+    @notification_showing ||= false
+  end
+
+  def notification_showing=(notification_showing)
+    @notification_showing = notification_showing
   end
 
   # =============
@@ -383,9 +448,17 @@ class AppDelegate
     App::Persistence['user_profile_image_url'] = nil
     App::Persistence['user_fb_profile_image_url'] = nil
     App::Persistence['user_id'] = nil
+    App::Persistence['points_total'] = "0"
     App::Persistence['asked_user_for_publish_permissions'] = nil
+    dashboard_activity_view.activities = []
+    @user_photos_list.all = []
+    @pro_photos_list.all = []
+    @combined_photos_list.all = []
+    @friends.all = []
+
     File.open("#{App.documents_path}/friends.json", "w") {|f| f.write("[]")}
     File.open("#{App.documents_path}/fan_photos.json", "w") {|f| f.write("[]")}
+    File.open("#{App.documents_path}/pro_photos.json", "w") {|f| f.write("[]")}
   end
 
 end

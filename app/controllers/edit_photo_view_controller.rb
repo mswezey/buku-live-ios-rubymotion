@@ -112,7 +112,7 @@ class EditPhotoViewController < UIViewController
   def showOptions
     popupQuery = UIActionSheet.alloc.initWithTitle("", delegate:self, cancelButtonTitle:'Cancel', destructiveButtonTitle:"Delete", otherButtonTitles:nil)
     popupQuery.delegate = self
-    popupQuery.actionSheetStyle = UIActionSheetStyleBlackOpaque
+    popupQuery.actionSheetStyle = UIActionSheetStyleBlackTranslucent
     popupQuery.showInView(view)
   end
 

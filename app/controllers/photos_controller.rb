@@ -31,7 +31,7 @@ class PhotosController < UITableViewController
     if cameraDeviceAvailable && photoLibraryAvailable
       popupQuery = UIActionSheet.alloc.initWithTitle("", delegate:self, cancelButtonTitle:'Cancel', destructiveButtonTitle:nil, otherButtonTitles:"Take Picture", "Choose Existing", nil)
       popupQuery.delegate = self
-      popupQuery.actionSheetStyle = UIActionSheetStyleBlackOpaque
+      popupQuery.actionSheetStyle = UIActionSheetStyleBlackTranslucent
       popupQuery.showInView(view)
     else
       shouldStartPhotoLibraryPickerController
