@@ -141,17 +141,17 @@ class FriendDetailViewController < UIViewController
     buttons = []
 
     flexibleSpace = UIBarButtonItem.alloc.initWithBarButtonSystemItem(UIBarButtonSystemItemFlexibleSpace, target:nil, action:nil)
-    compose_button = UIBarButtonItem.alloc.initWithBarButtonSystemItem(UIBarButtonSystemItemCompose, target:self, action:'writeMessage')
+    # compose_button = UIBarButtonItem.alloc.initWithBarButtonSystemItem(UIBarButtonSystemItemCompose, target:self, action:'writeMessage')
 
     buttons << flexibleSpace
     buttons << App.delegate.points
-    buttons << compose_button
+    buttons << flexibleSpace
 
     App.delegate.navToolbar.setItems(buttons, animated:false)
   end
 
-  def writeMessage
-    App.alert("Write Message")
-  end
+  # def writeMessage
+  #   App.alert("Write Message")
+  # end
 
 end

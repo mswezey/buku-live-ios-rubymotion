@@ -1,5 +1,5 @@
 class Activity < Frequency::Base
-  attr_accessor :activity_type, :html_string
+  attr_accessor :activity_type, :html_string, :html_string_with_profile
 
   # Activity Types
   USER_SIGNED_UP    = 0
@@ -9,6 +9,7 @@ class Activity < Frequency::Base
   def initialize(activity)
     @activity_type = activity['activity_type']
     @html_string = activity['html_string']
+    @html_string_with_profile = activity['html_string_with_profile']
   end
 
 end

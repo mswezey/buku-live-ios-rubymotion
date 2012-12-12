@@ -122,14 +122,24 @@ class PhotosController < UITableViewController
     self.navigationItem.rightBarButtonItem = UIBarButtonItem.alloc.initWithCustomView(App.delegate.navToolbar)
     view.dataSource = view.delegate = self
     self.tableView.setSeparatorStyle(UITableViewCellSeparatorStyleNone)
-    self.view.backgroundColor = UIColor.grayColor
+    self.view.backgroundColor = UIColor.darkGrayColor
+
+    tableView.addPullToRefreshWithActionHandler(
+      Proc.new do
+        App.delegate.combined_photos_list.refresh
+      end
+    )
+    tableView.pullToRefreshView.arrowColor = UIColor.whiteColor
+    tableView.pullToRefreshView.textColor = UIColor.whiteColor
+    tableView.pullToRefreshView.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhite
+
     load_photos
   end
 
   def viewWillAppear(animated)
     setToolbarButtons
-    App.delegate.combined_photos_list.refresh
-    load_photos
+    # App.delegate.combined_photos_list.refresh
+    # load_photos
   end
 
   def viewDidAppear(animated)
@@ -168,18 +178,59 @@ class PhotosController < UITableViewController
   end
 
   def tableView(tableView, viewForFooterInSection:section)
-    footerView = UIView.alloc.initWithFrame([[0,0], [self.tableView.bounds.size.width, 16.0]])
-    footerView
+    # photo = @photos[section]['fan_photo'] ? photo = @photos[section]['fan_photo'] : photo = @photos[section]['picture']
+    # NSLog("PHOTO FOR FOOTER: #{photo}")
+    # footerView = PhotoFooterView.alloc.initWithFrame([[0,0], [self.tableView.bounds.size.width, 56]], photo:photo)
+    # if photo['comments'] && photo['comments'].size > 0
+    #   footerView.containerView.addSubview commentsViewForPhotoInSection(section)
+    # end
+    # footerView
+    nil
   end
 
   def tableView(tableView, heightForFooterInSection:section)
-    16
+    # photo = @photos[section]['fan_photo'] ? @photos[section]['fan_photo'] : @photos[section]['picture']
+    # if photo['comments']
+    #   return commentsViewForPhotoInSection(section).frame.size.height
+    # else
+    #   return 0
+    # end
+    0
+  end
+
+  def commentsViewForPhotoInSection(section)
+    commentsView = UIView.alloc.init
+
+    photo = @photos[section]['fan_photo'] ? @photos[section]['fan_photo'] : @photos[section]['picture']
+    combined_label_height = 0
+
+    comments = photo['comments']
+    comments.each_with_index do |comment, i|
+
+      comment_profile_pic = UIImageView.alloc.initWithFrame([[0, i * combined_label_height], [20,20]])
+      url_string = NSURL.URLWithString(comment['user']['fb_profile_image_square_url'])
+      comment_profile_pic.setImageWithURL(url_string, placeholderImage: UIImage.imageNamed("friends.png"))
+      commentsView.addSubview comment_profile_pic
+
+      comment_label = UILabel.alloc.initWithFrame [[30, combined_label_height], [260, 25]]
+      comment_label.font = UIFont.fontWithName("DIN-Medium", size:12)
+      comment_label.backgroundColor = UIColor.clearColor
+      comment_label.textColor = UIColor.whiteColor
+      comment_label.text = comment['comment']
+      comment_label.numberOfLines = 0
+      comment_label.sizeToFit
+      combined_label_height += comment_label.frame.size.height < 22 ? 22 : comment_label.frame.size.height
+      commentsView.addSubview comment_label
+    end
+    commentsView.frame = [[10, 5],[300, combined_label_height]]
+    commentsView
   end
 
   def tableView(tableView, heightForRowAtIndexPath:indexPath)
     photo = @photos[indexPath.section]['fan_photo']
     if photo
-      280
+      height = 340 + CommentsView.alloc.initWithComments(photo['comments']).frame.size.height
+      height
     else
       213
     end
@@ -277,9 +328,10 @@ class PhotosController < UITableViewController
   end
 
   def load_photos
-    # @photos = App.delegate.user_photos_list.all
+    puts "LOADING PHOTOS FOR TABLE VIEW"
     @photos = App.delegate.combined_photos_list.all
     self.view.reloadData
+    tableView.pullToRefreshView.stopAnimating
   end
 
   def imagePickerControllerDidCancel(picker)

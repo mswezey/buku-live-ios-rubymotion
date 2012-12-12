@@ -9,6 +9,10 @@ class User < Frequency::Base
     "#{base_path}/me.json" # ?auth_token=#{auth_token}
   end
 
+  def settings_path
+    "#{base_path}/settings?auth_token=#{auth_token}"
+  end
+
   def refresh
     puts "refresh user"
     FRequest.new(GET, path, params, self)
@@ -97,7 +101,7 @@ class User < Frequency::Base
   end
 
   def load_activity
-    App.delegate.dashboard_activity_view.activities = @attributes['activities']
+    App.delegate.dashboard_activity_view.activities_with_profile = @attributes['self_and_friends_activity']
   end
 
   def load_badges

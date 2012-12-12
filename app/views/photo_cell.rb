@@ -1,11 +1,11 @@
 class PhotoCell < UITableViewCell
-  attr_accessor :photo
+  attr_accessor :photo, :comments_view
 
   def initWithStyle(style, reuseIdentifier:cell_identifier, photo:photo)
     self.photo = photo
-    puts "init with style"
+
     if initWithStyle(style, reuseIdentifier:cell_identifier)
-      puts "if init with style"
+
       self.contentView.backgroundColor = UIColor.clearColor
       self.opaque = false
       self.selectionStyle = UITableViewCellSelectionStyleNone
@@ -39,6 +39,11 @@ class PhotoCell < UITableViewCell
       self.contentView.bringSubviewToFront self.imageView
       self.contentView.bringSubviewToFront @photoButton
 
+      if photo['comments'] && photo['comments'].size > 0
+        self.comments_view = CommentsView.alloc.initWithComments(photo['comments'])
+        contentView.addSubview comments_view
+      end
+
       unless self.photo['taken_by']
         puts "pro photo"
         self.imageView.frame = CGRectMake(5, 0, 310, 213)
@@ -48,6 +53,27 @@ class PhotoCell < UITableViewCell
       else
         puts "fan photo"
       end
+
+      if comments_view
+        frame = comments_view.frame
+        frame = [[frame.origin.x, frame.origin.y + frame.size.height + 5],[75,23]]
+      else
+        frame = imageView.frame
+        frame = [[frame.origin.x, frame.origin.y + frame.size.height + 5],[75,23]]
+      end
+      comment_button = UIButton.buttonWithType(UIButtonTypeCustom)
+      comment_button.frame = frame
+      comment_button.addTarget(self, action:"showPhoto", forControlEvents:UIControlEventTouchUpInside)
+      comment_button.setTitle("Comment", forState: UIControlStateNormal)
+      comment_button.backgroundColor = UIColor.darkGrayColor
+      comment_button.font = UIFont.fontWithName("DIN-Light", size:14)
+      comment_button.titleLabel.textColor = UIColor.whiteColor
+      cb_layer = comment_button.layer
+      cb_layer.setBorderWidth 1
+      cb_layer.setBorderColor UIColor.lightGrayColor.CGColor
+      cb_layer.cornerRadius = 3
+      contentView.addSubview comment_button
+      self.contentView.bringSubviewToFront comment_button
     end
     self
   end
@@ -60,17 +86,15 @@ class PhotoCell < UITableViewCell
   def layoutSubviews
     super
     unless self.photo['taken_by']
-      puts "layoutSubviews pro photo"
-      self.imageView.frame = CGRectMake(5, 0, 310, 213)
-      self.contentView.frame = CGRectMake(0, 0, 310, 213)
-      @dropshadowView.frame = CGRectMake(5, -44.0, 310, 213)
-      @photoButton.frame = CGRectMake(5, 0, 310, 213)
+      self.imageView.frame = CGRectMake(0, 0, 310, 213)
+      self.contentView.frame = CGRectMake(5, 0, 310, 213)
+      @dropshadowView.frame = CGRectMake(0, -44.0, 310, 213)
+      @photoButton.frame = CGRectMake(0, 0, 310, 213)
     else
-      puts "layoutSubviews fan photo"
-      self.imageView.frame = CGRectMake(10, 0, 300, 300)
-      self.contentView.frame = CGRectMake(0, 0, 300, 300)
-      @photoButton.frame = CGRectMake(10, 0, 300, 300)
-      @dropshadowView.frame = CGRectMake(10, -44.0, 300, 300)
+      self.imageView.frame = CGRectMake(0, 0, 300, 300)
+      self.contentView.frame = CGRectMake(10, 0, 300, comments_view ? comments_view.frame.size.height + 335 : 335)
+      @photoButton.frame = CGRectMake(0, 0, 300, 300)
+      @dropshadowView.frame = CGRectMake(0, -44.0, 300, 300)
     end
   end
 end

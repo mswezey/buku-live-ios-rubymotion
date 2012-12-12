@@ -50,8 +50,7 @@ class GridViewController < UIViewController
     NSLog("BEFORE PHOTO SECTION")
     loadPhotoSection
     NSLog("AFTER PHOTO SECTION")
-    loadNowPerformingSection
-    loadStillToComeSection
+    loadScheduleSection
     loadMyPointsSection
     loadBadgesSection
     loadFriendsSection
@@ -59,8 +58,7 @@ class GridViewController < UIViewController
     loadMapSection
 
     @scroll_view.addSubview(@photos_view)
-    @scroll_view.addSubview(@now_performing_view)
-    @scroll_view.addSubview(@still_to_come_view)
+    @scroll_view.addSubview(@schedule_view)
     @scroll_view.addSubview(App.delegate.my_points_view)
     @scroll_view.addSubview(@badges_view)
     @scroll_view.addSubview(@friends_view)
@@ -97,7 +95,7 @@ class GridViewController < UIViewController
     # load_photos_slideshow
   end
 
-  def loadNowPerformingSection
+  def loadScheduleSection
     label = UILabel.alloc.initWithFrame([[10,760], [150,30]])
     label.text = "ON STAGE"
     label.font = @font_light
@@ -105,46 +103,20 @@ class GridViewController < UIViewController
     label.backgroundColor = UIColor.clearColor
     @scroll_view.addSubview(label)
 
-    @now_performing_view = UIView.alloc.initWithFrame([[0,790],[160, 160]]) # row 5
-    @now_performing_view.backgroundColor = "#e65af5".to_color.colorWithAlphaComponent(0.42)
-
-    artist = UIImageView.alloc.init
-    artist.image = UIImage.imageNamed("diplo.png")
-    artist.frame = [[0,0],[160,160]]
-    @now_performing_view.addSubview(artist)
-  end
-
-  def loadStillToComeSection
-    label = UILabel.alloc.initWithFrame([[170,760], [150,30]])
-    label.text = "UP NEXT"
-    label.font = @font_light
-    label.textColor = UIColor.whiteColor
-    label.backgroundColor = UIColor.clearColor
-    @scroll_view.addSubview(label)
-
-    @still_to_come_view = UIView.alloc.initWithFrame([[160, 790],[160, 160]]) # row 5
-    @still_to_come_view.backgroundColor = '#e65af5'.to_color.colorWithAlphaComponent(0.42)
-
-    label2 = UILabel.alloc.initWithFrame([[10,10], [150,20]])
-    label2.text = "AVICII"
+    label2 = UILabel.alloc.initWithFrame([[170,760], [150,30]])
+    label2.text = "UP NEXT"
     label2.font = @font_light
     label2.textColor = UIColor.whiteColor
     label2.backgroundColor = UIColor.clearColor
-    @still_to_come_view.addSubview(label2)
+    @scroll_view.addSubview(label2)
 
-    label3 = UILabel.alloc.initWithFrame([[10,30], [150,20]])
-    label3.text = "ADVENTURE CLUB"
-    label3.font = @font_light
-    label3.textColor = UIColor.whiteColor
-    label3.backgroundColor = UIColor.clearColor
-    @still_to_come_view.addSubview(label3)
+    @schedule_view = App.delegate.schedule_view
 
-    label4 = UILabel.alloc.initWithFrame([[10,50], [150,20]])
-    label4.text = "A-TRAK"
-    label4.font = @font_light
-    label4.textColor = UIColor.whiteColor
-    label4.backgroundColor = UIColor.clearColor
-    @still_to_come_view.addSubview(label4)
+
+    # artist = UIImageView.alloc.init
+    # artist.image = UIImage.imageNamed("diplo.png")
+    # artist.frame = [[0,0],[160,160]]
+    # @now_performing_view.addSubview(artist)
   end
 
   def loadMyPointsSection
@@ -162,7 +134,7 @@ class GridViewController < UIViewController
 
   def loadBadgesSection
     label = UILabel.alloc.initWithFrame([[170,190], [150,30]])
-    label.text = "BADGES"
+    label.text = "MY BADGES"
     label.font = @font_light
     label.textColor = UIColor.whiteColor
     label.backgroundColor = UIColor.clearColor
@@ -287,6 +259,7 @@ class GridViewController < UIViewController
   def viewWillAppear(animated)
     NSLog("START VIEW WILL APPEAR")
     App.delegate.current_user.refresh if App.delegate.logged_in?
+    @schedule_view.reload
     NSLog("VWA REFRESH USER")
     App.delegate.setToolbarButtonsForDashboard
     NSLog("VWA START LOAD PHOTOS SLIDESHOW")

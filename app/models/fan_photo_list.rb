@@ -45,7 +45,6 @@ class FanPhotoList < Frequency::Base
   end
 
   def path
-    # "#{base_path}/fan_photos.json?auth_token=#{auth_token}"
     "#{base_path}/friends_photos.json"
   end
 

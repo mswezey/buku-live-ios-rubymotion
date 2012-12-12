@@ -9,6 +9,9 @@ class LoginController < UIViewController
 
   def viewDidLoad
     self.view.backgroundColor = UIColor.whiteColor
+    bg = UIImageView.alloc.initWithFrame(view.bounds)
+    bg.image = UIImage.imageNamed("Default.png")
+    view.addSubview(bg)
     view.addSubview(textLabel)
     view.addSubview(authButton)
     NSNotificationCenter.defaultCenter.addObserver(self, selector: 'sessionStateChanged:', name: FBSessionStateChangedNotification, object: nil)
@@ -30,23 +33,37 @@ class LoginController < UIViewController
   def authButton
     @authButton ||= begin
       _authButton = UIButton.buttonWithType(UIButtonTypeRoundedRect)
-      _authButton.frame = [[50, 200], [220, 44]]
+
+      buttonImage = UIImage.imageNamed("login-button.png")
+      buttonPressedImage = UIImage.imageNamed("login-button-pressed.png")
+
+      _authButton.setBackgroundImage(buttonImage, forState:UIControlStateNormal)
+      _authButton.setBackgroundImage(buttonPressedImage, forState:UIControlStateHighlighted)
+
+
+      _authButton.frame = [[50, 230], [220, 55]]
       _authButton.setTitle("Sign in With Facebook", forState: UIControlStateNormal)
       _authButton.addTarget(self, action: "authButtonAction:", forControlEvents: UIControlEventTouchUpInside)
+      _authButton.font = UIFont.fontWithName("DIN-Medium", size:17)
       _authButton
     end
   end
 
   # Default text to show in textLabel when not signed in
-  DEFAULT_TEXT = "Sign in to get started"
+  DEFAULT_TEXT = "Lights All Night LIVE! gives you chances to win backstage passes and other prizes and lets you share your festival experience like never before. Sign in to get started."
 
   # A UILabel showing the user's username once signed in
   def textLabel
     @textLabel ||= begin
-      _textLabel = UILabel.alloc.initWithFrame([[50, 140], [220, 44]])
+      _textLabel = UILabel.alloc.initWithFrame([[10, 300], [300, 84]])
       _textLabel.text = DEFAULT_TEXT
       _textLabel.textAlignment = UITextAlignmentCenter
-      _textLabel.textColor = UIColor.lightGrayColor
+      _textLabel.textColor = UIColor.whiteColor
+      _textLabel.font = UIFont.fontWithName("DIN-Medium", size:15)
+      _textLabel.backgroundColor = UIColor.blackColor.colorWithAlphaComponent(0.7)
+      _textLabel.numberOfLines = 5
+      layer = _textLabel.layer
+      layer.cornerRadius = 5.0
       _textLabel
     end
   end
@@ -84,13 +101,13 @@ class LoginController < UIViewController
 
 
   def showUserInfo
-    textLabel.textColor = UIColor.blackColor
+    # textLabel.textColor = UIColor.blackColor
     textLabel.text = "Login Successful!"
   end
 
   # Reset the textLable back to gray with DEFAULT_TEXT
   def resetTextLabel
-    textLabel.textColor = UIColor.lightGrayColor
+    # textLabel.textColor = UIColor.lightGrayColor
     textLabel.text      = DEFAULT_TEXT
   end
 
@@ -148,52 +165,7 @@ class LoginController < UIViewController
     puts "init"
     authentication = Frequency::Authentication.new(access_token)
     puts "authenticate"
-    # App.delegate.server.post(authentication.url, authentication.payload, self)
     FRequest.new(POST, authentication.path, authentication.params, self)
-
-    # BW::HTTP.post(authentication.url, {payload: authentication.payload}) do |response|
-    #   if response.ok?
-    #     puts "response ok"
-    #     json = BW::JSON.parse(response.body.to_str)
-    #     if json['status'] && json['status'] == 'success'# && json['authentication_token']
-
-    #       App::Persistence['user_auth_token'] = json['authentication_token']
-    #       App::Persistence['user_profile_image_url'] = json['profile_image_url']
-    #       puts "user auth token saved"
-
-    #       App.delegate.current_user
-
-    #       url_string = NSURL.URLWithString(App.delegate.profile_image_url)
-    #       App.delegate.profile_image_view.setImageWithURL(url_string, placeholderImage: UIImage.imageNamed("friends.png"))
-
-    #       App.delegate.friends.refresh
-    #       App.delegate.user_photos_list.refresh {App.delegate.gridController.refresh_slideshow}
-
-    #       dismissDialog
-
-    #       unless App::Persistence['asked_user_for_publish_permissions']
-
-    #         App.run_after(3) {
-    #           FBSession.activeSession.reauthorizeWithPublishPermissions(["publish_checkins", "publish_stream"],
-    #                                   defaultAudience:FBSessionDefaultAudienceFriends,
-    #                                   completionHandler: lambda do |session, error|
-    #                                     App::Persistence['asked_user_for_publish_permissions'] = true
-    #                                     puts "finished asking"
-    #                                     puts "session: #{session.permissions}"
-    #                                   end)
-    #         }
-
-
-    #       end
-    #     else
-    #       puts "user auth not saved"
-    #       App.alert("Login Failed")
-    #     end
-    #   else
-    #     puts "response not ok"
-    #     App.alert("Login Failed due to server error. Please Try Again.")
-    #   end
-    # end
   end
 
   # Called when the FBSessionStateChangedNotification is pushed out
@@ -204,10 +176,10 @@ class LoginController < UIViewController
     if FBSession.activeSession.open?
       showUserInfo
       authenticateWithServer
-      authButton.setTitle("Sign out", forState: UIControlStateNormal)
+      authButton.hidden = true
     else
       resetTextLabel
-      authButton.setTitle("Sign in with Facebook", forState: UIControlStateNormal)
+      authButton.hidden = false
     end
   end
 

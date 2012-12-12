@@ -28,6 +28,7 @@ Motion::Project::App.setup do |app|
     pod 'RestKit', '~> 0.10.1'
     pod 'SJNotificationViewController', '~> 1.0.1'
     pod 'iCarousel', '~> 1.7.2'
+    pod 'SVPullToRefresh', '~> 0.4'
   end
 
   app.device_family          = :iphone

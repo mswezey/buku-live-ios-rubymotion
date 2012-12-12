@@ -6,7 +6,7 @@ class FanPhoto < Frequency::Base
   end
 
   def path
-    "#{base_path}/fan_photos/#{id}.json?auth_token=#{auth_token}"
+    "#{base_path}/fan_photos/#{id}" #.json?auth_token=#{auth_token}"
   end
 
   def destroy(&block)

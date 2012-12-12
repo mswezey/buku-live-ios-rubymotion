@@ -30,6 +30,10 @@ class AppDelegate
     @dashboard_activity_view ||= ActivityView.alloc.initWithFrame([[0,410],[320,160]])
   end
 
+  def schedule_view
+    @schedule_view ||= ScheduleView.alloc.initWithFrame([[0,790],[320, 160]]) # row 5
+  end
+
   def friendsViewController
     @friendsViewController ||= FriendsViewController.alloc.initWithTabBar
   end
@@ -130,6 +134,7 @@ class AppDelegate
 
   def friends
     @friends ||= Frequency::FriendList.new
+    @friends
   end
 
   def load_friends_list
@@ -193,7 +198,7 @@ class AppDelegate
   end
 
   def showMenu
-    popupQuery = UIActionSheet.alloc.initWithTitle("", delegate:self, cancelButtonTitle:'Cancel', destructiveButtonTitle:nil, otherButtonTitles:"View Profile", "Logout", nil)
+    popupQuery = UIActionSheet.alloc.initWithTitle("", delegate:self, cancelButtonTitle:'Cancel', destructiveButtonTitle:nil, otherButtonTitles:"View Profile", "Edit Settings", "Logout", nil)
     popupQuery.delegate = self
     popupQuery.actionSheetStyle = UIActionSheetStyleBlackTranslucent
     popupQuery.showInView(gridViewController.view)
@@ -204,9 +209,11 @@ class AppDelegate
       when 0
         show_user_profile
       when 1
+        show_edit_settings
+      when 2
         App.delegate.closeSession
         App.delegate.show_login_modal
-      when 2
+      when 3
         # cancelled
     end
   end
@@ -321,6 +328,17 @@ class AppDelegate
       detail_view_controller.profile_image_url = current_user.profile_image_url
       App.delegate.gridNavController.pushViewController(detail_view_controller, animated:true)
     end
+  end
+
+  def show_edit_settings
+    if logged_in?
+      view_controller = App.delegate.settings_view_controller
+      App.delegate.gridNavController.pushViewController(view_controller, animated:true)
+    end
+  end
+
+  def settings_view_controller
+    @settings_view_controller ||= SettingsViewController.alloc.init
   end
 
   def my_points_view
@@ -452,8 +470,6 @@ class AppDelegate
     App::Persistence['asked_user_for_publish_permissions'] = nil
     dashboard_activity_view.activities = []
     @user_photos_list.all = []
-    @pro_photos_list.all = []
-    @combined_photos_list.all = []
     @friends.all = []
 
     File.open("#{App.documents_path}/friends.json", "w") {|f| f.write("[]")}

@@ -1,5 +1,5 @@
 class ActivityView < UIWebView
-  attr_accessor :activities
+  attr_accessor :activities, :activities_with_profile
 
   def initWithFrame(frame)
     if super
@@ -21,10 +21,28 @@ class ActivityView < UIWebView
         a = Frequency::Activity.new(activity)
         list << a.html_string
       end
-      self.loadHTMLString("<html>#{html_head}<body><div class='activity din-medium'>#{list.join('')}</div></body></html>", baseURL:@baseURL)
+      load_html list.join('')
     else
-      self.loadHTMLString("<html>#{html_head}<body><div class='activity din-medium'>No activity yet</div></body></html>", baseURL:@baseURL)
+      load_html 'No activity yet'
+
     end
+  end
+
+  def activities_with_profile=(activities_with_profile)
+    if activities_with_profile.size > 0
+      list = []
+      activities_with_profile.each do |activity|
+        a = Frequency::Activity.new(activity)
+        list << a.html_string_with_profile
+      end
+      load_html list.join('')
+    else
+      load_html 'No activity yet'
+    end
+  end
+
+  def load_html(html)
+    self.loadHTMLString("<html>#{html_head}<body><div class='activity din-medium'>#{html}</div></body></html>", baseURL:@baseURL)
   end
 
   def html_head

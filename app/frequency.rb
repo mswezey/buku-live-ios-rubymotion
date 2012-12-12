@@ -35,6 +35,7 @@ module Frequency
         App.delegate.closeSession
         App.delegate.show_login_modal
         App.delegate.unauthorized_count = 0
+        App.delegate.notificationController.hide
       else
         NSLog("REFRESH AFTER UNAUTHORIZED")
         refresh
@@ -338,7 +339,7 @@ module FUI
   class GemFacetView < UIView
     attr_accessor :points
 
-    POINTS_THRESHOLD = 5000.0
+    POINTS_THRESHOLD = 15000.0
 
     def initWithFrame(frame)
       if super

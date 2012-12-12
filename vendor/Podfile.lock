@@ -34,6 +34,7 @@ PODS:
 - SDWebImage/Main (2.7)
 - SJNotificationViewController (1.0.1)
 - SOCKit (1.1)
+- SVPullToRefresh (0.4)
 - cocoa-oauth (0.0.1):
   - NSData+Base64 (~> 1.0)
 - iCarousel (1.7.2)
@@ -44,6 +45,7 @@ DEPENDENCIES:
 - RestKit (~> 0.10.1)
 - SDWebImage (~> 2.7)
 - SJNotificationViewController (~> 1.0.1)
+- SVPullToRefresh (~> 0.4)
 - iCarousel (~> 1.7.2)
 
 SPEC CHECKSUMS:
@@ -61,10 +63,11 @@ SPEC CHECKSUMS:
   RestKit/ObjectMapping/CoreData: 1fb57eb941d7d2587648491507a0bcaeb70b67f2
   RestKit/ObjectMapping/JSON: 1fb57eb941d7d2587648491507a0bcaeb70b67f2
   RestKit/UI: 1fb57eb941d7d2587648491507a0bcaeb70b67f2
-  SDWebImage: 6be78ee398d329bdd22c85a0e11ee41bd1f52066
-  SDWebImage/Main: 6be78ee398d329bdd22c85a0e11ee41bd1f52066
+  SDWebImage: c3306b8c68f3569f5c676d585ad77393255887dd
+  SDWebImage/Main: c3306b8c68f3569f5c676d585ad77393255887dd
   SJNotificationViewController: 160d7401fd9d6da4f456f62e64a53239cfb76a4c
   SOCKit: 179515c1a621dd5652a60e9be02ea4adcd25bc9b
+  SVPullToRefresh: 479bcbbf42c83366f49aab231ed6e94dad928fef
   cocoa-oauth: 8f4c8b77c77ac660de37f8125557c4ec09b0118a
   iCarousel: 9786dc44e3fe4fb1d143db83443cfa7794687a49
 
