@@ -1,6 +1,6 @@
 class AppDelegate
 
-  attr_accessor :photographers, :unauthorized_count, :notification_showing
+  attr_accessor :photographers, :unauthorized_count
 
   ::FBSessionStateChangedNotification = "#{App.identifier}:FBSessionStateChangedNotification"
 
@@ -22,8 +22,21 @@ class AppDelegate
     end
   end
 
-  def dashboardController
-    @dashboardController ||= DashboardController.alloc.initWithTabBar
+  def errorNotificationController
+    @errorNotificationController ||= begin
+      notificationController = SJNotificationViewController.alloc.initWithNibName("SJNotificationViewController", bundle:nil)
+      notificationController.setParentView App.delegate.window
+      notificationController.setNotificationTitle ""
+      notificationController.backgroundColor = UIColor.redColor.colorWithAlphaComponent(0.42)
+      notificationController.setShowSpinner false
+      notificationController.setTapTarget(nil, selector:nil)
+      warning_icon = UIImageView.alloc.initWithFrame([[12,8],[28,24]])
+      warning_icon.image = UIImage.imageNamed("warning.png")
+      notificationController.view.addSubview(warning_icon)
+      label = notificationController.view.subviews.first
+      label.frame = [[50, 11], [290, 21]]
+      notificationController
+    end
   end
 
   def dashboard_activity_view
@@ -34,10 +47,6 @@ class AppDelegate
     @schedule_view ||= ScheduleView.alloc.initWithFrame([[0,790],[320, 160]]) # row 5
   end
 
-  def friendsViewController
-    @friendsViewController ||= FriendsViewController.alloc.initWithTabBar
-  end
-
   def friendDetailViewController
     @friendDetailViewController ||= FriendDetailViewController.alloc.init
   end
@@ -46,16 +55,20 @@ class AppDelegate
     @friendsGridController ||= FriendsGridController.alloc.init
   end
 
+  def friendBadgeViewController
+    @friendBadgeViewController ||= FriendBadgeViewController.alloc.init
+  end
+
   def badgeViewController
     @badgeViewController ||= BadgeViewController.alloc.init
   end
 
   def mapController
-    @mapController ||= MapController.alloc.initWithTabBar
+    @mapController ||= MapController.alloc.init
   end
 
   def photosController
-    @photosController ||= PhotosController.alloc.initWithTabBar
+    @photosController ||= PhotosController.alloc.init
   end
 
   def photosNavController
@@ -70,18 +83,8 @@ class AppDelegate
     @gridNavController ||= UINavigationController.alloc.initWithRootViewController(gridViewController)
   end
 
-  def userController
-    @userController ||= UserController.alloc.initWithTabBar
-  end
-
-  def tabController
-    @tabController ||= UITabBarController.alloc.init
-    @tabController.viewControllers = [dashboardController, photosNavController, friendsViewController, mapController, scannerViewController, userController]
-    @tabController
-  end
-
   def scannerViewController
-    @scannerViewController ||= ScannerViewController.alloc.initWithTabBar
+    @scannerViewController ||= ScannerViewController.alloc.init
   end
 
   def loginController
@@ -127,8 +130,8 @@ class AppDelegate
 
   def load_user_photos_list
     NSLog("LOAD USER PHOTOS")
-    user_photos_list
-    @user_photos_list.refresh if logged_in?
+    combined_photos_list
+    @combined_photos_list.refresh if logged_in?
     NSLog("AFTER LOAD USER PHOTOS")
   end
 
@@ -198,7 +201,7 @@ class AppDelegate
   end
 
   def showMenu
-    popupQuery = UIActionSheet.alloc.initWithTitle("", delegate:self, cancelButtonTitle:'Cancel', destructiveButtonTitle:nil, otherButtonTitles:"View Profile", "Edit Settings", "Logout", nil)
+    popupQuery = UIActionSheet.alloc.initWithTitle("", delegate:self, cancelButtonTitle:'Cancel', destructiveButtonTitle:nil, otherButtonTitles:"View Profile", "Edit Settings", "More Info", "Logout", nil)
     popupQuery.delegate = self
     popupQuery.actionSheetStyle = UIActionSheetStyleBlackTranslucent
     popupQuery.showInView(gridViewController.view)
@@ -211,9 +214,11 @@ class AppDelegate
       when 1
         show_edit_settings
       when 2
+        show_more_info_view
+      when 3
         App.delegate.closeSession
         App.delegate.show_login_modal
-      when 3
+      when 4
         # cancelled
     end
   end
@@ -341,6 +346,21 @@ class AppDelegate
     @settings_view_controller ||= SettingsViewController.alloc.init
   end
 
+  def show_more_info_view
+    view_controller = App.delegate.more_info_view_controller
+    if window.rootViewController.visibleViewController == loginController
+      loginController.dismissModalViewControllerAnimated(false)
+      view_controller.showCloseButton
+      window.rootViewController.presentModalViewController(view_controller, animated:true )
+    else
+      App.delegate.gridNavController.pushViewController(view_controller, animated:true)
+    end
+  end
+
+  def more_info_view_controller
+    @more_info_view_controller ||= MoreInfoViewController.alloc.init
+  end
+
   def my_points_view
     @my_points_view ||= begin
       points_view = PointsView.alloc.initWithFrame([[0, 220],[160, 160]]) # row 2
@@ -364,14 +384,6 @@ class AppDelegate
 
   def unauthorized_count=(unauthorized_count)
     App::Persistence['unauthorized_count'] = unauthorized_count
-  end
-
-  def notification_showing
-    @notification_showing ||= false
-  end
-
-  def notification_showing=(notification_showing)
-    @notification_showing = notification_showing
   end
 
   # =============

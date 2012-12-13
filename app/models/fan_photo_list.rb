@@ -36,8 +36,19 @@ class FanPhotoList < Frequency::Base
     end
   end
 
-  def request(request, didFailWithError:error)
-    puts "photo list response error: #{error}"
+  def request(request, didFailLoadWithError:error)
+    puts "FanPhotoList response error #{error}"
+    handleLoadError
+  end
+
+  def requestDidTimeout
+    puts "FanPhotoList requestDidTimeout"
+    handleLoadError
+  end
+
+  def handleLoadError
+    super
+    App.delegate.photosController.tableView.pullToRefreshView.stopAnimating
   end
 
   def params

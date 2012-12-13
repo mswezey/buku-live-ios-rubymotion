@@ -25,8 +25,14 @@ class FriendList < Frequency::Base
     end
   end
 
-  def request(request, didFailWithError:error)
-    puts "FriendList response error: #{error}"
+  def request(request, didFailLoadWithError:error)
+    puts "FriendList response error #{error}"
+    handleLoadError
+  end
+
+  def requestDidTimeout
+    puts "FriendList requestDidTimeout"
+    handleLoadError
   end
 
   def path

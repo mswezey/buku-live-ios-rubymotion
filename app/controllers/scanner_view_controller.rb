@@ -1,10 +1,5 @@
 class ScannerViewController < UIViewController
 
-  def initWithTabBar
-    me = init
-    me
-  end
-
   def viewDidLoad
     self.title = "QR Scanner"
     @scanner_button = self.create_scanner_button

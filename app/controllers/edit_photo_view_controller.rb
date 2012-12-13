@@ -1,16 +1,25 @@
 class EditPhotoViewController < UIViewController
-  attr_accessor :image, :photo, :pro_photo
+  attr_accessor :image, :photo, :pro_photo, :users
 
   def initWithImage(aImage, photo:photo)
     @font_light = UIFont.fontWithName("DIN-Light", size:18)
     me = init
+
     self.image = aImage
     self.photo = photo
+
     if photo['taken_by']
       self.pro_photo = false
     else
       self.pro_photo = true
     end
+
+    if photo['users']
+      self.users = photo['users']
+    else
+      self.users = []
+    end
+
     me
   end
 
@@ -43,49 +52,72 @@ class EditPhotoViewController < UIViewController
     layer.shouldRasterize = true
 
     if self.pro_photo && photo['users'].size > 0
-      @tagged = []
+      # @tagged = []
 
-      containerView = UIView.alloc.initWithFrame([[5,245 + @tagged.size * 54], [310, 54]])
-      containerView.backgroundColor = UIColor.whiteColor
-      tagged_label = UILabel.alloc.initWithFrame [[13, 10], [180, 30]]
-      tagged_label.font = UIFont.fontWithName("DIN-Light", size:24)
+      i_carousel = NSClassFromString('iCarousel')
+      @tagged_users_view = i_carousel.alloc.initWithFrame([[5,235], [310, 140]])
+      @tagged_users_view.layer.cornerRadius = 4
+      @tagged_users_view.backgroundColor = '#133948'.to_color
+      @tagged_users_view.type = 8
+      @tagged_users_view.delegate = self
+      @tagged_users_view.dataSource = self
+      @tagged_users_view.clipsToBounds = true
+
+      tagged_label = UILabel.alloc.initWithFrame [[5, 10], [310, 30]]
+      tagged_label.font = UIFont.fontWithName("DIN-Light", size:18)
       tagged_label.backgroundColor = UIColor.clearColor
+      tagged_label.textColor = UIColor.whiteColor
       tagged_label.text = "In this photo"
-      containerView.addSubview tagged_label
+      @tagged_users_view.addSubview tagged_label
 
-      @tagged << containerView
+      # @tagged_users_view = UIView.alloc.initWithFrame([[5,245], [310, 54]])
 
-      photo['users'].each do |user|
-        containerView = UIView.alloc.initWithFrame([[5,245 + @tagged.size * 54], [310, 54]])
-        containerView.backgroundColor = UIColor.whiteColor
-        profile_image_view = UIImageView.alloc.initWithFrame([[4,4],[45,45]])
-        url_string = NSURL.URLWithString(user['fb_profile_image_square_url'])
-        profile_image_view.setImageWithURL(url_string, placeholderImage: UIImage.imageNamed("friends.png"))
+      # tagged_user_view = UIView.alloc.initWithFrame([[0,0], [310, 54]])
+      # tagged_user_view.backgroundColor = UIColor.whiteColor
+      # tagged_label = UILabel.alloc.initWithFrame [[13, 10], [180, 30]]
+      # tagged_label.font = UIFont.fontWithName("DIN-Light", size:24)
+      # tagged_label.backgroundColor = UIColor.clearColor
+      # tagged_label.text = "In this photo"
+      # tagged_user_view.addSubview tagged_label
 
-        containerView.addSubview profile_image_view
+      # @tagged_users_view.addSubview tagged_user_view
 
-        layer = profile_image_view.layer
-        layer.cornerRadius = 3
-        layer.masksToBounds = true
+      # users.each_with_index do |user, i|
+      #   tagged_user_view = UIView.alloc.initWithFrame([[0, i * 54 + 54], [310, 54]])
+      #   tagged_user_view.backgroundColor = UIColor.whiteColor
+      #   profile_image_view = UIImageView.alloc.initWithFrame([[4,4],[45,45]])
+      #   url_string = NSURL.URLWithString(user['fb_profile_image_square_url'])
+      #   profile_image_view.setImageWithURL(url_string, placeholderImage: UIImage.imageNamed("friends.png"))
 
-        # profile_button = UIButton.buttonWithType(UIButtonTypeCustom)
-        # profile_button.frame = [[4,4],[45,45]]
-        # profile_button.addTarget(self, action:"didTapUserButtonAction", forControlEvents:UIControlEventTouchUpInside)
-        # containerView.addSubview profile_button
+      #   tagged_user_view.addSubview profile_image_view
 
-        tagged_label = UILabel.alloc.initWithFrame [[55, 3], [180, 30]]
-        tagged_label.font = @font_light
-        tagged_label.backgroundColor = UIColor.clearColor
-        tagged_label.text = user['name']
+      #   layer = profile_image_view.layer
+      #   layer.cornerRadius = 3
+      #   layer.masksToBounds = true
 
-        containerView.addSubview tagged_label
+      #   # profile_button = UIButton.buttonWithType(UIButtonTypeCustom)
+      #   # profile_button.frame = [[4,4],[45,45]]
+      #   # profile_button.addTarget(self, action:"didTapUserButtonAction", forControlEvents:UIControlEventTouchUpInside)
+      #   # tagged_user_view.addSubview profile_button
 
-        @tagged << containerView
-      end
+      #   tagged_label = UILabel.alloc.initWithFrame [[55, 3], [180, 30]]
+      #   tagged_label.font = @font_light
+      #   tagged_label.backgroundColor = UIColor.clearColor
+      #   tagged_label.text = user['name']
 
-      @tagged.each do |view|
-        @scrollView.addSubview view
-      end
+      #   tagged_user_view.addSubview tagged_label
+
+      #   @tagged_users_view.addSubview tagged_user_view
+      # end
+
+      # @tagged.each do |view|
+      #   @scrollView.addSubview view
+      # end
+      @scrollView.addSubview @tagged_users_view
+
+      # UIView.animateWithDuration(2, animations:lambda do
+      #   @tagged_users_view.frame = [[@tagged_users_view.frame.origin.x,@tagged_users_view.frame.origin.y],[@tagged_users_view.frame.size.width, 54 + users.size * 54]]
+      # end)
     end
 
     @scrollView.addSubview(@photoImageView)
@@ -94,8 +126,12 @@ class EditPhotoViewController < UIViewController
       add_comments(photo['comments'])
     end
 
-    size = self.pro_photo ? [320, 300 + @tagged.size * 54] : [320, 400]
-    size[1] = @comments_view ? size[1] + @comments_view.size.height + 42 : size[1]
+    if self.pro_photo
+      size = @tagged_users_view ? [320, 100 + @tagged_users_view.frame.origin.y + @tagged_users_view.frame.size.height] : [320, 400]
+    else
+      size = [320, 400]
+    end
+    size[1] = @comments_view ? size[1] + @comments_view.size.height + 52 : size[1]
     @scrollView.setContentSize(size)
   end
 
@@ -104,7 +140,14 @@ class EditPhotoViewController < UIViewController
     @commentField.removeFromSuperview if @commentField
 
     @comments_view = CommentsView.alloc.initWithComments(comments)
-    @comments_view.frame = [[10, @photoImageView.frame.origin.y + @photoImageView.frame.size.height + 5], [@comments_view.frame.size.width, @comments_view.frame.size.height]]
+
+    if @tagged_users_view
+      @comments_view.frame = [[10, @tagged_users_view.frame.origin.y + @tagged_users_view.frame.size.height + 5], [@comments_view.frame.size.width, @comments_view.frame.size.height]]
+    else
+      @comments_view.frame = [[10, @photoImageView.frame.origin.y + @photoImageView.frame.size.height + 5], [@comments_view.frame.size.width, @comments_view.frame.size.height]]
+    end
+
+
     @scrollView.addSubview @comments_view
 
     @commentField = UITextField.alloc.initWithFrame([[10, @comments_view.frame.origin.y + @comments_view.frame.size.height],[@comments_view.frame.size.width, 31]])
@@ -118,7 +161,11 @@ class EditPhotoViewController < UIViewController
     @commentField.delegate = self
     @scrollView.addSubview @commentField
 
-    size = self.pro_photo ? [320, 300 + @tagged.size * 54] : [320, 400]
+    if self.pro_photo
+      size = @tagged_users_view ? [320, 100 + @tagged_users_view.frame.origin.y + @tagged_users_view.frame.size.height] : [320, 400]
+    else
+      size = [320, 400]
+    end
     size[1] = @comments_view ? size[1] + @comments_view.size.height + 42 : size[1]
     @scrollView.setContentSize(size)
   end
@@ -200,7 +247,12 @@ class EditPhotoViewController < UIViewController
 
   def postComment(text)
     if pro_photo
-      return false
+      pro_photo = Frequency::ProPhoto.new(photo['id'])
+      path = "#{pro_photo.path}/comments"
+      params = pro_photo.params.merge(comment:text)
+      App.delegate.notificationController.setNotificationTitle "Posting comment"
+      App.delegate.notificationController.show
+      FRequest.new(POST, path, params, self)
     else
       fan_photo = Frequency::FanPhoto.new(photo['id'])
       path = "#{fan_photo.path}/comments"
@@ -224,5 +276,49 @@ class EditPhotoViewController < UIViewController
       App.alert("There was an error posting your comment.  Please try again later.")
     end
   end
+
+
+  def numberOfItemsInCarousel(carousel)
+    users.size
+  end
+
+  def carousel(carousel, viewForItemAtIndex:index, reusingView:view)
+    user = users[index]
+    if view == nil
+
+      view = UIImageView.alloc.initWithFrame([[0,0],[120,60]])
+      view.contentMode = UIViewContentModeCenter
+
+      label = UILabel.alloc.initWithFrame([[0,70],[120,16]])
+      label.backgroundColor = UIColor.clearColor
+      label.textAlignment = UITextAlignmentCenter
+      label.font = UIFont.fontWithName("DIN-Medium", size:14)
+      label.textColor = UIColor.whiteColor
+      label.tag = 1
+      view.addSubview(label)
+    else
+      label = view.viewWithTag(1)
+    end
+
+    view.setImageWithURL(NSURL.URLWithString(user['fb_profile_image_square_url']), placeholder: UIImage.imageNamed("friends.png"))
+
+    label.text = user["name"]
+    view
+  end
+
+  # def carousel(carousel, valueForOption:option, withDefault:value)
+  #   case option
+
+  #   # when 10 #iCarouselOptionFadeMin
+  #   #   return -0.2;
+  #   # when 11 #iCarouselOptionFadeMax
+  #   #   return 0.2;
+  #   # when 12 # iCarouselOptionFadeRange:
+  #   #   return 2.0;
+  #   else
+  #     return value;
+  #   end
+
+  # end
 
 end

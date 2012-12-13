@@ -21,33 +21,6 @@ class CombinedPhotoList < Frequency::Base
     App.delegate.user_photos_list.refresh
   end
 
-  def request(request, didLoadResponse: response)
-    if response.isOK
-      App.delegate.unauthorized_count = 0
-      # data = response.bodyAsString.dataUsingEncoding(NSUTF8StringEncoding)
-      # error_ptr = Pointer.new(:object)
-      # json_object = NSJSONSerialization.JSONObjectWithData(data, options:0, error:error_ptr)
-      # @all = json_object if json_object != nil
-      # File.open("#{App.documents_path}/#{filename}", "w") {|f| f.write(response.bodyAsString)}
-      # App.delegate.notificationController.hide
-      # App.delegate.photosController.load_photos
-      # App.delegate.gridViewController.refresh_slideshow
-    elsif response.isUnauthorized
-      puts "CombinedPhotoList response unauthorized"
-      handle_unauthorized_response
-    else
-      puts "Error from CombinedPhotoList response: #{response.localizedStatusCodeString}"
-    end
-  end
-
-  def request(request, didFailWithError:error)
-    puts "CombinedPhotoList response error: #{error}"
-  end
-
-  def params
-    {auth_token: auth_token}
-  end
-
   def path
     ""
   end

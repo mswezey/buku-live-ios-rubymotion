@@ -25,8 +25,19 @@ class ProPhotoList < Frequency::Base
     end
   end
 
-  def request(request, didFailWithError:error)
-    puts "ProPhotoList response error: #{error}"
+  def request(request, didFailLoadWithError:error)
+    puts "ProPhotoList response error #{error}"
+    handleLoadError
+  end
+
+  def requestDidTimeout
+    puts "ProPhotoList requestDidTimeout"
+    handleLoadError
+  end
+
+  def handleLoadError
+    super
+    App.delegate.photosController.tableView.pullToRefreshView.stopAnimating
   end
 
   def params

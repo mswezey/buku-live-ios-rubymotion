@@ -42,8 +42,23 @@ class User < Frequency::Base
     end
   end
 
-  def request(request, didFailWithError:error)
-    puts "user request #{error}"
+  def request(request, didFailLoadWithError:error)
+    puts "User response error #{error}"
+    handleLoadError
+  end
+
+  def requestDidTimeout
+    puts "User requestDidTimeout"
+    handleLoadError
+  end
+
+  def handleLoadError
+    super
+    App.delegate.gridViewController.stop_animating_pull_to_refresh
+  end
+
+  def loading_title
+    "profile"
   end
 
   def update_points
@@ -102,6 +117,7 @@ class User < Frequency::Base
 
   def load_activity
     App.delegate.dashboard_activity_view.activities_with_profile = @attributes['self_and_friends_activity']
+    App.delegate.gridViewController.stop_animating_pull_to_refresh
   end
 
   def load_badges

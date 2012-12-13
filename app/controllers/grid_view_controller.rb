@@ -1,16 +1,23 @@
 class GridViewController < UIViewController
   attr_accessor :carousel, :badges
 
-  # include BubbleWrap::KVO
-
   def load_photos_list
     NSLog("START LOAD PHOTOS LIST")
-    @photos_list = App.delegate.user_photos_list
+    @photos_list = App.delegate.combined_photos_list
     NSLog("END OF LOAD PHOTOS LIST")
   end
 
   def load_friends_list
     @friends_list = App.delegate.friends
+  end
+
+  def refreshView
+    @schedule_view.reload
+    @current_user.refresh
+  end
+
+  def stop_animating_pull_to_refresh
+    @scroll_view.pullToRefreshView.stopAnimating
   end
 
   def viewDidLoad
@@ -32,6 +39,15 @@ class GridViewController < UIViewController
     @scroll_view.alwaysBounceVertical = false
     @scroll_view.delegate = self
     view.addSubview(@scroll_view)
+
+    @scroll_view.addPullToRefreshWithActionHandler(
+      Proc.new do
+        App.delegate.current_user.refresh
+      end
+    )
+    @scroll_view.pullToRefreshView.arrowColor = UIColor.whiteColor
+    @scroll_view.pullToRefreshView.textColor = UIColor.whiteColor
+    @scroll_view.pullToRefreshView.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhite
 
     label_row_2_bg = UIView.alloc.initWithFrame([[0,190],[320,30]])
     label_row_2_bg.backgroundColor = UIColor.blackColor.colorWithAlphaComponent(0.39)
@@ -88,11 +104,6 @@ class GridViewController < UIViewController
     @photos_view_label.backgroundColor = UIColor.clearColor
     @photos_view.addSubview(@photos_view_label)
 
-    # observe(App.delegate, :user_photos_json) do |old_value, new_value|
-    #   App.alert("The label changed to #{new_value.size}")
-    # end
-
-    # load_photos_slideshow
   end
 
   def loadScheduleSection
@@ -325,7 +336,8 @@ class GridViewController < UIViewController
     if @photos_list.all != nil
       NSLog("IF PHOTO LIST ALL != NIL")
       @photos_list.all[0..25].each do |photo|
-        url_string = NSURL.URLWithString(photo['fan_photo']['image']['mobile_small']['url'])
+        photo = photo['fan_photo'] ? photo['fan_photo'] : photo['picture']
+        url_string = NSURL.URLWithString(photo['image']['mobile_small']['url'])
         image_view = UIImageView.alloc.initWithFrame(@photos_view.bounds)
         image_view.setImageWithURL(url_string, placeholderImage: UIImage.imageNamed("photo-placeholder.png"))
         photos << image_view

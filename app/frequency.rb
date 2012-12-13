@@ -31,13 +31,19 @@ module Frequency
       NSLog("****** UNAUTHORIZED ATTEMPT #{App.delegate.unauthorized_count} ******")
       if App.delegate.unauthorized_count > 5
         NSLog("GIVING UP AFTER UNAUTHORIZED")
-        App.alert("Session Expired. Please login again.")
+        App.delegate.notificationController.hide
+        App.delegate.errorNotificationController.show
+        unless App.delegate.errorNotificationController.view.subviews.first.text == "No Internet Connection"
+          App.delegate.errorNotificationController.setNotificationTitle "Session Expired. Please login again."
+          App.delegate.errorNotificationController.show
+          App.run_after(8) {App.delegate.errorNotificationController.hide}
+        end
+
         App.delegate.closeSession
         App.delegate.show_login_modal
         App.delegate.unauthorized_count = 0
         App.delegate.notificationController.hide
       else
-        NSLog("REFRESH AFTER UNAUTHORIZED")
         refresh
       end
     end
@@ -102,6 +108,16 @@ module Frequency
 
     def request(request, didFailWithError:error)
       puts "base request response error: #{error}"
+    end
+
+    def handleLoadError
+      App.delegate.notificationController.hide
+      App.delegate.errorNotificationController.show
+      unless App.delegate.errorNotificationController.view.subviews.first.text == "No Internet Connection"
+        App.delegate.errorNotificationController.setNotificationTitle "Failed to load. Please try again."
+        App.delegate.errorNotificationController.show
+        App.run_after(5) {App.delegate.errorNotificationController.hide}
+      end
     end
 
   end

@@ -56,13 +56,20 @@ class FriendDetailViewController < UIViewController
     badges_label.backgroundColor = UIColor.clearColor
     @scroll_view.addSubview(badges_label)
 
-    badges_view = UIView.alloc.initWithFrame([[0,220],[160,160]])
-    badges_view.backgroundColor = '#39a7d2'.to_color.colorWithAlphaComponent(0.42)
-    @scroll_view.addSubview(badges_view)
-
-    photo_badge = UIImageView.alloc.initWithFrame([[34,19],[90, 107]])
-    photo_badge.image = UIImage.imageNamed("badge-photo.png")
-    badges_view.addSubview(photo_badge)
+    NSLog("---- starting i carousel")
+    i_carousel = NSClassFromString('iCarousel')
+    @badges_view = i_carousel.alloc.initWithFrame([[0,220],[160,160]])
+    NSLog("---- alloced i carousel")
+    @badges_view.backgroundColor = '#39a7d2'.to_color.colorWithAlphaComponent(0.42)
+    @badges_view.type = 1
+    NSLog("---- setting delegate")
+    @badges_view.delegate = App.delegate.friendBadgeViewController
+    NSLog("---- setting datasource")
+    @badges_view.dataSource = App.delegate.friendBadgeViewController
+    @badges_view.clipsToBounds = true
+    NSLog("---- adding to view")
+    @scroll_view.addSubview(@badges_view)
+    NSLog("---- added to view")
 
     photos_label = UILabel.alloc.initWithFrame([[170,190],[150,30]])  # row 2
     photos_label.text = "PHOTOS"
@@ -83,10 +90,21 @@ class FriendDetailViewController < UIViewController
     activity_label.backgroundColor = UIColor.clearColor
     @scroll_view.addSubview(activity_label)
 
+    @scroll_view.addPullToRefreshWithActionHandler(
+      Proc.new do
+        @friend.refresh if @friend
+      end
+    )
+    @scroll_view.pullToRefreshView.arrowColor = UIColor.whiteColor
+    @scroll_view.pullToRefreshView.textColor = UIColor.whiteColor
+    @scroll_view.pullToRefreshView.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhite
+
   end
 
   def viewDidDisappear(animated)
     @activity_list.removeFromSuperview if @activity_list
+    App.delegate.friendBadgeViewController.badges = []
+    @badges_view.reloadData
   end
 
   def viewWillAppear(animated)
@@ -111,8 +129,17 @@ class FriendDetailViewController < UIViewController
     setToolbarButtons
   end
 
+    def stop_animating_pull_to_refresh
+        @scroll_view.pullToRefreshView.stopAnimating
+    end
+
   def friendDidLoad
     puts "friend did load"
+
+    stop_animating_pull_to_refresh
+
+    App.delegate.friendBadgeViewController.badges = @friend.attributes['awards']
+    @badges_view.reloadData
 
     @profile_picture.setImageWithURL(NSURL.URLWithString(@friend.attributes['fb_profile_image_url']), placeholder: UIImage.imageNamed("friends.png")) # TODO: Replace placeholder image
 

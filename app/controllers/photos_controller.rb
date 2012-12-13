@@ -4,13 +4,6 @@ class PhotosController < UITableViewController
     super
   end
 
-  def initWithTabBar
-    me = init
-    anImage = UIImage.imageNamed("photos.png")
-    me.tabBarItem = UITabBarItem.alloc.initWithTitle("Photos", image:anImage, tag:1)
-    me
-  end
-
   def setToolbarButtons
     buttons = []
 
@@ -330,8 +323,8 @@ class PhotosController < UITableViewController
   def load_photos
     puts "LOADING PHOTOS FOR TABLE VIEW"
     @photos = App.delegate.combined_photos_list.all
-    self.view.reloadData
     tableView.pullToRefreshView.stopAnimating
+    self.view.reloadData
   end
 
   def imagePickerControllerDidCancel(picker)

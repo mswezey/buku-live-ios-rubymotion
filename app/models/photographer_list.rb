@@ -26,8 +26,14 @@ class PhotographerList < Frequency::Base
     end
   end
 
-  def request(request, didFailWithError:error)
-    puts "#{error}"
+  def request(request, didFailLoadWithError:error)
+    puts "PhotographerList response error #{error}"
+    handleLoadError
+  end
+
+  def requestDidTimeout
+    puts "PhotographerList requestDidTimeout"
+    handleLoadError
   end
 
   def path

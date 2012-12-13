@@ -12,7 +12,22 @@ class Server
   def initialize(base_url)
     self.base_url = base_url
     RKClient.clientWithBaseURLString(base_url)
+    RKClient.sharedClient.timeoutInterval = 30
+
+    NSNotificationCenter.defaultCenter.addObserver(self, selector:"reachabilityStatusChanged:", name:RKReachabilityDidChangeNotification, object:nil)
+
   end
+
+  def reachabilityStatusChanged(notification)
+    if RKClient.sharedClient.reachabilityObserver.isReachabilityDetermined && RKClient.sharedClient.isNetworkReachable
+      App.delegate.errorNotificationController.setNotificationTitle ""
+      App.delegate.errorNotificationController.hide
+    else
+      App.delegate.errorNotificationController.setNotificationTitle "No Internet Connection"
+      App.delegate.errorNotificationController.show
+    end
+  end
+
 end
 
 class FRequest

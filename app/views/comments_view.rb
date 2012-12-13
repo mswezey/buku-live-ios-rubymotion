@@ -37,8 +37,6 @@ class CommentsView < UIView
   end
 
   def didTapUserButtonAction(sender)
-    puts sender
-    puts sender.tag
     detail_view_controller = App.delegate.friendDetailViewController
     detail_view_controller.friend_id = sender.tag
     detail_view_controller.profile_image_url = ""

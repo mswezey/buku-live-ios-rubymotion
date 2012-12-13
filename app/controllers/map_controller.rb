@@ -1,15 +1,6 @@
 class MapController < UIViewController
 
-  def initWithTabBar
-    me = init
-    anImage = UIImage.imageNamed("map.png")
-    me.tabBarItem = UITabBarItem.alloc.initWithTitle("Map", image:anImage, tag:1)
-    me
-  end
-
   def loadView
-    # views = NSBundle.mainBundle.loadNibNamed("MapView", owner:self, options:nil)
-    # self.view = views[0]
     self.view = MKMapView.alloc.initWithFrame([[0,0], [320,300]])
     App.delegate.load_photographers
   end

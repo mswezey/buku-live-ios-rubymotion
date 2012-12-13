@@ -8,7 +8,8 @@ Bundler.require
 Motion::Project::App.setup do |app|
   app.name = 'LAN Live!'
   app.icons = ['Icon.png', 'Icon@2x.png']
-  app.identifier = 'com.myfrequencyinc.LANLive!'
+  app.prerendered_icon = true
+  app.identifier = 'com.myfrequencyinc.LANLive'
   app.sdk_version = '6.0'
   app.deployment_target = '5.1'
 

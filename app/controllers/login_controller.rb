@@ -1,12 +1,5 @@
 class LoginController < UIViewController
 
-  # def initWithTabBar
-  #   me = init
-  #   anImage = UIImage.imageNamed("dashboard.png")
-  #   me.tabBarItem = UITabBarItem.alloc.initWithTitle("Login", image:anImage, tag:1)
-  #   me
-  # end
-
   def viewDidLoad
     self.view.backgroundColor = UIColor.whiteColor
     bg = UIImageView.alloc.initWithFrame(view.bounds)
@@ -14,6 +7,7 @@ class LoginController < UIViewController
     view.addSubview(bg)
     view.addSubview(textLabel)
     view.addSubview(authButton)
+    view.addSubview(moreInfoButton)
     NSNotificationCenter.defaultCenter.addObserver(self, selector: 'sessionStateChanged:', name: FBSessionStateChangedNotification, object: nil)
 
     # Check the session for a cached token to show the proper authenticated
@@ -25,9 +19,34 @@ class LoginController < UIViewController
     NSNotificationCenter.defaultCenter.removeObserver(self)
   end
 
+  def dismissDialog
+    self.dismissModalViewControllerAnimated(true)
+  end
+
   # ==============
   # = Properties =
   # ==============
+
+  def moreInfoButton
+    @moreInfoButton ||= begin
+      moreInfoButton = UIButton.buttonWithType(UIButtonTypeCustom)
+      moreInfoButton.backgroundColor = UIColor.blackColor.colorWithAlphaComponent(0.7)
+      moreInfoButton.font = UIFont.fontWithName("DIN-Light", size:14)
+      moreInfoButton.titleLabel.textColor = UIColor.whiteColor
+      layer = moreInfoButton.layer
+      layer.setBorderWidth 1
+      layer.setBorderColor UIColor.lightGrayColor.CGColor
+      layer.cornerRadius = 3
+      moreInfoButton.frame = [[230, 400], [80, 30]]
+      moreInfoButton.setTitle("More Info", forState: UIControlStateNormal)
+      moreInfoButton.addTarget(self, action: "showMoreInfo", forControlEvents: UIControlEventTouchUpInside)
+      moreInfoButton
+    end
+  end
+
+  def showMoreInfo
+    App.delegate.show_more_info_view
+  end
 
   # The Sign-In/Sign Out button
   def authButton
@@ -111,15 +130,25 @@ class LoginController < UIViewController
     textLabel.text      = DEFAULT_TEXT
   end
 
-  def dismissDialog
-    self.dismissModalViewControllerAnimated(true)
+  def request(request, didFailLoadWithError:error)
+    handleLoadError
+  end
+
+  def requestDidTimeout
+    handleLoadError
+  end
+
+  def handleLoadError
+    resetTextLabel
+    authButton.hidden = false
+    App.delegate.current_user.handleLoadError
   end
 
   def request(request, didLoadResponse: response)
     data = response.bodyAsString.dataUsingEncoding(NSUTF8StringEncoding)
     error_ptr = Pointer.new(:object)
     json = NSJSONSerialization.JSONObjectWithData(data, options:0, error:error_ptr)
-    puts "new request worked"
+
     if json['status'] && json['status'] == 'success'# && json['authentication_token']
 
       App::Persistence['user_auth_token'] = json['authentication_token']

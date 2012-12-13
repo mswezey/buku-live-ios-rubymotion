@@ -50,8 +50,19 @@ class Friend < Frequency::Base
     end
   end
 
-  def request(request, didFailWithError:error)
-    puts "Friend error: #{error}"
+  def request(request, didFailLoadWithError:error)
+    puts "Friend response error #{error}"
+    handleLoadError
+  end
+
+  def requestDidTimeout
+    puts "Friend requestDidTimeout"
+    handleLoadError
+  end
+
+  def handleLoadError
+    super
+    App.delegate.friendDetailViewController.stop_animating_pull_to_refresh
   end
 
   def path
