@@ -11,7 +11,7 @@ class FriendDetailViewController < UIViewController
     view.addSubview(@scroll_view)
 
     background = UIImageView.alloc.initWithFrame([[0,190],[810,540]])
-    background.image = UIImage.imageNamed("lan-crowd1.jpg")
+    background.image = UIImage.imageNamed("bg1.jpeg")
     @scroll_view.addSubview(background)
 
     bg_overlay = UIImageView.alloc.init

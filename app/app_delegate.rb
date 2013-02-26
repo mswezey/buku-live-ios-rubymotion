@@ -1,6 +1,6 @@
 class AppDelegate
 
-  attr_accessor :photographers, :unauthorized_count
+  attr_accessor :photographers, :unauthorized_count, :map_annotations
 
   ::FBSessionStateChangedNotification = "#{App.identifier}:FBSessionStateChangedNotification"
 
@@ -109,6 +109,10 @@ class AppDelegate
 
   def load_photographers
     @photographers ||= Frequency::PhotographerList.new
+  end
+
+  def load_map_annotations
+    @map_annotations ||= Frequency::MapAnnotationList.new
   end
 
   def user_photos_list
@@ -298,7 +302,7 @@ class AppDelegate
       points_label.text = App::Persistence['points_total'] || "0"
       points_label.font = UIFont.fontWithName("DIN-Bold", size:24)
       points_label.adjustsFontSizeToFitWidth = true
-      points_label.textColor = '#222222'.to_color
+      points_label.textColor = '#DE0002'.to_color
       points_label.backgroundColor = UIColor.clearColor
       points_label.textAlignment = UITextAlignmentCenter
       points_label
@@ -364,7 +368,6 @@ class AppDelegate
   def my_points_view
     @my_points_view ||= begin
       points_view = PointsView.alloc.initWithFrame([[0, 220],[160, 160]]) # row 2
-      points_view.backgroundColor = '#39a7d2'.to_color
       points_view
     end
   end

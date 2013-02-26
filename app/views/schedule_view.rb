@@ -3,7 +3,7 @@ class ScheduleView < UIWebView
 
   def initWithFrame(frame)
     if super
-      self.backgroundColor = '#e65af5'.to_color.colorWithAlphaComponent(0.42)
+      self.backgroundColor = '#006670'.to_color.colorWithAlphaComponent(0.42)
       self.setOpaque false
 
       fullURL = "#{App.delegate.frequency_app_uri}/api/mobile/events"

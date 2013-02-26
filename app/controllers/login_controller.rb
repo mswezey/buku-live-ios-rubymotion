@@ -69,7 +69,7 @@ class LoginController < UIViewController
   end
 
   # Default text to show in textLabel when not signed in
-  DEFAULT_TEXT = "Lights All Night LIVE! gives you chances to win backstage passes and other prizes and lets you share your festival experience like never before. Sign in to get started."
+  DEFAULT_TEXT = "Buku Live! gives you chances to win backstage passes and other prizes and lets you share your festival experience like never before. Sign in to get started."
 
   # A UILabel showing the user's username once signed in
   def textLabel
@@ -205,10 +205,10 @@ class LoginController < UIViewController
     if FBSession.activeSession.open?
       showUserInfo
       authenticateWithServer
-      authButton.hidden = true
+      # authButton.hidden = true
     else
       resetTextLabel
-      authButton.hidden = false
+      # authButton.hidden = false
     end
   end
 

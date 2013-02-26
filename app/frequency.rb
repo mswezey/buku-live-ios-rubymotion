@@ -1,6 +1,6 @@
 module Frequency
 
-  FREQUENCY_APP_URL = 'http://www.lan-live.com'
+  FREQUENCY_APP_URL = 'http://buku-live.herokuapp.com'
   # FREQUENCY_APP_URL = 'http://10.0.1.17:3000'
 
   class Base

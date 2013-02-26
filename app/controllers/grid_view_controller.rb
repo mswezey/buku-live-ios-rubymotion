@@ -32,7 +32,7 @@ class GridViewController < UIViewController
     self.navigationItem.leftBarButtonItem = App.delegate.qrButton
     self.navigationController.navigationBar.setBackgroundImage(UIImage.imageNamed("top-nav-bg.png"), forBarMetrics: UIBarMetricsDefault)
 
-    @font_light = UIFont.fontWithName("DIN-Light", size:17)
+    @font_light = UIFont.fontWithName("DIN-Medium", size:17)
 
     @scroll_view = UIScrollView.alloc.initWithFrame(view.bounds)
     @scroll_view.contentSize = [320,995]
@@ -50,13 +50,13 @@ class GridViewController < UIViewController
     @scroll_view.pullToRefreshView.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhite
 
     label_row_2_bg = UIView.alloc.initWithFrame([[0,190],[320,30]])
-    label_row_2_bg.backgroundColor = UIColor.blackColor.colorWithAlphaComponent(0.39)
+    label_row_2_bg.backgroundColor = '#72C790'.to_color.colorWithAlphaComponent(0.5) #UIColor.blackColor.colorWithAlphaComponent(0.39)
     label_row_3_bg = UIView.alloc.initWithFrame([[0,380],[320,30]])
-    label_row_3_bg.backgroundColor = UIColor.blackColor.colorWithAlphaComponent(0.39)
+    label_row_3_bg.backgroundColor = '#00636B'.to_color.colorWithAlphaComponent(0.5) #UIColor.blackColor.colorWithAlphaComponent(0.39)
     label_row_4_bg = UIView.alloc.initWithFrame([[0,570],[320,30]])
-    label_row_4_bg.backgroundColor = UIColor.blackColor.colorWithAlphaComponent(0.39)
+    label_row_4_bg.backgroundColor = '#E00000'.to_color.colorWithAlphaComponent(0.5) #UIColor.blackColor.colorWithAlphaComponent(0.39)
     label_row_5_bg = UIView.alloc.initWithFrame([[0,760],[320,30]])
-    label_row_5_bg.backgroundColor = UIColor.blackColor.colorWithAlphaComponent(0.39)
+    label_row_5_bg.backgroundColor = '#FF7600'.to_color.colorWithAlphaComponent(0.5) #UIColor.blackColor.colorWithAlphaComponent(0.39)
 
 
     @scroll_view.addSubview(label_row_2_bg)
@@ -153,7 +153,7 @@ class GridViewController < UIViewController
 
     i_carousel = NSClassFromString('iCarousel')
     @badges_view = i_carousel.alloc.initWithFrame([[160, 220],[160, 160]])
-    @badges_view.backgroundColor = '#39a7d2'.to_color.colorWithAlphaComponent(0.42)
+    @badges_view.backgroundColor = UIColor.clearColor #'#006670'.to_color.colorWithAlphaComponent(0.42)
     @badges_view.type = 1
     @badges_view.delegate = App.delegate.badgeViewController
     @badges_view.dataSource = App.delegate.badgeViewController
@@ -292,11 +292,15 @@ class GridViewController < UIViewController
     unless @bg_kbv
       bg_image1 = UIImageView.alloc.init
       bg_image2 = UIImageView.alloc.init
-      bg_image1.image = UIImage.imageNamed("lan-crowd1.jpg")
-      bg_image2.image = UIImage.imageNamed("lan-crowd2.jpeg")
+      bg_image3 = UIImageView.alloc.init
+      bg_image4 = UIImageView.alloc.init
+      bg_image1.image = UIImage.imageNamed("bg3.jpeg")
+      bg_image2.image = UIImage.imageNamed("bg2.jpeg")
+      bg_image3.image = UIImage.imageNamed("bg1.jpeg")
+      bg_image4.image = UIImage.imageNamed("bg4.jpeg")
       @bg_kbv = FUI::KenBurnsView.alloc.initWithFrame([[0,190],[320,600]])
       NSLog("BG KBV ANIMATE WITH IMAGES")
-      @bg_kbv.animateWithImages([bg_image1, bg_image2], transitionDuration:45, loop: true, isLandscape:true)
+      @bg_kbv.animateWithImages([bg_image1, bg_image2, bg_image3, bg_image4], transitionDuration:25, loop: true, isLandscape:true)
 
       bg_overlay = UIImageView.alloc.init
       bg_overlay.image = UIImage.imageNamed("diamond.png")

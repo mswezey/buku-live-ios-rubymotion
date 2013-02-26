@@ -6,14 +6,14 @@ require "bubble-wrap/location"
 Bundler.require
 
 Motion::Project::App.setup do |app|
-  app.name = 'LAN Live!'
+  app.name = 'Buku Live!'
   app.icons = ['Icon.png', 'Icon@2x.png']
   app.prerendered_icon = true
-  app.identifier = 'com.myfrequencyinc.LANLive'
-  app.sdk_version = '6.0'
+  app.identifier = 'com.myfrequencyinc.BukuLive'
+  app.sdk_version = '6.1'
   app.deployment_target = '5.1'
 
-  app.vendor_project('vendor/zxing-2.1/iphone/ZXingWidget', :xcode, :target => 'ZXingWidget', :headers_dir => 'Classes')
+  # app.vendor_project('vendor/zxing-2.1/iphone/ZXingWidget', :xcode, :target => 'ZXingWidget', :headers_dir => 'Classes')
 
   app.fonts += ["DIN-Light.ttf", "DIN-Medium.ttf", "DIN-Bold.ttf"]
 
@@ -37,8 +37,8 @@ Motion::Project::App.setup do |app|
 
   # app.info_plist['UIStatusBarHidden'] = true
   app.info_plist['UIStatusBarStyle'] = 'UIStatusBarStyleOpaqueBlack'
-  app.info_plist['FacebookAppID'] = '544689192211877'
-  app.info_plist['CFBundleURLTypes'] = [{'CFBundleURLSchemes' => ['fb544689192211877']}]
+  app.info_plist['FacebookAppID'] = '159048010914930'
+  app.info_plist['CFBundleURLTypes'] = [{'CFBundleURLSchemes' => ['fb159048010914930']}]
 
   app.testflight.sdk = 'vendor/TestFlight'
   app.testflight.api_token = '927f0d7d14ae638e4858645c94bb94af_NjYxMTEyMjAxMi0xMC0wNCAxNDo0Nzo0Ni4xODk3MzY'

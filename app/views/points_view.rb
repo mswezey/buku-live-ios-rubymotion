@@ -8,13 +8,13 @@ class PointsView < UIView
       @points_value_label.text = "loading"
       @points_value_label.textColor = UIColor.whiteColor
       @points_value_label.textAlignment = UITextAlignmentCenter
-      @points_value_label.font = UIFont.fontWithName("DIN-Bold", size:24)
-      @points_value_label.backgroundColor = '#133948'.to_color
+      @points_value_label.font = UIFont.fontWithName("DIN-Bold", size:28)
+      @points_value_label.backgroundColor = UIColor.clearColor #'#FF7500'.to_color.colorWithAlphaComponent(0.39)
       self.addSubview(@points_value_label)
 
       @gem_view = GemView.alloc.initWithFrame([[28,59],[105, 92]])
       self.addSubview(@gem_view)
-      self.backgroundColor = '#39a7d2'.to_color
+      self.backgroundColor = UIColor.clearColor
 
       # setPoints(rand(5000),rand(5000),rand(5000))
 

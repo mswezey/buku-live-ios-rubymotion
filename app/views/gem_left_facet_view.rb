@@ -10,7 +10,7 @@ class GemLeftFacetView < FUI::GemFacetView
     CGContextAddLineToPoint(context, 5, 32)
     CGContextAddLineToPoint(context, 49, 84)
     CGContextClosePath(context)
-    color = '#ff02f6'.to_color
+    color = '#DE0002'.to_color
     CGContextSetFillColorWithColor(context, color.CGColor)
     CGContextFillPath(context)
   end
