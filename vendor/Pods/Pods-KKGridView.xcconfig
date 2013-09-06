@@ -1,0 +1,1 @@
+PODS_KKGRIDVIEW_OTHER_LDFLAGS = -lstdc++ -framework QuartzCore

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 $:.unshift("/Library/RubyMotion/lib")
-require 'motion/project'
+# require 'motion/project'
+require 'motion/project/template/ios'
 require 'bundler'
 require "bubble-wrap/location"
 Bundler.require
@@ -13,6 +14,9 @@ Motion::Project::App.setup do |app|
   app.sdk_version = '6.1'
   app.deployment_target = '5.1'
 
+  app.version = '1.0'
+  app.provisioning_profile = '/Users/mattswezey/Library/MobileDevice/Provisioning Profiles/D0D515EF-E47D-44FA-BA19-24AB6C8E179A.mobileprovision'
+  app.codesign_certificate = 'iPhone Distribution: Frequency Incorporated'
   # app.vendor_project('vendor/zxing-2.1/iphone/ZXingWidget', :xcode, :target => 'ZXingWidget', :headers_dir => 'Classes')
 
   app.fonts += ["DIN-Light.ttf", "DIN-Medium.ttf", "DIN-Bold.ttf"]

@@ -10,6 +10,8 @@
 #import <QuartzCore/QuartzCore.h>
 #import "UIScrollView+SVPullToRefresh.h"
 
+//fequalzro() from http://stackoverflow.com/a/1614761/184130
+#define fequalzero(a) (fabs(a) < FLT_EPSILON)
 
 static CGFloat const SVPullToRefreshViewHeight = 60;
 
@@ -175,15 +177,17 @@ static char UIScrollViewPullToRefreshView;
     float position = 0.50;
     
     CGRect titleFrame = self.titleLabel.frame;
-    titleFrame.origin.x = ceil(remainingWidth*position+44);
+    titleFrame.origin.x = ceilf(remainingWidth*position+44);
+    titleFrame.origin.y = self.bounds.size.height-(self.subtitleLabel.text ? 48 : 40);
     self.titleLabel.frame = titleFrame;
     
-    CGRect dateFrame = self.subtitleLabel.frame;
-    dateFrame.origin.x = titleFrame.origin.x;
-    self.subtitleLabel.frame = dateFrame;
+    CGRect subtitleFrame = self.subtitleLabel.frame;
+    subtitleFrame.origin.x = titleFrame.origin.x;
+    subtitleFrame.origin.y = self.bounds.size.height-32;
+    self.subtitleLabel.frame = subtitleFrame;
     
     CGRect arrowFrame = self.arrow.frame;
-    arrowFrame.origin.x = ceil(remainingWidth*position);
+    arrowFrame.origin.x = ceilf(remainingWidth*position);
     self.arrow.frame = arrowFrame;
 
     self.activityIndicatorView.center = self.arrow.center;
@@ -203,7 +207,7 @@ static char UIScrollViewPullToRefreshView;
     if(hasCustomView) {
         [self addSubview:customView];
         CGRect viewBounds = [customView bounds];
-        CGPoint origin = CGPointMake(round((self.bounds.size.width-viewBounds.size.width)/2), round((self.bounds.size.height-viewBounds.size.height)/2));
+        CGPoint origin = CGPointMake(roundf((self.bounds.size.width-viewBounds.size.width)/2), roundf((self.bounds.size.height-viewBounds.size.height)/2));
         [customView setFrame:CGRectMake(origin.x, origin.y, viewBounds.size.width, viewBounds.size.height)];
     }
     else {
@@ -221,7 +225,7 @@ static char UIScrollViewPullToRefreshView;
                 break;
                 
             case SVPullToRefreshStateTriggered:
-                [self rotateArrow:M_PI hide:NO];
+                [self rotateArrow:(float)M_PI hide:NO];
                 break;
                 
             case SVPullToRefreshStateLoading:
@@ -243,7 +247,7 @@ static char UIScrollViewPullToRefreshView;
 - (void)setScrollViewContentInsetForLoading {
     CGFloat offset = MAX(self.scrollView.contentOffset.y * -1, 0);
     UIEdgeInsets currentInsets = self.scrollView.contentInset;
-    currentInsets.top = MIN(offset, self.originalTopInset + SVPullToRefreshViewHeight);
+    currentInsets.top = MIN(offset, self.originalTopInset + self.bounds.size.height);
     [self setScrollViewContentInset:currentInsets];
 }
 
@@ -276,6 +280,11 @@ static char UIScrollViewPullToRefreshView;
             self.state = SVPullToRefreshStateTriggered;
         else if(contentOffset.y >= scrollOffsetThreshold && self.state != SVPullToRefreshStateStopped)
             self.state = SVPullToRefreshStateStopped;
+    } else {
+        CGFloat offset = MAX(self.scrollView.contentOffset.y * -1, 0.0f);
+        offset = MIN(offset, self.originalTopInset + self.bounds.size.height);
+        UIEdgeInsets contentInset = self.scrollView.contentInset;
+        self.scrollView.contentInset = UIEdgeInsetsMake(offset, contentInset.left, contentInset.bottom, contentInset.right);
     }
 }
 
@@ -283,7 +292,7 @@ static char UIScrollViewPullToRefreshView;
 
 - (SVPullToRefreshArrow *)arrow {
     if(!_arrow) {
-		_arrow = [[SVPullToRefreshArrow alloc]initWithFrame:CGRectMake(0, 6, 22, 48)];
+		_arrow = [[SVPullToRefreshArrow alloc]initWithFrame:CGRectMake(0, self.bounds.size.height-54, 22, 48)];
         _arrow.backgroundColor = [UIColor clearColor];
 		[self addSubview:_arrow];
     }
@@ -301,7 +310,7 @@ static char UIScrollViewPullToRefreshView;
 
 - (UILabel *)titleLabel {
     if(!_titleLabel) {
-        _titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 20, 210, 20)];
+        _titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 210, 20)];
         _titleLabel.text = NSLocalizedString(@"Pull to refresh...",);
         _titleLabel.font = [UIFont boldSystemFontOfSize:14];
         _titleLabel.backgroundColor = [UIColor clearColor];
@@ -313,15 +322,11 @@ static char UIScrollViewPullToRefreshView;
 
 - (UILabel *)subtitleLabel {
     if(!_subtitleLabel) {
-        _subtitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 28, 210, 20)];
+        _subtitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 210, 20)];
         _subtitleLabel.font = [UIFont systemFontOfSize:12];
         _subtitleLabel.backgroundColor = [UIColor clearColor];
         _subtitleLabel.textColor = textColor;
         [self addSubview:_subtitleLabel];
-        
-        CGRect titleFrame = self.titleLabel.frame;
-        titleFrame.origin.y = 12;
-        self.titleLabel.frame = titleFrame;
     }
     return _subtitleLabel;
 }
@@ -424,7 +429,7 @@ static char UIScrollViewPullToRefreshView;
 }
 
 - (void)startAnimating{
-    if(self.scrollView.contentOffset.y == 0) {
+    if(fequalzero(self.scrollView.contentOffset.y)) {
         [self.scrollView setContentOffset:CGPointMake(self.scrollView.contentOffset.x, -self.frame.size.height) animated:YES];
         self.wasTriggeredByUser = NO;
     }
@@ -437,8 +442,8 @@ static char UIScrollViewPullToRefreshView;
 - (void)stopAnimating {
     self.state = SVPullToRefreshStateStopped;
     
-    if(!self.wasTriggeredByUser)
-        [self.scrollView setContentOffset:CGPointMake(self.scrollView.contentOffset.x, 0) animated:YES];
+    if(!self.wasTriggeredByUser && self.scrollView.contentOffset.y < -self.originalTopInset)
+        [self.scrollView setContentOffset:CGPointMake(self.scrollView.contentOffset.x, -self.originalTopInset) animated:YES];
 }
 
 - (void)setState:(SVPullToRefreshState)newState {
@@ -513,7 +518,7 @@ static char UIScrollViewPullToRefreshView;
 	
 	// Gradient Declaration
 	CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-	CGFloat alphaGradientLocations[] = {0, 0.8};
+	CGFloat alphaGradientLocations[] = {0, 0.8f};
     
 	CGGradientRef alphaGradient = nil;
     if([[[UIDevice currentDevice] systemVersion]floatValue] >= 5){
@@ -524,7 +529,7 @@ static char UIScrollViewPullToRefreshView;
         alphaGradient = CGGradientCreateWithColors(colorSpace, (__bridge CFArrayRef)alphaGradientColors, alphaGradientLocations);
     }else{
         const CGFloat * components = CGColorGetComponents([self.arrowColor CGColor]);
-        int numComponents = CGColorGetNumberOfComponents([self.arrowColor CGColor]);        
+        int numComponents = (int)CGColorGetNumberOfComponents([self.arrowColor CGColor]);
         CGFloat colors[8];
         switch(numComponents){
             case 2:{

@@ -26,11 +26,7 @@ class MapController < UIViewController
       self.view.removeAnnotation(annotation) #if annotation.title == 'Photographer'
     end
     App.delegate.map_annotations.all.each do |pin|
-      title = pin['title']
-      if pin['icon_url'].include?('stage')
-        title = "#{title} Stage"
-      end
-      self.view.addAnnotation(MapAnnotation.new(pin['lat'], pin['lng'], title))
+      self.view.addAnnotation(MapAnnotation.new(pin['lat'], pin['lng'], pin['title'], pin['icon']))
     end
   end
 
@@ -90,15 +86,15 @@ class MapController < UIViewController
       view = MKAnnotationView.alloc.initWithAnnotation(annotation, reuseIdentifier:ViewIdentifier)
     end
     view.canShowCallout = true
+    view.image = UIImage.imageNamed(annotation.icon)
+    # view.image = UIImage.imageNamed('marker-pin.png') # default
+    # view.image = UIImage.imageNamed('tower-pin.png') if annotation.title.downcase.include?("tower")
+    # view.image = UIImage.imageNamed('stage-pin.png') if annotation.title.downcase.include?("stage")
+    # view.image = UIImage.imageNamed('photo-pin.png') if annotation.title.downcase.include?("booth")
+    # view.image = UIImage.imageNamed('qr-pin.png') if annotation.title.downcase.include?("qr")
+    # view.image = UIImage.imageNamed('touchpoint-pin.png') if annotation.title.downcase.include?("touchpoint")
 
-    view.image = UIImage.imageNamed('marker-pin.png') # default
-    view.image = UIImage.imageNamed('tower-pin.png') if annotation.title.downcase.include?("tower")
-    view.image = UIImage.imageNamed('stage-pin.png') if annotation.title.downcase.include?("stage")
-    view.image = UIImage.imageNamed('photo-pin.png') if annotation.title.downcase.include?("booth")
-    view.image = UIImage.imageNamed('qr-pin.png') if annotation.title.downcase.include?("qr")
-    view.image = UIImage.imageNamed('touchpoint-pin.png') if annotation.title.downcase.include?("touchpoint")
-
-    view.image = UIImage.imageNamed('photographer-pin.png') if annotation.title.downcase.include?("photographer")
+    # view.image = UIImage.imageNamed('photographer-pin.png') if annotation.title.downcase.include?("photographer")
     view
   end
 

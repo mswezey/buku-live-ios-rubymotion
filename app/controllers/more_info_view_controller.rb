@@ -4,18 +4,22 @@ class MoreInfoViewController < UIViewController
     @info_view = UIWebView.alloc.initWithFrame(view.bounds)
     @info_view.backgroundColor = '#133948'.to_color
     @info_view.setOpaque false
-    @info_view.suppressesIncrementalRendering = true
+    # @info_view.suppressesIncrementalRendering = true
     self.view.addSubview @info_view
     self.view.addSubview closeButton
+    loadRequest
+  end
 
+  def viewWillAppear(animated)
+    # @info_view.reload
+    loadRequest
+  end
+
+  def loadRequest
     fullURL = "#{App.delegate.frequency_app_uri}/api/mobile/more_info#{ "?auth_token=" + App::Persistence['user_auth_token'] if App.delegate.logged_in? }"
     url = NSURL.URLWithString(fullURL)
     requestObj = NSURLRequest.requestWithURL(url)
     @info_view.loadRequest(requestObj)
-  end
-
-  def viewWillAppear(animated)
-    @info_view.reload
   end
 
   def closeButton

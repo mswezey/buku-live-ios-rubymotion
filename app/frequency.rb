@@ -1,7 +1,7 @@
 module Frequency
 
-  FREQUENCY_APP_URL = 'http://buku-live.herokuapp.com'
-  # FREQUENCY_APP_URL = 'http://10.0.1.17:3000'
+  FREQUENCY_APP_URL = 'http://live.thebukuproject.com'
+  # FREQUENCY_APP_URL = 'http://localhost:3000'
 
   class Base
 
@@ -10,7 +10,7 @@ module Frequency
     end
 
     def initialize
-      NSLog("INITIALIZE")
+      # NSLog("INITIALIZE")
       check_cache_file
       load_local_cache_file
       if @all == nil
@@ -22,15 +22,15 @@ module Frequency
           @all = [] # prevent nil and wait for refresh
         end
       end
-      NSLog("AFTER INITIALIZE")
+      # NSLog("AFTER INITIALIZE")
       self
     end
 
     def handle_unauthorized_response
       App.delegate.unauthorized_count += 1
-      NSLog("****** UNAUTHORIZED ATTEMPT #{App.delegate.unauthorized_count} ******")
+      # NSLog("****** UNAUTHORIZED ATTEMPT #{App.delegate.unauthorized_count} ******")
       if App.delegate.unauthorized_count > 5
-        NSLog("GIVING UP AFTER UNAUTHORIZED")
+        # NSLog("GIVING UP AFTER UNAUTHORIZED")
         App.delegate.notificationController.hide
         App.delegate.errorNotificationController.show
         unless App.delegate.errorNotificationController.view.subviews.first.text == "No Internet Connection"
@@ -49,32 +49,32 @@ module Frequency
     end
 
     def check_cache_file
-      NSLog("CHECK CACHE FILE")
+      # NSLog("CHECK CACHE FILE")
       unless File.exists?("#{App.documents_path}/#{filename}")
-        NSLog("FILE NOT FOUND")
+        # NSLog("FILE NOT FOUND")
         puts "#{filename} not found... creating it"
         create_local_cache_file
       end
-      NSLog("END CHECK CACHE FILE")
+      # NSLog("END CHECK CACHE FILE")
     end
 
     def create_local_cache_file
-      NSLog("START CREATE LOCAL FILE")
+      # NSLog("START CREATE LOCAL FILE")
       return false unless filename
       File.open("#{App.documents_path}/#{filename}", "w") {|f| f.write("[]")}
-      NSLog("END CREATE LOCAL CACHE FILE")
+      # NSLog("END CREATE LOCAL CACHE FILE")
     end
 
     def load_local_cache_file
-      NSLog("START LOAD CACHE FILE")
+      # NSLog("START LOAD CACHE FILE")
       return false unless filename
       puts "loading local cache file #{filename}..."
-      NSLog("READING FILE")
+      # NSLog("READING FILE")
       data = File.read("#{App.documents_path}/#{filename}").dataUsingEncoding(NSUTF8StringEncoding)
       error_ptr = Pointer.new(:object)
-      NSLog("JSON OBJECT CREATION")
+      # NSLog("JSON OBJECT CREATION")
       @all = NSJSONSerialization.JSONObjectWithData(data, options:0, error:error_ptr)
-      NSLog("END LOAD LOCAL CACHE FILE")
+      # NSLog("END LOAD LOCAL CACHE FILE")
     end
 
     def base_path
@@ -148,7 +148,7 @@ module FUI
 
     def init
       if super
-        NSLog("KENBURNSVIEW INIT")
+        # NSLog("KENBURNSVIEW INIT")
         self.layer.masksToBounds = true
       end
       self
@@ -156,7 +156,7 @@ module FUI
 
     def initWithFrame(frame)
       if super
-        NSLog("KENBURNSVIEW INIT WITH FRAME")
+        # NSLog("KENBURNSVIEW INIT WITH FRAME")
         self.layer.masksToBounds = true
       end
       self
@@ -192,7 +192,7 @@ module FUI
     end
 
     def startAnimations(images)
-      NSLog("START ANIMATIONS")
+      # NSLog("START ANIMATIONS")
       @animating = true
       i = 0
       while i < images.size && @animating == true
@@ -205,7 +205,7 @@ module FUI
         i = (i == images.size - 1) && @isLoop ? -1 : i
         i+=1
       end
-      NSLog("AFTER START ANIMATIONS")
+      # NSLog("AFTER START ANIMATIONS")
     end
 
     def stopAnimating

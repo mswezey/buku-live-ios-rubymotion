@@ -44,7 +44,7 @@ class AppDelegate
   end
 
   def schedule_view
-    @schedule_view ||= ScheduleView.alloc.initWithFrame([[0,790],[320, 160]]) # row 5
+    @schedule_view ||= ScheduleView.alloc.initWithFrame([[0,760],[320, 190]]) # row 5
   end
 
   def friendDetailViewController
@@ -116,9 +116,9 @@ class AppDelegate
   end
 
   def user_photos_list
-    NSLog("USER PHOTOS NEW")
+    # NSLog("USER PHOTOS NEW")
     @user_photos_list ||= Frequency::FanPhotoList.new
-    NSLog("AFTER USER PHOTOS NEW")
+    # NSLog("AFTER USER PHOTOS NEW")
     @user_photos_list
   end
 
@@ -133,10 +133,10 @@ class AppDelegate
   end
 
   def load_user_photos_list
-    NSLog("LOAD USER PHOTOS")
+    # NSLog("LOAD USER PHOTOS")
     combined_photos_list
     @combined_photos_list.refresh if logged_in?
-    NSLog("AFTER LOAD USER PHOTOS")
+    # NSLog("AFTER LOAD USER PHOTOS")
   end
 
   def friends
@@ -377,7 +377,7 @@ class AppDelegate
   end
 
   def current_user
-    NSLog("INITIALIZE CURRENT USER")
+    # NSLog("INITIALIZE CURRENT USER")
     @current_user ||= Frequency::User.new
   end
 
@@ -403,7 +403,7 @@ class AppDelegate
 
     load_user_photos_list
     load_friends_list
-    NSLog("BEFORE rootViewController")
+    # NSLog("BEFORE rootViewController")
     window.rootViewController = gridNavController
     window.rootViewController.wantsFullScreenLayout = true
     window.makeKeyAndVisible
@@ -445,7 +445,7 @@ class AppDelegate
     when FBSessionStateOpen
       unless error
         # We have a valid session
-        NSLog("User session found")
+        # NSLog("User session found")
       end
     when FBSessionStateClosed, FBSessionStateClosedLoginFailed
       FBSession.activeSession.closeAndClearTokenInformation

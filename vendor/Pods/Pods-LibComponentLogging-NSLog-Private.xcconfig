@@ -1,0 +1,5 @@
+#include "Pods-LibComponentLogging-NSLog.xcconfig"
+GCC_PREPROCESSOR_DEFINITIONS = COCOAPODS=1
+HEADER_SEARCH_PATHS = "${PODS_ROOT}/BuildHeaders" "${PODS_ROOT}/BuildHeaders/LibComponentLogging-NSLog" "${PODS_ROOT}/Headers" "${PODS_ROOT}/Headers/Facebook-iOS-SDK" "${PODS_ROOT}/Headers/Facebook-iOS-SDK/FacebookSDK" "${PODS_ROOT}/Headers/FileMD5Hash" "${PODS_ROOT}/Headers/ISO8601DateFormatter" "${PODS_ROOT}/Headers/JSONKit" "${PODS_ROOT}/Headers/KKGridView" "${PODS_ROOT}/Headers/LibComponentLogging-Core" "${PODS_ROOT}/Headers/LibComponentLogging-NSLog" "${PODS_ROOT}/Headers/NSData+Base64" "${PODS_ROOT}/Headers/RestKit" "${PODS_ROOT}/Headers/SDWebImage" "${PODS_ROOT}/Headers/SJNotificationViewController" "${PODS_ROOT}/Headers/SOCKit" "${PODS_ROOT}/Headers/SVPullToRefresh" "${PODS_ROOT}/Headers/XMLReader" "${PODS_ROOT}/Headers/cocoa-oauth" "${PODS_ROOT}/Headers/iCarousel"
+OTHER_LDFLAGS = -ObjC
+PODS_ROOT = ${SRCROOT}

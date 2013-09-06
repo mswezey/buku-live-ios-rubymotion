@@ -6,8 +6,8 @@ class MapAnnotationList < Frequency::Base
 
   def refresh
     FRequest.new(GET, path, params, self)
-    # App.delegate.notificationController.setNotificationTitle "Refreshing runner locations"
-    # App.delegate.notificationController.show
+    App.delegate.notificationController.setNotificationTitle "Refreshing Map"
+    App.delegate.notificationController.show
   end
 
   def request(request, didLoadResponse: response)
@@ -16,7 +16,7 @@ class MapAnnotationList < Frequency::Base
       data = response.bodyAsString.dataUsingEncoding(NSUTF8StringEncoding)
       error_ptr = Pointer.new(:object)
       @all = NSJSONSerialization.JSONObjectWithData(data, options:0, error:error_ptr)
-      # App.delegate.notificationController.hide
+      App.delegate.notificationController.hide
       App.delegate.mapController.addMapAnnotations
     elsif response.isUnauthorized
       puts "MapAnnotationList response unauthorized"

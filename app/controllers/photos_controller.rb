@@ -172,7 +172,7 @@ class PhotosController < UITableViewController
 
   def tableView(tableView, viewForFooterInSection:section)
     # photo = @photos[section]['fan_photo'] ? photo = @photos[section]['fan_photo'] : photo = @photos[section]['picture']
-    # NSLog("PHOTO FOR FOOTER: #{photo}")
+    # # NSLog("PHOTO FOR FOOTER: #{photo}")
     # footerView = PhotoFooterView.alloc.initWithFrame([[0,0], [self.tableView.bounds.size.width, 56]], photo:photo)
     # if photo['comments'] && photo['comments'].size > 0
     #   footerView.containerView.addSubview commentsViewForPhotoInSection(section)

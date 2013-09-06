@@ -26,19 +26,19 @@
 #include <zxing/Binarizer.h>
 
 namespace zxing {
-	
+
 	class BinaryBitmap : public Counted {
 	private:
 		Ref<Binarizer> binarizer_;
-		int cached_y_;
-		
+
+
 	public:
 		BinaryBitmap(Ref<Binarizer> binarizer);
 		virtual ~BinaryBitmap();
-		
+
 		Ref<BitArray> getBlackRow(int y, Ref<BitArray> row);
 		Ref<BitMatrix> getBlackMatrix();
-		
+
 		Ref<LuminanceSource> getLuminanceSource() const;
 
 		int getWidth() const;
@@ -51,7 +51,7 @@ namespace zxing {
 		Ref<BinaryBitmap> crop(int left, int top, int width, int height);
 
 	};
-	
+
 }
 
 #endif /* BINARYBITMAP_H_ */

@@ -3,7 +3,7 @@ class ProPhotoList < Frequency::Base
 
   def refresh
     FRequest.new(GET, path, params, self)
-    NSLog("AFTER REQUEST")
+    # NSLog("AFTER REQUEST")
     App.delegate.notificationController.setNotificationTitle "Loading #{loading_title}"
     App.delegate.notificationController.show
   end

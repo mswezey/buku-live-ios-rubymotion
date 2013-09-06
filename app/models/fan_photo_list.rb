@@ -2,17 +2,17 @@ class FanPhotoList < Frequency::Base
   attr_accessor :all
 
   def refresh
-    NSLog("REFRESH START")
+    # NSLog("REFRESH START")
     # if @all.first['fan_photo']
-    #   NSLog("YES FIRST FAN PHOTO")
+    #   # NSLog("YES FIRST FAN PHOTO")
     #   since = @all.first['fan_photo']['created_at']
-    #   NSLog("AFTER SINCE = ")
+    #   # NSLog("AFTER SINCE = ")
     #   params.merge(since: since)
-    #   NSLog("AFTER MERGE PARAMS")
+    #   # NSLog("AFTER MERGE PARAMS")
     # end
-    NSLog("AFTER IF FIRST FAN PHOTO")
+    # NSLog("AFTER IF FIRST FAN PHOTO")
     FRequest.new(GET, path, params, self)
-    NSLog("AFTER REQUEST")
+    # NSLog("AFTER REQUEST")
     App.delegate.notificationController.setNotificationTitle "Loading #{loading_title}"
     App.delegate.notificationController.show
   end

@@ -27,17 +27,16 @@
 #include <zxing/common/BitMatrix.h>
 
 namespace zxing {
-	
+
 	class HybridBinarizer : public GlobalHistogramBinarizer {
 	 private:
     Ref<BitMatrix> matrix_;
 	  Ref<BitArray> cached_row_;
-	  int cached_row_num_;
 
 	public:
 		HybridBinarizer(Ref<LuminanceSource> source);
 		virtual ~HybridBinarizer();
-		
+
 		virtual Ref<BitMatrix> getBlackMatrix();
 		Ref<Binarizer> createBinarizer(Ref<LuminanceSource> source);
   private:

@@ -56,20 +56,20 @@ class FriendDetailViewController < UIViewController
     badges_label.backgroundColor = UIColor.clearColor
     @scroll_view.addSubview(badges_label)
 
-    NSLog("---- starting i carousel")
+    # NSLog("---- starting i carousel")
     i_carousel = NSClassFromString('iCarousel')
     @badges_view = i_carousel.alloc.initWithFrame([[0,220],[160,160]])
-    NSLog("---- alloced i carousel")
+    # NSLog("---- alloced i carousel")
     @badges_view.backgroundColor = '#39a7d2'.to_color.colorWithAlphaComponent(0.42)
     @badges_view.type = 1
-    NSLog("---- setting delegate")
+    # NSLog("---- setting delegate")
     @badges_view.delegate = App.delegate.friendBadgeViewController
-    NSLog("---- setting datasource")
+    # NSLog("---- setting datasource")
     @badges_view.dataSource = App.delegate.friendBadgeViewController
     @badges_view.clipsToBounds = true
-    NSLog("---- adding to view")
+    # NSLog("---- adding to view")
     @scroll_view.addSubview(@badges_view)
-    NSLog("---- added to view")
+    # NSLog("---- added to view")
 
     photos_label = UILabel.alloc.initWithFrame([[170,190],[150,30]])  # row 2
     photos_label.text = "PHOTOS"

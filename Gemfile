@@ -1,7 +1,7 @@
 # A sample Gemfile
 source "https://rubygems.org"
 
-gem "motion-cocoapods", "~> 1.2.1"
+gem "motion-cocoapods"
 gem 'bubble-wrap'
 gem 'motion-testflight'
 gem 'rubymotion_generators'

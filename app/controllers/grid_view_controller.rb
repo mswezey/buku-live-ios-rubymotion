@@ -2,9 +2,9 @@ class GridViewController < UIViewController
   attr_accessor :carousel, :badges
 
   def load_photos_list
-    NSLog("START LOAD PHOTOS LIST")
+    # NSLog("START LOAD PHOTOS LIST")
     @photos_list = App.delegate.combined_photos_list
-    NSLog("END OF LOAD PHOTOS LIST")
+    # NSLog("END OF LOAD PHOTOS LIST")
   end
 
   def load_friends_list
@@ -22,7 +22,7 @@ class GridViewController < UIViewController
 
   def viewDidLoad
     super
-    NSLog("VIEW DID LOAD")
+    # NSLog("VIEW DID LOAD")
 
     # BW::Location.get_significant do |result|
     #   p "From Lat #{result[:from].latitude}, Long #{result[:from].longitude}" rescue p "rescue from #{result[:from]}"
@@ -55,17 +55,17 @@ class GridViewController < UIViewController
     label_row_3_bg.backgroundColor = '#00636B'.to_color.colorWithAlphaComponent(0.5) #UIColor.blackColor.colorWithAlphaComponent(0.39)
     label_row_4_bg = UIView.alloc.initWithFrame([[0,570],[320,30]])
     label_row_4_bg.backgroundColor = '#E00000'.to_color.colorWithAlphaComponent(0.5) #UIColor.blackColor.colorWithAlphaComponent(0.39)
-    label_row_5_bg = UIView.alloc.initWithFrame([[0,760],[320,30]])
-    label_row_5_bg.backgroundColor = '#FF7600'.to_color.colorWithAlphaComponent(0.5) #UIColor.blackColor.colorWithAlphaComponent(0.39)
+    # label_row_5_bg = UIView.alloc.initWithFrame([[0,760],[320,30]])
+    # label_row_5_bg.backgroundColor = '#FF7600'.to_color.colorWithAlphaComponent(0.5) #UIColor.blackColor.colorWithAlphaComponent(0.39)
 
 
     @scroll_view.addSubview(label_row_2_bg)
     @scroll_view.addSubview(label_row_3_bg)
     @scroll_view.addSubview(label_row_4_bg)
-    @scroll_view.addSubview(label_row_5_bg)
-    NSLog("BEFORE PHOTO SECTION")
+    # @scroll_view.addSubview(label_row_5_bg)
+    # NSLog("BEFORE PHOTO SECTION")
     loadPhotoSection
-    NSLog("AFTER PHOTO SECTION")
+    # NSLog("AFTER PHOTO SECTION")
     loadScheduleSection
     loadMyPointsSection
     loadBadgesSection
@@ -82,7 +82,7 @@ class GridViewController < UIViewController
     @scroll_view.addSubview(@map_view)
 
     App.delegate.my_points_view.setPoints(App::Persistence['points_checkins'], App::Persistence['points_badges'], App::Persistence['points_photos'])
-    NSLog("END VIEW DID LOAD")
+    # NSLog("END VIEW DID LOAD")
   end
 
   def loadPhotoSection
@@ -107,19 +107,19 @@ class GridViewController < UIViewController
   end
 
   def loadScheduleSection
-    label = UILabel.alloc.initWithFrame([[10,760], [150,30]])
-    label.text = "ON STAGE"
-    label.font = @font_light
-    label.textColor = UIColor.whiteColor
-    label.backgroundColor = UIColor.clearColor
-    @scroll_view.addSubview(label)
+    # label = UILabel.alloc.initWithFrame([[10,760], [150,30]])
+    # label.text = "ON STAGE"
+    # label.font = @font_light
+    # label.textColor = UIColor.whiteColor
+    # label.backgroundColor = UIColor.clearColor
+    # @scroll_view.addSubview(label)
 
-    label2 = UILabel.alloc.initWithFrame([[170,760], [150,30]])
-    label2.text = "UP NEXT"
-    label2.font = @font_light
-    label2.textColor = UIColor.whiteColor
-    label2.backgroundColor = UIColor.clearColor
-    @scroll_view.addSubview(label2)
+    # label2 = UILabel.alloc.initWithFrame([[170,760], [150,30]])
+    # label2.text = "UP NEXT"
+    # label2.font = @font_light
+    # label2.textColor = UIColor.whiteColor
+    # label2.backgroundColor = UIColor.clearColor
+    # @scroll_view.addSubview(label2)
 
     @schedule_view = App.delegate.schedule_view
 
@@ -268,16 +268,16 @@ class GridViewController < UIViewController
   end
 
   def viewWillAppear(animated)
-    NSLog("START VIEW WILL APPEAR")
+    # NSLog("START VIEW WILL APPEAR")
     App.delegate.current_user.refresh if App.delegate.logged_in?
     @schedule_view.reload
-    NSLog("VWA REFRESH USER")
+    # NSLog("VWA REFRESH USER")
     App.delegate.setToolbarButtonsForDashboard
-    NSLog("VWA START LOAD PHOTOS SLIDESHOW")
+    # NSLog("VWA START LOAD PHOTOS SLIDESHOW")
     load_photos_slideshow
-    NSLog("VWA START LOAD BACKGROUND KBV")
+    # NSLog("VWA START LOAD BACKGROUND KBV")
     load_background_kbv
-    NSLog("END VIEWWILLAPPEAR")
+    # NSLog("END VIEWWILLAPPEAR")
   end
 
   def viewDidDisappear(animated)
@@ -288,7 +288,7 @@ class GridViewController < UIViewController
   end
 
   def load_background_kbv
-    NSLog("START LOAD BG KBV")
+    # NSLog("START LOAD BG KBV")
     unless @bg_kbv
       bg_image1 = UIImageView.alloc.init
       bg_image2 = UIImageView.alloc.init
@@ -299,7 +299,7 @@ class GridViewController < UIViewController
       bg_image3.image = UIImage.imageNamed("bg1.jpeg")
       bg_image4.image = UIImage.imageNamed("bg4.jpeg")
       @bg_kbv = FUI::KenBurnsView.alloc.initWithFrame([[0,190],[320,600]])
-      NSLog("BG KBV ANIMATE WITH IMAGES")
+      # NSLog("BG KBV ANIMATE WITH IMAGES")
       @bg_kbv.animateWithImages([bg_image1, bg_image2, bg_image3, bg_image4], transitionDuration:25, loop: true, isLandscape:true)
 
       bg_overlay = UIImageView.alloc.init
@@ -312,19 +312,19 @@ class GridViewController < UIViewController
       @scroll_view.sendSubviewToBack(bg_overlay)
       @scroll_view.sendSubviewToBack(@bg_kbv)
     end
-    NSLog("END LOAD BG KBV")
+    # NSLog("END LOAD BG KBV")
   end
 
   def load_photos_slideshow
-    NSLog("START LOAD PHOTOS SLIDESHOW")
+    # NSLog("START LOAD PHOTOS SLIDESHOW")
     unless @kbv
-      NSLog("UNLESS KBV")
+      # NSLog("UNLESS KBV")
       @kbv = FUI::KenBurnsView.alloc.initWithFrame(@photos_view.bounds)
-      NSLog("AFTER KBV ALLOC INIT")
+      # NSLog("AFTER KBV ALLOC INIT")
       load_photos_list
-      NSLog("AFTER LOAD PHOTOS LIST")
+      # NSLog("AFTER LOAD PHOTOS LIST")
       @photos = load_photos
-      NSLog("AFTER @PHOTOS = LOAD_PHOTOS")
+      # NSLog("AFTER @PHOTOS = LOAD_PHOTOS")
       @kbv.animateWithImages(@photos, transitionDuration:5, loop: true, isLandscape:true)
       @photos_view.addSubview(@kbv)
       @photos_view.addSubview(@label_row_1_bg)
@@ -334,11 +334,11 @@ class GridViewController < UIViewController
   end
 
   def load_photos
-    NSLog("STARTING LOAD PHOTOS")
+    # NSLog("STARTING LOAD PHOTOS")
     photos = []
-    NSLog("PHOTOS = []")
+    # NSLog("PHOTOS = []")
     if @photos_list.all != nil
-      NSLog("IF PHOTO LIST ALL != NIL")
+      # NSLog("IF PHOTO LIST ALL != NIL")
       @photos_list.all[0..25].each do |photo|
         photo = photo['fan_photo'] ? photo['fan_photo'] : photo['picture']
         url_string = NSURL.URLWithString(photo['image']['mobile_small']['url'])
@@ -347,17 +347,17 @@ class GridViewController < UIViewController
         photos << image_view
       end
     end
-    NSLog("AFTER PHOTOS LIST LOOP")
+    # NSLog("AFTER PHOTOS LIST LOOP")
     photos
   end
 
   def refresh_slideshow
-    NSLog("START REFRESH SLIDESHOW")
+    # NSLog("START REFRESH SLIDESHOW")
     # only call this if photos are empty
     @kbv.removeFromSuperview if @kbv
     @kbv = nil
     load_photos_slideshow
-    NSLog("END REFRESH SLIDESHOW")
+    # NSLog("END REFRESH SLIDESHOW")
   end
 
 end

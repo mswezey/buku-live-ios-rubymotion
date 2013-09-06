@@ -1,0 +1,1 @@
+PODS_RESTKIT_OTHER_LDFLAGS = -lxml2 -framework CFNetwork -framework CoreData -framework MobileCoreServices -framework QuartzCore -framework Security -framework SystemConfiguration
